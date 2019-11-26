@@ -9,7 +9,7 @@ services:
 
 jdk:
   - oraclejdk8
-  - openjdk11
+  - openjdk14
 
 cache:
   directories:
