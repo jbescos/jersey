@@ -44,7 +44,7 @@ import java.util.jar.JarInputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.ws.rs.ProcessingException;
+import jakarta.ws.rs.ProcessingException;
 
 import org.glassfish.jersey.internal.util.ReflectionHelper;
 
@@ -115,7 +115,7 @@ public final class OsgiRegistry implements SynchronousBundleListener {
                 final ClassLoader loader,
                 final boolean ignoreOnClassNotFound) {
 
-            final List<Class<?>> providerClasses = locateAllProviders(serviceName);
+            final List<Class<?>> providerClasses = locateAllProviders(serviceClass);
             if (!providerClasses.isEmpty()) {
                 return new Iterator<T>() {
 
@@ -153,7 +153,7 @@ public final class OsgiRegistry implements SynchronousBundleListener {
         @Override
         public <T> Iterator<Class<T>> createClassIterator(
                 final Class<T> service, final String serviceName, final ClassLoader loader, final boolean ignoreOnClassNotFound) {
-            final List<Class<?>> providerClasses = locateAllProviders(serviceName);
+            final List<Class<?>> providerClasses = locateAllProviders(service);
             if (!providerClasses.isEmpty()) {
                 return new Iterator<Class<T>>() {
 
@@ -552,14 +552,22 @@ public final class OsgiRegistry implements SynchronousBundleListener {
         }
     }
 
-    private List<Class<?>> locateAllProviders(final String serviceName) {
+    private List<Class<?>> locateAllProviders(final Class<?> serviceClass) {
         lock.readLock().lock();
         try {
             final List<Class<?>> result = new LinkedList<Class<?>>();
             for (final Map<String, Callable<List<Class<?>>>> value : factories.values()) {
-                if (value.containsKey(serviceName)) {
+                if (value.containsKey(serviceClass.getName())) {
                     try {
-                        result.addAll(value.get(serviceName).call());
+                        for (final Class<?> clazz : value.get(serviceClass.getName()).call()) {
+                            if (serviceClass.isAssignableFrom(clazz)) {
+                                result.add(clazz);
+                            } else if (LOGGER.isLoggable(Level.FINER)) {
+                                LOGGER.log(Level.FINER,
+                                    "Ignoring provider class " + clazz.getName() + " because it is not assignable to "
+                                    + " service class " + serviceClass.getName());
+                            }
+                        }
                     } catch (final Exception ex) {
                         // ignore
                     }

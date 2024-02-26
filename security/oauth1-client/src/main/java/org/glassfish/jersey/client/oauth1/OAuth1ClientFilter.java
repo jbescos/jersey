@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2013, 2023 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -18,14 +18,15 @@ package org.glassfish.jersey.client.oauth1;
 
 import java.io.IOException;
 
-import javax.ws.rs.Priorities;
-import javax.ws.rs.ProcessingException;
-import javax.ws.rs.client.ClientRequestContext;
-import javax.ws.rs.client.ClientRequestFilter;
+import jakarta.ws.rs.Priorities;
+import jakarta.ws.rs.ProcessingException;
+import jakarta.ws.rs.client.ClientRequestContext;
+import jakarta.ws.rs.client.ClientRequestFilter;
 
-import javax.annotation.Priority;
-import javax.inject.Inject;
-import javax.inject.Provider;
+import jakarta.annotation.Priority;
+import jakarta.inject.Inject;
+import jakarta.inject.Provider;
+import jakarta.ws.rs.core.Context;
 
 import org.glassfish.jersey.client.oauth1.internal.LocalizationMessages;
 import org.glassfish.jersey.message.MessageBodyWorkers;
@@ -48,11 +49,15 @@ import org.glassfish.jersey.oauth1.signature.OAuth1SignatureException;
 @Priority(Priorities.AUTHENTICATION)
 class OAuth1ClientFilter implements ClientRequestFilter {
 
-    @Inject
     private Provider<OAuth1Signature> oAuthSignature;
+    private Provider<MessageBodyWorkers> messageBodyWorkers;
 
     @Inject
-    private Provider<MessageBodyWorkers> messageBodyWorkers;
+    public OAuth1ClientFilter(@Context Provider<OAuth1Signature> oAuthSignature,
+                              @Context Provider<MessageBodyWorkers> messageBodyWorkers) {
+        this.oAuthSignature = oAuthSignature;
+        this.messageBodyWorkers = messageBodyWorkers;
+    }
 
     @Override
     public void filter(ClientRequestContext request) throws IOException {

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 
-    Copyright (c) 2012, 2021 Oracle and/or its affiliates. All rights reserved.
+    Copyright (c) 2012, 2023 Oracle and/or its affiliates. All rights reserved.
 
     This program and the accompanying materials are made available under the
     terms of the Eclipse Public License v. 2.0, which is available at
@@ -22,7 +22,7 @@
     <parent>
         <groupId>org.glassfish.jersey.bundles</groupId>
         <artifactId>project</artifactId>
-        <version>2.36-SNAPSHOT</version>
+        <version>3.1.99-SNAPSHOT</version>
     </parent>
 
     <artifactId>jaxrs-ri</artifactId>
@@ -182,7 +182,6 @@
         <dependency>
             <groupId>jakarta.servlet</groupId>
             <artifactId>jakarta.servlet-api</artifactId>
-            <version>${servlet4.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -218,7 +217,7 @@
                     <showWarnings>false</showWarnings>
                     <fork>false</fork>
                     <excludes>
-                        <exclude>module-info.java</exclude>
+                        <exclude>module-info.java</exclude><exclude>META-INF/versions/11/**</exclude>
                     </excludes>
                 </configuration>
             </plugin>
@@ -254,7 +253,7 @@
                             <includeGroupIds>jakarta.ws.rs,org.glassfish.jersey.core,org.glassfish.jersey.containers,org.glassfish.jersey.jaxb,org.glassfish.jersey.inject</includeGroupIds>
                             <includeClassifiers>sources</includeClassifiers>
                             <outputDirectory>${generated.src.dir}</outputDirectory>
-                            <excludes>**/NOTICE.md,**/NOTICE.markdown</excludes>
+                            <excludes>module-info.*,META-INF/MANIFEST.MF,**/NOTICE.md,**/NOTICE.markdown</excludes>
                         </configuration>
                     </execution>
                 </executions>
@@ -272,26 +271,26 @@
                         </Implementation-Version>
                         <Extension-Name>${project.artifactId}</Extension-Name>
                         <Export-Package>
-                            javax.ws.rs.*;version=${jaxrs.api.impl.version},
+                            jakarta.ws.rs.*;version=${jaxrs.api.impl.version},
                             org.glassfish.jersey.*;version=${project.version},
                             com.sun.research.ws.wadl.*;version=${project.version},
                             jersey.repackaged.org.objectweb.asm.*;version=${project.version}
                         </Export-Package>
                         <Import-Package><![CDATA[
-                            javax.servlet.annotation.*;resolution:=optional;version="[2.4,5.0)",
-                            javax.servlet.descriptor.*;resolution:=optional;version="[2.4,5.0)",
-                            javax.servlet.*;version="[2.4,5.0)",
-                            ${javax.annotation.osgi.version},
-                            javax.persistence.*;resolution:=optional,
-                            javax.validation.*;resolution:=optional;version="${range;[==,3);${javax.validation.api.version}}",
+                            jakarta.servlet.annotation.*;resolution:=optional;version="[5.0,7.0)",
+                            jakarta.servlet.descriptor.*;resolution:=optional;version="[5.0,7.0)",
+                            jakarta.servlet.*;version="[5.0,7.0)",
+                            ${jakarta.annotation.osgi.version},
+                            jakarta.persistence.*;resolution:=optional,
+                            jakarta.validation.*;resolution:=optional;version="[3,4)",
                             sun.misc.*;resolution:=optional,
-                            javax.activation.*;version="!";resolution:=optional,
+                            jakarta.activation.*;version="!";resolution:=optional,
                             javax.imageio;resolution:=optional,
                             javax.imageio.spi;resolution:=optional,
                             javax.imageio.stream;resolution:=optional,
-                            javax.xml.bind;version="!";resolution:=optional,
-                            javax.xml.bind.annotation;version="!";resolution:=optional,
-                            javax.xml.bind.annotation.adapters;version="!";resolution:=optional,
+                            jakarta.xml.bind;version="!";resolution:=optional,
+                            jakarta.xml.bind.annotation;version="!";resolution:=optional,
+                            jakarta.xml.bind.annotation.adapters;version="!";resolution:=optional,
                             javax.xml.namespace;resolution:=optional,
                             javax.xml.parsers;resolution:=optional,
                             javax.xml.transform;resolution:=optional,
@@ -306,6 +305,7 @@
                         <Private-Package>
                             com.sun.research.ws.wadl
                         </Private-Package>
+                        <Multi-Release>true</Multi-Release>
                     </instructions>
                     <unpackBundle>true</unpackBundle>
                     <excludeDependencies>*;scope=compile</excludeDependencies>
@@ -314,7 +314,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
-                <version>3.1.0</version>
+                <version>3.2.4</version>
                 <executions>
                     <execution>
                         <phase>package</phase>
@@ -335,11 +335,11 @@
                                     <excludes>
                                         <exclude>META-INF/DEPENDENCIES.txt</exclude>
                                         <exclude>META-INF/LICENSE.md</exclude>
-                                        <exclude>javax/annotation/**</exclude>
-                                        <exclude>javax/decorator/**</exclude>
-                                        <exclude>javax/el/**</exclude>
-                                        <exclude>javax/enterprise/**</exclude>
-                                        <exclude>javax/interceptor/**</exclude>
+                                        <exclude>jakarta/annotation/**</exclude>
+                                        <exclude>jakarta/decorator/**</exclude>
+                                        <exclude>jakarta/el/**</exclude>
+                                        <exclude>jakarta/enterprise/**</exclude>
+                                        <exclude>jakarta/interceptor/**</exclude>
                                     </excludes>
                                 </filter>
                             </filters>
@@ -393,6 +393,9 @@
                                 </jar>
                                 <jar destfile="${project.build.directory}/${project.artifactId}-sources.jar" update="true">
                                     <zipfileset dir="../.." includes="NOTICE.md" prefix="META-INF" />
+                                </jar>
+                                <jar destfile="${project.build.directory}/${project.artifactId}.jar" update="true">
+                                    <zipfileset dir="../.." includes="LICENSE.md" prefix="META-INF" />
                                 </jar>
                             </target>
                         </configuration>

@@ -16,7 +16,7 @@
 
 package org.glassfish.jersey.tests.cdi.inject;
 
-import javax.enterprise.context.RequestScoped;
+import jakarta.enterprise.context.RequestScoped;
 import java.net.URI;
 
 @RequestScoped

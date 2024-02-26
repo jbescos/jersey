@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2021, 2023 Oracle and/or its affiliates. All rights reserved.
  * Copyright (c) 2021 Payara Foundation and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
@@ -25,9 +25,9 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.RejectedExecutionException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.MultivaluedMap;
-import javax.ws.rs.sse.InboundSseEvent;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.MultivaluedMap;
+import jakarta.ws.rs.sse.InboundSseEvent;
 import org.glassfish.jersey.client.ChunkedInput;
 import org.glassfish.jersey.internal.PropertiesDelegate;
 import org.glassfish.jersey.internal.util.JerseyPublisher;
@@ -66,7 +66,7 @@ public class SseEventPublisher extends EventInput implements Publisher<InboundEv
 
         this.executor = executor;
         this.genericType = genericType;
-        this.publisher = new JerseyPublisher<>(executor::submit, JerseyPublisher.PublisherStrategy.BEST_EFFORT);
+        this.publisher = new JerseyPublisher<>(executor::submit, JerseyPublisher.PublisherStrategy.BLOCKING);
     }
 
     private static final Logger LOG = Logger.getLogger(SseEventPublisher.class.getName());
@@ -96,7 +96,7 @@ public class SseEventPublisher extends EventInput implements Publisher<InboundEv
                 ChunkedInput<InboundEvent> input = SseEventPublisher.this;
                 try {
                     InboundSseEvent event;
-                    //  org.reactivestreams.Publisher<javax.ws.rs.sse.InboundSseEvent>
+                    //  org.reactivestreams.Publisher<jakarta.ws.rs.sse.InboundSseEvent>
                     if (typeArgument.equals(InboundSseEvent.class)) {
                         while ((event = input.read()) != null) {
                          this.publisher.publish(event);

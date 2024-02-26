@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2010, 2023 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -27,12 +27,12 @@ import java.io.Reader;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 
-import javax.ws.rs.Consumes;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.MultivaluedMap;
+import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.MultivaluedMap;
 
-import javax.inject.Singleton;
+import jakarta.inject.Singleton;
 
 import org.glassfish.jersey.message.MessageUtils;
 
@@ -66,7 +66,7 @@ public final class ReaderProvider extends AbstractMessageReaderWriterProvider<Re
                     new ByteArrayInputStream(new byte[0]), MessageUtils.getCharset(mediaType)));
         }
 
-        return new BufferedReader(new InputStreamReader(entityStream, getCharset(mediaType)));
+        return new BufferedReader(new InputStreamReader(entityStream, ReaderWriter.getCharset(mediaType)));
     }
 
     @Override
@@ -86,8 +86,8 @@ public final class ReaderProvider extends AbstractMessageReaderWriterProvider<Re
             final OutputStream entityStream) throws IOException {
         try {
             final OutputStreamWriter out = new OutputStreamWriter(entityStream,
-                    getCharset(mediaType));
-            writeTo(t, out);
+                    ReaderWriter.getCharset(mediaType));
+            ReaderWriter.writeTo(t, out);
             out.flush();
         } finally {
             t.close();

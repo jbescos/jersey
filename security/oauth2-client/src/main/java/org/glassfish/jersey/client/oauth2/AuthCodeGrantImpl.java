@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013, 2019 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2013, 2023 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -26,28 +26,29 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.UUID;
 
-import javax.ws.rs.ProcessingException;
-import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.client.Entity;
-import javax.ws.rs.core.Configuration;
-import javax.ws.rs.core.Feature;
-import javax.ws.rs.core.Form;
-import javax.ws.rs.core.GenericType;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.MultivaluedMap;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriBuilder;
-import javax.ws.rs.ext.MessageBodyReader;
-import javax.ws.rs.ext.ReaderInterceptor;
+import jakarta.ws.rs.ProcessingException;
+import jakarta.ws.rs.WebApplicationException;
+import jakarta.ws.rs.client.Client;
+import jakarta.ws.rs.client.ClientBuilder;
+import jakarta.ws.rs.client.Entity;
+import jakarta.ws.rs.core.Configuration;
+import jakarta.ws.rs.core.Context;
+import jakarta.ws.rs.core.Feature;
+import jakarta.ws.rs.core.Form;
+import jakarta.ws.rs.core.GenericType;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.MultivaluedMap;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.UriBuilder;
+import jakarta.ws.rs.ext.MessageBodyReader;
+import jakarta.ws.rs.ext.ReaderInterceptor;
 
-import javax.inject.Inject;
-import javax.inject.Provider;
+import jakarta.inject.Inject;
+import jakarta.inject.Provider;
 
 import org.glassfish.jersey.client.oauth2.internal.LocalizationMessages;
 import org.glassfish.jersey.internal.PropertiesDelegate;
-import org.glassfish.jersey.jackson.JacksonFeature;
+// import org.glassfish.jersey.jackson.JacksonFeature;
 import org.glassfish.jersey.message.MessageBodyWorkers;
 
 /**
@@ -233,9 +234,9 @@ class AuthCodeGrantImpl implements OAuth2CodeGrantFlow {
         if (!config.isRegistered(AuthCodeGrantImpl.DefaultTokenMessageBodyReader.class)) {
             client.register(AuthCodeGrantImpl.DefaultTokenMessageBodyReader.class);
         }
-        if (!config.isRegistered(JacksonFeature.class)) {
-            client.register(JacksonFeature.class);
-        }
+//        if (!config.isRegistered(JacksonFeature.class)) {
+//            client.register(JacksonFeature.class);
+//        }
 
         return client;
     }
@@ -354,11 +355,15 @@ class AuthCodeGrantImpl implements OAuth2CodeGrantFlow {
     static class DefaultTokenMessageBodyReader implements MessageBodyReader<TokenResult> {
 
         // Provider here prevents circular dependency error from HK2 (workers inject providers and this provider inject workers)
-        @Inject
-        private Provider<MessageBodyWorkers> workers;
+        private final Provider<MessageBodyWorkers> workers;
+        private final Provider<PropertiesDelegate> propertiesDelegateProvider;
 
         @Inject
-        private Provider<PropertiesDelegate> propertiesDelegateProvider;
+        public DefaultTokenMessageBodyReader(@Context Provider<MessageBodyWorkers> workers,
+                                             @Context Provider<PropertiesDelegate> propertiesDelegateProvider) {
+            this.propertiesDelegateProvider = propertiesDelegateProvider;
+            this.workers = workers;
+        }
 
         private static Iterable<ReaderInterceptor> EMPTY_INTERCEPTORS = new ArrayList<>();
 

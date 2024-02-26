@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010, 2020 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2010, 2021 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -22,7 +22,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.net.ssl.SSLParameters;
-import javax.ws.rs.core.UriBuilder;
+import jakarta.ws.rs.core.UriBuilder;
 
 import org.glassfish.grizzly.ssl.SSLEngineConfigurator;
 import org.glassfish.jersey.client.ClientConfig;
@@ -36,7 +36,7 @@ import org.glassfish.jersey.test.spi.TestHelper;
 import org.glassfish.grizzly.http.server.HttpServer;
 
 /**
- * Jersey test framework container factory implementation based on Grizzly 2.x HTTP server.
+ * Jersey test framework container factory implementation based on Grizzly 3.x HTTP server.
  *
  * @author Marek Potociar
  */

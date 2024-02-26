@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2019, 2022 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -19,18 +19,18 @@ package org.glassfish.jersey.tests.e2e.json;
 import org.glassfish.jersey.jackson.JacksonFeature;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.test.JerseyTest;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
-import javax.annotation.Priority;
-import javax.ws.rs.client.Entity;
-import javax.ws.rs.core.Application;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.ext.ExceptionMapper;
-import javax.ws.rs.Path;
-import javax.ws.rs.POST;
-import javax.ws.rs.Priorities;
+import jakarta.annotation.Priority;
+import jakarta.ws.rs.client.Entity;
+import jakarta.ws.rs.core.Application;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.ext.ExceptionMapper;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.POST;
+import jakarta.ws.rs.Priorities;
 
 public class JsonWithoutExceptionMapperTest extends JerseyTest {
 
@@ -64,7 +64,7 @@ public class JsonWithoutExceptionMapperTest extends JerseyTest {
     public void testZullBooleanValue() {
         String response = target().request(MediaType.APPLICATION_JSON)
                 .buildPost(Entity.entity("zull", MediaType.APPLICATION_JSON_TYPE)).invoke().readEntity(String.class);
-        Assert.assertFalse(response.contains("zull"));
-        Assert.assertTrue(response.equals(LowPriorityExceptionMapper.class.getSimpleName()));
+        Assertions.assertFalse(response.contains("zull"));
+        Assertions.assertTrue(response.equals(LowPriorityExceptionMapper.class.getSimpleName()));
     }
 }

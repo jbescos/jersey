@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019, 2021 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2019, 2022 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -40,16 +40,16 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-import javax.enterprise.context.Dependent;
-import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.inject.Any;
-import javax.enterprise.inject.Default;
-import javax.enterprise.inject.spi.Bean;
-import javax.enterprise.inject.spi.BeanManager;
-import javax.enterprise.inject.spi.DeploymentException;
-import javax.enterprise.inject.spi.InjectionPoint;
-import javax.enterprise.inject.spi.PassivationCapable;
-import javax.enterprise.util.AnnotationLiteral;
+import jakarta.enterprise.context.Dependent;
+import jakarta.enterprise.context.spi.CreationalContext;
+import jakarta.enterprise.inject.Any;
+import jakarta.enterprise.inject.Default;
+import jakarta.enterprise.inject.spi.Bean;
+import jakarta.enterprise.inject.spi.BeanManager;
+import jakarta.enterprise.inject.spi.DeploymentException;
+import jakarta.enterprise.inject.spi.InjectionPoint;
+import jakarta.enterprise.inject.spi.PassivationCapable;
+import jakarta.enterprise.util.AnnotationLiteral;
 import javax.net.ssl.HostnameVerifier;
 
 import org.eclipse.microprofile.config.Config;
@@ -58,6 +58,7 @@ import org.eclipse.microprofile.rest.client.RestClientBuilder;
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 import org.glassfish.jersey.internal.util.ReflectionHelper;
+import org.glassfish.jersey.microprofile.restclient.internal.LocalizationMessages;
 
 /**
  * Handles proper rest client injection.
@@ -122,7 +123,7 @@ class RestClientProducer implements Bean<Object>, PassivationCapable {
         return Collections.emptySet();
     }
 
-    @Override
+    // @Override - Removed in CDI 4
     public boolean isNullable() {
         return false;
     }
@@ -138,11 +139,11 @@ class RestClientProducer implements Bean<Object>, PassivationCapable {
         getConfigOption(Long.class, CONFIG_READ_TIMEOUT)
                 .ifPresent(aLong -> restClientBuilder.readTimeout(aLong, TimeUnit.MILLISECONDS));
         getConfigOption(Boolean.class, CONFIG_FOLLOW_REDIRECTS)
-                .ifPresent(follow -> VersionSupport.followRedirects(restClientBuilder, follow));
+                .ifPresent(follow -> _followRedirects(restClientBuilder, follow));
         getConfigOption(String.class, CONFIG_QUERY_PARAM_STYLE)
-                .ifPresent(value -> VersionSupport.queryParamStyle(restClientBuilder, value));
+                .ifPresent(value -> _queryParamStyle(restClientBuilder, value));
         getConfigOption(String.class, CONFIG_PROXY_ADDRESS)
-                .ifPresent(proxy -> VersionSupport.proxyAddress(restClientBuilder, proxy));
+                .ifPresent(proxy -> _proxyAddress(restClientBuilder, proxy));
 
         // Providers from configuration
         addConfiguredProviders(restClientBuilder);
@@ -416,5 +417,32 @@ class RestClientProducer implements Bean<Object>, PassivationCapable {
             this.keyStore = keyStore;
             this.password = password;
         }
+    }
+
+    private RestClientBuilder _followRedirects(RestClientBuilder restClientBuilder, boolean follow) {
+        return restClientBuilder.followRedirects(follow);
+    }
+
+    private RestClientBuilder _proxyAddress(RestClientBuilder restClientBuilder, String proxy) {
+        int index = proxy.lastIndexOf(':');
+        //If : was not found at all or it is the last character of the proxy string
+        if (index < 0 || proxy.length() - 1 == index) {
+            throw new IllegalArgumentException(LocalizationMessages.ERR_INVALID_PROXY_URI(proxy));
+        }
+        String proxyHost = proxy.substring(0, index);
+        int proxyPort;
+        String proxyPortStr = proxy.substring(index + 1);
+        try {
+            proxyPort = Integer.parseInt(proxyPortStr);
+        } catch (NumberFormatException nfe) {
+            throw new IllegalArgumentException(LocalizationMessages.ERR_INVALID_PROXY_PORT(proxyPortStr), nfe);
+        }
+        return restClientBuilder.proxyAddress(proxyHost, proxyPort);
+    }
+
+    private RestClientBuilder _queryParamStyle(RestClientBuilder restClientBuilder, String style) {
+        org.eclipse.microprofile.rest.client.ext.QueryParamStyle queryParamStyle =
+                org.eclipse.microprofile.rest.client.ext.QueryParamStyle.valueOf(style);
+        return restClientBuilder.queryParamStyle(queryParamStyle);
     }
 }

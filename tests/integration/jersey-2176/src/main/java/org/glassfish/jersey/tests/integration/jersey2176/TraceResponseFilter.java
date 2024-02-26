@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013, 2019 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2013, 2021 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -18,16 +18,16 @@ package org.glassfish.jersey.tests.integration.jersey2176;
 
 import java.io.IOException;
 
-import javax.ws.rs.core.HttpHeaders;
+import jakarta.ws.rs.core.HttpHeaders;
 
-import javax.servlet.Filter;
-import javax.servlet.FilterChain;
-import javax.servlet.FilterConfig;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.Filter;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.FilterConfig;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.ServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * @author Libor Kramolis
@@ -61,6 +61,9 @@ public class TraceResponseFilter implements Filter {
         } catch (final Throwable th) {
             status = "FAIL";
         } finally {
+            if (((HttpServletResponse) response).getStatus() == 500) {
+                status = "FAIL";
+            }
             final long duration = System.nanoTime() - startTime;
             ((HttpServletResponse) response).addHeader(X_SERVER_DURATION_HEADER, String.valueOf(duration));
             ((HttpServletResponse) response).addHeader(X_STATUS_HEADER, status);

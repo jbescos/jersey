@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015, 2019 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2015, 2021 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -18,8 +18,8 @@ package org.glassfish.jersey.servlet.init;
 
 import org.glassfish.jersey.servlet.spi.FilterUrlMappingsProvider;
 
-import javax.servlet.FilterConfig;
-import javax.servlet.FilterRegistration;
+import jakarta.servlet.FilterConfig;
+import jakarta.servlet.FilterRegistration;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;

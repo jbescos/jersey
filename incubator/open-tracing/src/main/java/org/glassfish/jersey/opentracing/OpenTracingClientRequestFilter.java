@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017, 2019 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2017, 2022 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -21,15 +21,15 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import javax.ws.rs.client.ClientRequestContext;
-import javax.ws.rs.client.ClientRequestFilter;
-import javax.ws.rs.core.MediaType;
+import jakarta.ws.rs.client.ClientRequestContext;
+import jakarta.ws.rs.client.ClientRequestFilter;
+import jakarta.ws.rs.core.MediaType;
 
 import io.opentracing.Span;
 import io.opentracing.SpanContext;
 import io.opentracing.Tracer;
 import io.opentracing.propagation.Format;
-import io.opentracing.propagation.TextMapInjectAdapter;
+import io.opentracing.propagation.TextMapAdapter;
 import io.opentracing.tag.Tags;
 import io.opentracing.util.GlobalTracer;
 
@@ -65,11 +65,11 @@ class OpenTracingClientRequestFilter implements ClientRequestFilter {
         if (property != null && property instanceof SpanContext) {
             spanBuilder = spanBuilder.asChildOf((SpanContext) property);
         }
-        Span span = spanBuilder.startManual();
+        Span span = spanBuilder.start();
 
         requestContext.setProperty(OpenTracingFeature.SPAN_CONTEXT_PROPERTY, span);
         Map<String, String> addedHeaders = new HashMap<>();
-        GlobalTracer.get().inject(span.context(), Format.Builtin.HTTP_HEADERS, new TextMapInjectAdapter(addedHeaders));
+        GlobalTracer.get().inject(span.context(), Format.Builtin.HTTP_HEADERS, new TextMapAdapter(addedHeaders));
         addedHeaders.forEach((key, value) -> requestContext.getHeaders().add(key, value));
     }
 }

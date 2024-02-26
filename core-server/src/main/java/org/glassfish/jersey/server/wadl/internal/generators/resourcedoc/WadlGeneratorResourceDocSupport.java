@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2010, 2023 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -17,15 +17,15 @@
 package org.glassfish.jersey.server.wadl.internal.generators.resourcedoc;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.InputStream;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Context;
+import jakarta.ws.rs.core.MediaType;
 
-import javax.inject.Provider;
+import jakarta.inject.Provider;
 import javax.xml.parsers.SAXParserFactory;
 
 import org.glassfish.jersey.server.model.Parameter;
@@ -128,7 +128,8 @@ public class WadlGeneratorResourceDocSupport implements WadlGenerator {
         }
         delegate.init();
 
-        try (final InputStream inputStream = resourceDocFile != null ? new FileInputStream(resourceDocFile) : resourceDocStream) {
+        try (final InputStream inputStream = resourceDocFile != null ? Files.newInputStream(resourceDocFile.toPath())
+                : resourceDocStream) {
             final ResourceDocType resourceDocType =
                     WadlUtils.unmarshall(inputStream, saxFactoryProvider.get(), ResourceDocType.class);
             resourceDoc = new ResourceDocAccessor(resourceDocType);
@@ -201,7 +202,7 @@ public class WadlGeneratorResourceDocSupport implements WadlGenerator {
      * @param mediaType media type.
      * @return the enhanced {@link com.sun.research.ws.wadl.Representation}.
      * @see org.glassfish.jersey.server.wadl.WadlGenerator#createRequestRepresentation(org.glassfish.jersey.server.model.Resource,
-     * org.glassfish.jersey.server.model.ResourceMethod, javax.ws.rs.core.MediaType)
+     * org.glassfish.jersey.server.model.ResourceMethod, jakarta.ws.rs.core.MediaType)
      */
     public Representation createRequestRepresentation(final org.glassfish.jersey.server.model.Resource r,
                                                       final org.glassfish.jersey.server.model.ResourceMethod m,

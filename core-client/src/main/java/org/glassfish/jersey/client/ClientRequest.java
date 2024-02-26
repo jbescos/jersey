@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012, 2020 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2012, 2023 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -28,20 +28,20 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.ws.rs.client.ClientRequestContext;
-import javax.ws.rs.core.CacheControl;
-import javax.ws.rs.core.Configuration;
-import javax.ws.rs.core.Cookie;
-import javax.ws.rs.core.GenericType;
-import javax.ws.rs.core.HttpHeaders;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.MultivaluedMap;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Variant;
-import javax.ws.rs.ext.ReaderInterceptor;
-import javax.ws.rs.ext.WriterInterceptor;
+import jakarta.ws.rs.client.ClientRequestContext;
+import jakarta.ws.rs.core.CacheControl;
+import jakarta.ws.rs.core.Configuration;
+import jakarta.ws.rs.core.Cookie;
+import jakarta.ws.rs.core.GenericType;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.MultivaluedMap;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.Variant;
+import jakarta.ws.rs.ext.ReaderInterceptor;
+import jakarta.ws.rs.ext.WriterInterceptor;
 
 import org.glassfish.jersey.client.internal.LocalizationMessages;
+import org.glassfish.jersey.http.HttpHeaders;
 import org.glassfish.jersey.internal.MapPropertiesDelegate;
 import org.glassfish.jersey.internal.PropertiesDelegate;
 import org.glassfish.jersey.internal.guava.Preconditions;
@@ -139,6 +139,11 @@ public class ClientRequest extends OutboundMessageContext
     }
 
     @Override
+    public boolean hasProperty(final String name) {
+        return propertiesDelegate.hasProperty(name);
+    }
+
+    @Override
     public Object getProperty(final String name) {
         return propertiesDelegate.getProperty(name);
     }
@@ -229,9 +234,19 @@ public class ClientRequest extends OutboundMessageContext
         return clientConfig;
     }
 
+    /**
+     * Get the values of an HTTP request header if the header exists on the current request. The returned value will be
+     * a read-only List if the specified header exists or {@code null} if it does not. This is a shortcut for
+     * {@code getRequestHeaders().get(name)}.
+     *
+     * @param name the header name, case insensitive.
+     * @return a read-only list of header values if the specified header exists, otherwise {@code null}.
+     * @throws java.lang.IllegalStateException if called outside the scope of a request.
+     */
     @Override
     public List<String> getRequestHeader(String name) {
-        return HeaderUtils.asStringList(getHeaders().get(name), clientConfig.getConfiguration());
+        final List<Object> values = getHeaders().get(name);
+        return values == null ? null : HeaderUtils.asStringList(values, clientConfig.getConfiguration());
     }
 
     @Override
@@ -392,7 +407,7 @@ public class ClientRequest extends OutboundMessageContext
     }
 
     /**
-     * Returns true if the request is called asynchronously using {@link javax.ws.rs.client.AsyncInvoker}
+     * Returns true if the request is called asynchronously using {@link jakarta.ws.rs.client.AsyncInvoker}
      *
      * @return True if the request is asynchronous; false otherwise.
      */
@@ -401,7 +416,7 @@ public class ClientRequest extends OutboundMessageContext
     }
 
     /**
-     * Sets the flag indicating whether the request is called asynchronously using {@link javax.ws.rs.client.AsyncInvoker}.
+     * Sets the flag indicating whether the request is called asynchronously using {@link jakarta.ws.rs.client.AsyncInvoker}.
      *
      * @param async True if the request is asynchronous; false otherwise.
      */
@@ -424,7 +439,7 @@ public class ClientRequest extends OutboundMessageContext
 
     /**
      * Write (serialize) the entity set in this request into the {@link #getEntityStream() entity stream}. The method
-     * use {@link javax.ws.rs.ext.WriterInterceptor writer interceptors} and {@link javax.ws.rs.ext.MessageBodyWriter
+     * use {@link jakarta.ws.rs.ext.WriterInterceptor writer interceptors} and {@link jakarta.ws.rs.ext.MessageBodyWriter
      * message body writer}.
      * <p/>
      * This method modifies the state of this request and therefore it can be called only once per request life cycle otherwise

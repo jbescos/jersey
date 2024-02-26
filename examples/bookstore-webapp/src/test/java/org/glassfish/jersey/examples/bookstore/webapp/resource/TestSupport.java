@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2010, 2022 Oracle and/or its affiliates. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -26,15 +26,15 @@
 
 package org.glassfish.jersey.examples.bookstore.webapp.resource;
 
-import javax.ws.rs.core.Application;
+import jakarta.ws.rs.core.Application;
 
 import org.glassfish.jersey.examples.bookstore.webapp.MyApplication;
 import org.glassfish.jersey.server.mvc.jsp.JspMvcFeature;
 import org.glassfish.jersey.servlet.ServletProperties;
 import org.glassfish.jersey.test.JerseyTest;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * @author James Strachan
@@ -52,13 +52,13 @@ public abstract class TestSupport extends JerseyTest {
     }
 
     protected void assertHtmlResponse(String response) {
-        assertNotNull("No text returned!", response);
+        assertNotNull(response, "No text returned!");
 
         assertResponseContains(response, "<html>");
         assertResponseContains(response, "</html>");
     }
 
     protected void assertResponseContains(String response, String text) {
-        assertTrue("Response should contain " + text + " but was: " + response, response.contains(text));
+        assertTrue(response.contains(text), "Response should contain " + text + " but was: " + response);
     }
 }

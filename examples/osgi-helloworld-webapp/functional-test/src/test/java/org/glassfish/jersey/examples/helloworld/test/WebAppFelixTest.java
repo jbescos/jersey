@@ -14,8 +14,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Logger;
 
-import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.core.Response;
+import jakarta.ws.rs.client.WebTarget;
+import jakarta.ws.rs.core.Response;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -27,12 +27,15 @@ import org.ops4j.pax.exam.spi.reactors.ExamReactorStrategy;
 import org.ops4j.pax.exam.spi.reactors.PerSuite;
 import static org.junit.Assert.assertEquals;
 import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
+import static org.ops4j.pax.exam.CoreOptions.systemProperty;
 
 @RunWith(PaxExam.class)
 @ExamReactorStrategy(PerSuite.class)
 public class WebAppFelixTest extends AbstractWebAppTest {
 
     private static final Logger LOGGER = Logger.getLogger(WebAppFelixTest.class.getName());
+    private static final String JAXRS_RUNTIME_DELEGATE_PROPERTY = "jakarta.ws.rs.ext.RuntimeDelegate";
+    private static final String JAXRS_CLIENT_BUILDER = "jakarta.ws.rs.client.ClientBuilder";
 
     @Override
     public List<Option> osgiRuntimeOptions() {
@@ -40,8 +43,9 @@ public class WebAppFelixTest extends AbstractWebAppTest {
                 mavenBundle().groupId("org.osgi").artifactId("org.osgi.service.cm").versionAsInProject(),
                 mavenBundle()
                         .groupId("org.apache.felix").artifactId("org.apache.felix.eventadmin")
-                        .versionAsInProject()
-        )
+                        .versionAsInProject(),
+                systemProperty(JAXRS_RUNTIME_DELEGATE_PROPERTY).value("org.glassfish.jersey.internal.RuntimeDelegateImpl"),
+                systemProperty(JAXRS_CLIENT_BUILDER).value("org.glassfish.jersey.client.JerseyClientBuilder"))
         );
     }
 

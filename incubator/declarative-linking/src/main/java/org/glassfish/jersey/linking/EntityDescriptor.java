@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2010, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -26,7 +26,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.ws.rs.core.Link;
+import jakarta.ws.rs.core.Link;
 
 /**
  * Describes an entity in terms of its fields, bean properties and {@link InjectLink}
@@ -120,7 +120,8 @@ class EntityDescriptor {
                 // see issue http://java.net/jira/browse/JERSEY-625
                 if ((f.getModifiers() & Modifier.STATIC) > 0
                         || f.getName().startsWith("java.")
-                        || f.getName().startsWith("javax.")) {
+                        || f.getName().startsWith("javax.")
+                        || f.getName().startsWith("jakarta.")) {
                     continue;
                 }
                 nonLinkFields.put(f.getName(), new FieldDescriptor(f));

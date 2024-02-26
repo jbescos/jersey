@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 
-    Copyright (c) 2011, 2021 Oracle and/or its affiliates. All rights reserved.
+    Copyright (c) 2011, 2023 Oracle and/or its affiliates. All rights reserved.
 
     This program and the accompanying materials are made available under the
     terms of the Eclipse Public License v. 2.0, which is available at
@@ -23,7 +23,7 @@
     <parent>
         <groupId>org.glassfish.jersey</groupId>
         <artifactId>project</artifactId>
-        <version>2.36-SNAPSHOT</version>
+        <version>3.1.99-SNAPSHOT</version>
     </parent>
 
     <groupId>org.glassfish.jersey.connectors</groupId>
@@ -35,9 +35,14 @@
 
     <modules>
         <module>apache-connector</module>
+        <module>apache5-connector</module>
         <module>grizzly-connector</module>
+        <module>helidon-connector</module>
         <module>jdk-connector</module>
         <module>jetty-connector</module>
+        <module>jetty-http2-connector</module>
+        <module>jetty11-connector</module>
+        <module>jnh-connector</module>
         <module>netty-connector</module>
     </modules>
 
@@ -59,13 +64,13 @@
         </dependency>
 
         <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.hamcrest</groupId>
-            <artifactId>hamcrest-library</artifactId>
+            <artifactId>hamcrest</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -79,9 +84,10 @@
     <profiles>
         <profile>
             <id>HelidonConnector</id>
-            <activation>
+            <!-- TODO: activate after Helidon is jakartified -->
+            <!--<activation>
                 <jdk>11</jdk>
-            </activation>
+            </activation>-->
             <modules>
                 <module>helidon-connector</module>
             </modules>

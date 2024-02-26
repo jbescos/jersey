@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010, 2019 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2010, 2022 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -23,9 +23,10 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.logging.Logger;
 
-import javax.ws.rs.ProcessingException;
+import jakarta.ws.rs.ProcessingException;
 
 import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLParameters;
 
 import org.glassfish.jersey.internal.guava.ThreadFactoryBuilder;
 import org.glassfish.jersey.jdkhttp.internal.LocalizationMessages;
@@ -37,6 +38,7 @@ import com.sun.net.httpserver.HttpContext;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
 import com.sun.net.httpserver.HttpsConfigurator;
+import com.sun.net.httpserver.HttpsParameters;
 import com.sun.net.httpserver.HttpsServer;
 
 /**
@@ -177,8 +179,17 @@ public final class JdkHttpServerFactory {
     }
 
     private static HttpServer createHttpServer(final URI uri,
+            final JdkHttpHandlerContainer handler,
+            final SSLContext sslContext,
+            final boolean start) {
+        return createHttpServer(uri, handler, sslContext, false, false, start);
+    }
+
+    static HttpServer createHttpServer(final URI uri,
                                                final JdkHttpHandlerContainer handler,
                                                final SSLContext sslContext,
+                                               final boolean sslClientAuthWanted,
+                                               final boolean sslClientAuthNeeded,
                                                final boolean start) {
         if (uri == null) {
             throw new IllegalArgumentException(LocalizationMessages.ERROR_CONTAINER_URI_NULL());
@@ -187,7 +198,14 @@ public final class JdkHttpServerFactory {
         final String scheme = uri.getScheme();
         final boolean isHttp = "http".equalsIgnoreCase(scheme);
         final boolean isHttps = "https".equalsIgnoreCase(scheme);
-        final HttpsConfigurator httpsConfigurator = sslContext != null ? new HttpsConfigurator(sslContext) : null;
+        final HttpsConfigurator httpsConfigurator = sslContext != null ? new HttpsConfigurator(sslContext) {
+            public final void configure(final HttpsParameters httpsParameters) {
+                final SSLParameters sslParameters = sslContext.getDefaultSSLParameters();
+                sslParameters.setWantClientAuth(sslClientAuthWanted);
+                sslParameters.setNeedClientAuth(sslClientAuthNeeded);
+                httpsParameters.setSSLParameters(sslParameters);
+            }
+        } : null;
 
         if (isHttp) {
             if (httpsConfigurator != null) {
@@ -210,24 +228,32 @@ public final class JdkHttpServerFactory {
             throw new IllegalArgumentException(LocalizationMessages.ERROR_CONTAINER_URI_SCHEME_UNKNOWN(uri));
         }
 
-        final String path = uri.getPath();
-        if (path == null) {
+        final String _path = uri.getPath();
+        if (_path == null) {
             throw new IllegalArgumentException(LocalizationMessages.ERROR_CONTAINER_URI_PATH_NULL(uri));
-        } else if (path.isEmpty()) {
+        } else if (_path.isEmpty()) {
             throw new IllegalArgumentException(LocalizationMessages.ERROR_CONTAINER_URI_PATH_EMPTY(uri));
-        } else if (path.charAt(0) != '/') {
+        } else if (_path.charAt(0) != '/') {
             throw new IllegalArgumentException(LocalizationMessages.ERROR_CONTAINER_URI_PATH_START(uri));
         }
+
+        final String appPath = handler.getApplicationHandler().getConfiguration().getApplicationPath();
+        final String uriPath = appPath == null ? _path : _path + "/" + appPath;
+        final String path = uriPath.replaceAll("/{2,}", "/");
 
         final int port = (uri.getPort() == -1)
                 ? (isHttp ? Container.DEFAULT_HTTP_PORT : Container.DEFAULT_HTTPS_PORT)
                 : uri.getPort();
 
+        final InetSocketAddress socketAddress = (uri.getHost() == null)
+                ? new InetSocketAddress(port)
+                : new InetSocketAddress(uri.getHost(), port);
+
         final HttpServer server;
         try {
             server = isHttp
-                    ? HttpServer.create(new InetSocketAddress(port), 0)
-                    : HttpsServer.create(new InetSocketAddress(port), 0);
+                    ? HttpServer.create(socketAddress, 0)
+                    : HttpsServer.create(socketAddress, 0);
         } catch (final IOException ioe) {
             throw new ProcessingException(LocalizationMessages.ERROR_CONTAINER_EXCEPTION_IO(), ioe);
         }

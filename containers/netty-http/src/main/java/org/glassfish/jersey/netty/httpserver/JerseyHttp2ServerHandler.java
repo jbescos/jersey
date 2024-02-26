@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016, 2020 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2016, 2022 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -26,7 +26,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.ws.rs.core.SecurityContext;
+import jakarta.ws.rs.core.SecurityContext;
+
 import io.netty.channel.ChannelDuplexHandler;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
@@ -132,6 +133,11 @@ class JerseyHttp2ServerHandler extends ChannelDuplexHandler {
                 new PropertiesDelegate() {
 
                     private final Map<String, Object> properties = new HashMap<>();
+
+                    @Override
+                    public boolean hasProperty(final String name) {
+                        return properties.containsKey(name);
+                    }
 
                     @Override
                     public Object getProperty(String name) {

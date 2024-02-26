@@ -17,8 +17,6 @@ package org.glassfish.jersey.media.sse;
 
 import org.glassfish.jersey.media.sse.internal.JerseySseEventSource;
 
-import javax.ws.rs.sse.SseEventSource;
-
 /**
  * Public {@link SseEventSource.Builder} implementation.
  */

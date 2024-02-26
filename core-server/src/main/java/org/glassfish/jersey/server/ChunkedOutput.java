@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012, 2020 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2012, 2023 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -19,6 +19,7 @@ package org.glassfish.jersey.server;
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.UncheckedIOException;
 import java.lang.reflect.Type;
 import java.util.Collections;
 import java.util.concurrent.BlockingDeque;
@@ -26,11 +27,11 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import javax.ws.rs.container.ConnectionCallback;
-import javax.ws.rs.core.GenericType;
-import javax.ws.rs.ext.WriterInterceptor;
+import jakarta.ws.rs.container.ConnectionCallback;
+import jakarta.ws.rs.core.GenericType;
+import jakarta.ws.rs.ext.WriterInterceptor;
 
-import javax.inject.Provider;
+import jakarta.inject.Provider;
 
 import org.glassfish.jersey.process.internal.RequestContext;
 import org.glassfish.jersey.process.internal.RequestScope;
@@ -255,11 +256,11 @@ public class ChunkedOutput<T> extends GenericType<T> implements Closeable {
                                 // if MBW replaced the stream, let's make sure to set it in the response context.
                                 responseContext.setEntityStream(writtenStream);
                             }
-                        } catch (final IOException ioe) {
+                        } catch (final IOException | UncheckedIOException ioe) {
                             connectionCallback.onDisconnect(asyncContext);
                             throw ioe;
                         } catch (final MappableException mpe) {
-                            if (mpe.getCause() instanceof IOException) {
+                            if (mpe.getCause() instanceof IOException || mpe.getCause() instanceof UncheckedIOException) {
                                 connectionCallback.onDisconnect(asyncContext);
                             }
                             throw mpe;

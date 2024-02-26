@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2010, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Distribution License v. 1.0, which is available at
@@ -15,7 +15,7 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.logging.Logger;
 
-import javax.servlet.ServletException;
+import jakarta.servlet.ServletException;
 
 import org.glassfish.jersey.servlet.ServletContainer;
 
@@ -124,7 +124,7 @@ public class Activator implements BundleActivator {
     @SuppressWarnings("UseOfObsoleteCollectionType")
     private Dictionary<String, String> getJerseyServletParams() {
         Dictionary<String, String> jerseyServletParams = new Hashtable<>();
-        jerseyServletParams.put("javax.ws.rs.Application", JerseyApplication.class.getName());
+        jerseyServletParams.put("jakarta.ws.rs.Application", JerseyApplication.class.getName());
         return jerseyServletParams;
     }
 }

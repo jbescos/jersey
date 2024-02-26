@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010, 2020 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2010, 2021 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -27,13 +27,13 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.net.ssl.SSLParameters;
-import javax.ws.rs.ProcessingException;
-import javax.ws.rs.core.UriBuilder;
+import jakarta.ws.rs.ProcessingException;
+import jakarta.ws.rs.core.UriBuilder;
 
-import javax.servlet.DispatcherType;
-import javax.servlet.FilterRegistration;
-import javax.servlet.ServletRegistration;
-import javax.servlet.http.HttpServlet;
+import jakarta.servlet.DispatcherType;
+import jakarta.servlet.FilterRegistration;
+import jakarta.servlet.ServletRegistration;
+import jakarta.servlet.http.HttpServlet;
 
 import org.glassfish.grizzly.ssl.SSLEngineConfigurator;
 import org.glassfish.jersey.client.ClientConfig;
@@ -216,7 +216,7 @@ public class GrizzlyWebTestContainerFactory implements TestContainerFactory {
 
         private EnumSet<DispatcherType> grizzlyDispatcherTypes(final Set<DispatcherType> dispatcherTypes) {
             final Set<DispatcherType> grizzlyDispatcherTypes = new HashSet<>();
-            for (final javax.servlet.DispatcherType servletDispatchType : dispatcherTypes) {
+            for (final jakarta.servlet.DispatcherType servletDispatchType : dispatcherTypes) {
                 grizzlyDispatcherTypes.add(DispatcherType.valueOf(servletDispatchType.name()));
             }
             return EnumSet.copyOf(grizzlyDispatcherTypes);

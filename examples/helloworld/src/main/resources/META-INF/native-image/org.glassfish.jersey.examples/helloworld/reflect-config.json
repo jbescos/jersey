@@ -3,19 +3,19 @@
   "name":"java.awt.image.RenderedImage"
   },
   {
-    "name":"javax.activation.DataSource"
+    "name":"jakarta.activation.DataSource"
   },
   {
-    "name":"javax.inject.Singleton",
+    "name":"jakarta.inject.Singleton",
     "allDeclaredMethods":true
   },
   {
-    "name":"javax.ws.rs.core.Application",
+    "name":"jakarta.ws.rs.core.Application",
     "allDeclaredMethods":true
   },
   {
-    "name":"javax.ws.rs.core.Feature",
-    "methods":[{"name":"configure","parameterTypes":["javax.ws.rs.core.FeatureContext"] }]
+    "name":"jakarta.ws.rs.core.Feature",
+    "methods":[{"name":"configure","parameterTypes":["jakarta.ws.rs.core.FeatureContext"] }]
   },
   {
     "name":"javax.xml.transform.Source"

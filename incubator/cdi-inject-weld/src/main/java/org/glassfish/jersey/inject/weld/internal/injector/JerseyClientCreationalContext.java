@@ -16,8 +16,8 @@
 
 package org.glassfish.jersey.inject.weld.internal.injector;
 
-import javax.enterprise.context.spi.Contextual;
-import javax.enterprise.context.spi.CreationalContext;
+import jakarta.enterprise.context.spi.Contextual;
+import jakarta.enterprise.context.spi.CreationalContext;
 
 import org.glassfish.jersey.inject.weld.internal.managed.CdiClientInjectionManager;
 import org.jboss.weld.construction.api.AroundConstructCallback;

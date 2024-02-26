@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012, 2021 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2012, 2023 Oracle and/or its affiliates. All rights reserved.
  * Copyright (c) 2018 Payara Foundation and/or its affiliates.
  *
  * This program and the accompanying materials are made available under the
@@ -27,14 +27,15 @@ import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ScheduledExecutorService;
 
-import javax.ws.rs.RuntimeType;
-import javax.ws.rs.core.Configurable;
-import javax.ws.rs.core.Configuration;
-import javax.ws.rs.core.Feature;
+import jakarta.ws.rs.RuntimeType;
+import jakarta.ws.rs.core.Configurable;
+import jakarta.ws.rs.core.Configuration;
+import jakarta.ws.rs.core.Feature;
 
 import org.glassfish.jersey.CommonProperties;
 import org.glassfish.jersey.ExtendedConfig;
 import org.glassfish.jersey.client.internal.LocalizationMessages;
+import org.glassfish.jersey.client.innate.inject.NonInjectionManager;
 import org.glassfish.jersey.client.internal.inject.ParameterUpdaterConfigurator;
 import org.glassfish.jersey.client.spi.Connector;
 import org.glassfish.jersey.client.spi.ConnectorProvider;
@@ -62,7 +63,7 @@ import org.glassfish.jersey.internal.inject.ParamConverterConfigurator;
 import org.glassfish.jersey.spi.ComponentProvider;
 
 /**
- * Jersey externalized implementation of client-side JAX-RS {@link javax.ws.rs.core.Configurable
+ * Jersey externalized implementation of client-side JAX-RS {@link jakarta.ws.rs.core.Configurable
  * configurable} contract.
  *
  * @author Marek Potociar
@@ -330,6 +331,11 @@ public class ClientConfig implements Configurable<ClientConfig>, ExtendedConfig 
         }
 
         @Override
+        public boolean hasProperty(final String name) {
+            return commonConfig.getConfiguration().hasProperty(name);
+        }
+
+        @Override
         public Object getProperty(final String name) {
             return commonConfig.getConfiguration().getProperty(name);
         }
@@ -410,7 +416,7 @@ public class ClientConfig implements Configurable<ClientConfig>, ExtendedConfig 
             final State runtimeCfgState = this.copy();
             runtimeCfgState.markAsShared();
 
-            InjectionManager injectionManager = Injections.createInjectionManager();
+            final InjectionManager injectionManager = findInjectionManager();
             injectionManager.register(new ClientBinder(runtimeCfgState.getProperties()));
 
             final ClientBootstrapBag bootstrapBag = new ClientBootstrapBag();
@@ -469,6 +475,14 @@ public class ClientConfig implements Configurable<ClientConfig>, ExtendedConfig 
             messageBodyWorkersConfigurator.setClientRuntime(crt);
 
             return crt;
+        }
+
+        private final InjectionManager findInjectionManager() {
+            try {
+                return Injections.createInjectionManager(RuntimeType.CLIENT);
+            } catch (IllegalStateException ise) {
+                return new NonInjectionManager(true);
+            }
         }
 
         @Override
@@ -548,7 +562,7 @@ public class ClientConfig implements Configurable<ClientConfig>, ExtendedConfig 
      * property values copied from the supplied JAX-RS configuration instance.
      *
      * @param parent parent Jersey client instance.
-     * @param that   original {@link javax.ws.rs.core.Configuration}.
+     * @param that   original {@link jakarta.ws.rs.core.Configuration}.
      */
     ClientConfig(final JerseyClient parent, final Configuration that) {
         if (that instanceof ClientConfig) {

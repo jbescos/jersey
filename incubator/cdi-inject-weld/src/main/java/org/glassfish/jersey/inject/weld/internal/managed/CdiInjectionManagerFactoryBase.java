@@ -16,8 +16,8 @@
 
 package org.glassfish.jersey.inject.weld.internal.managed;
 
-import javax.enterprise.inject.spi.BeanManager;
-import javax.ws.rs.RuntimeType;
+import jakarta.enterprise.inject.spi.BeanManager;
+import jakarta.ws.rs.RuntimeType;
 
 import org.glassfish.jersey.internal.inject.InjectionManager;
 import org.glassfish.jersey.internal.inject.InjectionManagerFactory;

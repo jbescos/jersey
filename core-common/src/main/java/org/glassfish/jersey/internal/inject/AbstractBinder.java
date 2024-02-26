@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2017, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -26,9 +26,9 @@ import java.util.Objects;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-import javax.ws.rs.core.GenericType;
+import jakarta.ws.rs.core.GenericType;
 
-import javax.inject.Provider;
+import jakarta.inject.Provider;
 
 import org.glassfish.jersey.internal.LocalizationMessages;
 
@@ -156,7 +156,7 @@ public abstract class AbstractBinder implements Binder {
 
     /**
      * Start building a new instance-based service binding. The binding is naturally
-     * considered to be a {@link javax.inject.Singleton singleton-scoped}.
+     * considered to be a {@link jakarta.inject.Singleton singleton-scoped}.
      * <p>
      * Does NOT bind the service type itself as a contract type.
      *
@@ -215,7 +215,7 @@ public abstract class AbstractBinder implements Binder {
 
     /**
      * Start building a new injection resolver binding. The injection resolver is naturally
-     * considered to be a {@link javax.inject.Singleton singleton-scoped}.
+     * considered to be a {@link jakarta.inject.Singleton singleton-scoped}.
      * <p>
      * There is no need to provide any additional information. Other method on {@link Binding}
      * will be ignored.

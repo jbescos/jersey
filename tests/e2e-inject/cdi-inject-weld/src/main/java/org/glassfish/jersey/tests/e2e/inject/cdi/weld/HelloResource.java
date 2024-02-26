@@ -16,10 +16,10 @@
 
 package org.glassfish.jersey.tests.e2e.inject.cdi.weld;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.Path;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 import org.glassfish.jersey.tests.e2e.inject.cdi.weld.subresources.MyBean;
 
 /**

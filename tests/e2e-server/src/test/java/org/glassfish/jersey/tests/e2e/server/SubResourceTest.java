@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012, 2019 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2012, 2022 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -20,21 +20,21 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Future;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.client.Entity;
-import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.core.Application;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.POST;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.client.Entity;
+import jakarta.ws.rs.client.WebTarget;
+import jakarta.ws.rs.core.Application;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
 
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.test.JerseyTest;
 
-import org.junit.Assert;
-import org.junit.Test;
-import static org.junit.Assert.assertEquals;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * Sub-resource access/processing E2E tests.
@@ -114,33 +114,33 @@ public class SubResourceTest extends JerseyTest {
     @Test
     public void subResourceTest() throws Exception {
         Response response = target("root/sub/sub2").request().get();
-        Assert.assertEquals(200, response.getStatus());
-        Assert.assertEquals(SubResource.MESSAGE, response.readEntity(String.class));
+        Assertions.assertEquals(200, response.getStatus());
+        Assertions.assertEquals(SubResource.MESSAGE, response.readEntity(String.class));
 
         response = target("root/sub/sub2").request().get();
-        Assert.assertEquals(200, response.getStatus());
-        Assert.assertEquals(SubResource.MESSAGE, response.readEntity(String.class));
+        Assertions.assertEquals(200, response.getStatus());
+        Assertions.assertEquals(SubResource.MESSAGE, response.readEntity(String.class));
     }
 
     @Test
     public void subResourceWithoutPathTest() throws Exception {
         Response response = target("root/sub").request().get();
-        Assert.assertEquals(200, response.getStatus());
-        Assert.assertEquals(SubResource.MESSAGE, response.readEntity(String.class));
+        Assertions.assertEquals(200, response.getStatus());
+        Assertions.assertEquals(SubResource.MESSAGE, response.readEntity(String.class));
     }
 
     @Test
     public void testGet() throws Exception {
         Response response = target("root/sub/some/path").request().get();
-        Assert.assertEquals(200, response.getStatus());
-        Assert.assertEquals(Resource.GET, response.readEntity(String.class));
+        Assertions.assertEquals(200, response.getStatus());
+        Assertions.assertEquals(Resource.GET, response.readEntity(String.class));
     }
 
     @Test
     public void testPost() throws Exception {
         Response response = target("root/sub/sub2").request().post(Entity.entity("post", MediaType.TEXT_PLAIN_TYPE));
-        Assert.assertEquals(200, response.getStatus());
-        Assert.assertEquals("post", response.readEntity(String.class));
+        Assertions.assertEquals(200, response.getStatus());
+        Assertions.assertEquals("post", response.readEntity(String.class));
     }
 
     // this resource class will report warning during validation, but should be loaded
@@ -189,41 +189,41 @@ public class SubResourceTest extends JerseyTest {
     @Test
     public void testGetIsCalled() throws Exception {
         Response response = target("locator-and-method").request().get();
-        Assert.assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
-        Assert.assertEquals("get", response.readEntity(String.class));
+        Assertions.assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
+        Assertions.assertEquals("get", response.readEntity(String.class));
     }
 
     @Test
     public void testGetIsCalledInSub() throws Exception {
         Response response = target("locator-and-method/sub").request().get();
-        Assert.assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
-        Assert.assertEquals("get", response.readEntity(String.class));
+        Assertions.assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
+        Assertions.assertEquals("get", response.readEntity(String.class));
     }
 
     @Test
     public void testGetIsCalledInInner() throws Exception {
         Response response = target("locator-and-method/inner").request().get();
-        Assert.assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
-        Assert.assertEquals("inner", response.readEntity(String.class));
+        Assertions.assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
+        Assertions.assertEquals("inner", response.readEntity(String.class));
     }
 
     @Test
     public void testGetIsCalledInSubInner() throws Exception {
         Response response = target("locator-and-method/sub/inner").request().get();
-        Assert.assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
-        Assert.assertEquals("inner", response.readEntity(String.class));
+        Assertions.assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
+        Assertions.assertEquals("inner", response.readEntity(String.class));
     }
 
     @Test
     public void testPostShouldNeverBeCalled() throws Exception {
         Response response = target("locator-and-method").request().post(Entity.entity("post", MediaType.TEXT_PLAIN_TYPE));
-        Assert.assertEquals(Response.Status.METHOD_NOT_ALLOWED.getStatusCode(), response.getStatus());
+        Assertions.assertEquals(Response.Status.METHOD_NOT_ALLOWED.getStatusCode(), response.getStatus());
     }
 
     @Test
     public void testPostShouldNeverBeCalledInSub() throws Exception {
         Response response = target("locator-and-method/sub").request().post(Entity.entity("post", MediaType.TEXT_PLAIN_TYPE));
-        Assert.assertEquals(Response.Status.METHOD_NOT_ALLOWED.getStatusCode(), response.getStatus());
+        Assertions.assertEquals(Response.Status.METHOD_NOT_ALLOWED.getStatusCode(), response.getStatus());
     }
 
     @Path("empty-root")
@@ -234,7 +234,7 @@ public class SubResourceTest extends JerseyTest {
     @Test
     public void testCallEmptyResource() throws Exception {
         Response response = target("empty-root").request().get();
-        Assert.assertEquals(Response.Status.NOT_FOUND.getStatusCode(), response.getStatus());
+        Assertions.assertEquals(Response.Status.NOT_FOUND.getStatusCode(), response.getStatus());
     }
 
     public static class EmptySubResourceClass {
@@ -244,6 +244,6 @@ public class SubResourceTest extends JerseyTest {
     @Test
     public void testCallEmptySubResource() throws Exception {
         Response response = target("empty-locator").request().get();
-        Assert.assertEquals(Response.Status.NOT_FOUND.getStatusCode(), response.getStatus());
+        Assertions.assertEquals(Response.Status.NOT_FOUND.getStatusCode(), response.getStatus());
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012, 2021 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2012, 2022 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -25,17 +25,19 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.IdentityHashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
-import javax.ws.rs.Path;
-import javax.ws.rs.RuntimeType;
-import javax.ws.rs.core.Application;
-import javax.ws.rs.core.Configurable;
-import javax.ws.rs.core.Configuration;
-import javax.ws.rs.core.Feature;
+import jakarta.ws.rs.ApplicationPath;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.RuntimeType;
+import jakarta.ws.rs.core.Application;
+import jakarta.ws.rs.core.Configurable;
+import jakarta.ws.rs.core.Configuration;
+import jakarta.ws.rs.core.Feature;
 
 import org.glassfish.jersey.internal.Errors;
 import org.glassfish.jersey.internal.config.ExternalPropertiesConfigurationFactory;
@@ -57,6 +59,7 @@ import org.glassfish.jersey.server.internal.scanning.AnnotationAcceptingListener
 import org.glassfish.jersey.server.internal.scanning.FilesScanner;
 import org.glassfish.jersey.server.internal.scanning.PackageNamesScanner;
 import org.glassfish.jersey.server.model.Resource;
+import org.glassfish.jersey.uri.UriComponent;
 
 
 /**
@@ -311,8 +314,8 @@ public class ResourceConfig extends Application implements Configurable<Resource
      * <p/>
      * This method provides an option of supplying the set of classes that should be returned from {@link #getClasses()}
      * method if the application defined by the supplied application class returns empty sets from
-     * {@link javax.ws.rs.core.Application#getClasses()}
-     * and {@link javax.ws.rs.core.Application#getSingletons()} methods.
+     * {@link jakarta.ws.rs.core.Application#getClasses()}
+     * and {@link jakarta.ws.rs.core.Application#getSingletons()} methods.
      *
      * @param applicationClass Class representing a JAX-RS application.
      * @param defaultClasses   Default set of classes that should be returned from {@link #getClasses()} if the underlying
@@ -753,6 +756,11 @@ public class ResourceConfig extends Application implements Configurable<Resource
     }
 
     @Override
+    public final boolean hasProperty(final String name) {
+        return state.hasProperty(name);
+    }
+
+    @Override
     public final Object getProperty(final String name) {
         return state.getProperty(name);
     }
@@ -998,6 +1006,32 @@ public class ResourceConfig extends Application implements Configurable<Resource
     }
 
     /**
+     * Returns encoded value of {@link ApplicationPath} annotation of the Application corresponding
+     * with this ResourceConfig or {@code null} when the annotation is not present.
+     *
+     * @return Returns encoded value of {@link ApplicationPath} annotation of the Application
+     * corresponding with this ResourceConfig.
+     */
+    public final String getApplicationPath() {
+        final Application application;
+        if (ResourceConfig.class.isInstance(_getApplication())) {
+              final Application unwrap = unwrapCustomRootApplication((ResourceConfig) _getApplication());
+              application = unwrap != null ? unwrap : _getApplication();
+        } else {
+            application = _getApplication();
+        }
+        final ApplicationPath appPath = application.getClass().getAnnotation(ApplicationPath.class);
+        final String value;
+        if (appPath != null && !appPath.value().isEmpty() && !appPath.value().trim().equals("/")) {
+            final String val = appPath.value().trim();
+            value = UriComponent.encode(val.startsWith("/") ? val.substring(1) : val, UriComponent.Type.PATH);
+        } else {
+            value = null;
+        }
+        return value;
+    }
+
+    /**
      * Allows overriding the {@link #getApplication()} method functionality in {@link WrappingResourceConfig}.
      *
      * @return JAX-RS application corresponding with this ResourceConfig.
@@ -1070,7 +1104,7 @@ public class ResourceConfig extends Application implements Configurable<Resource
         }
 
         /**
-         * Set the {@link javax.ws.rs.core.Application JAX-RS Application instance}
+         * Set the {@link jakarta.ws.rs.core.Application JAX-RS Application instance}
          * in the {@code ResourceConfig}.
          * <p/>
          * This method is used by the {@link org.glassfish.jersey.server.ApplicationHandler} in case this resource

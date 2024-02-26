@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!--
 
-    Copyright (c) 2012, 2021 Oracle and/or its affiliates. All rights reserved.
+    Copyright (c) 2012, 2023 Oracle and/or its affiliates. All rights reserved.
     Copyright (c) 2018, 2019 Payara Foundation and/or its affiliates. All rights reserved.
 
     This program and the accompanying materials are made available under the
@@ -24,7 +24,7 @@
     <parent>
         <groupId>org.glassfish.jersey.ext</groupId>
         <artifactId>project</artifactId>
-        <version>2.36-SNAPSHOT</version>
+        <version>3.1.99-SNAPSHOT</version>
     </parent>
 
     <artifactId>jersey-bean-validation</artifactId>
@@ -56,8 +56,10 @@
                         <!-- Note: When you're changing these properties change them also in bundles/jax-rs-ri/bundle/pom.xml. -->
                         <Export-Package>org.glassfish.jersey.server.validation.*;version=${project.version}</Export-Package>
                         <Import-Package>
-                            ${javax.annotation.osgi.version},
-                            javax.validation.*;resolution:=optional;version="${range;[==,3);${javax.validation.api.version}}",
+                            ${jakarta.annotation.osgi.version},
+                            ${cdi.osgi.version},
+                            jakarta.validation.*;resolution:=optional;version="${range;[==,4);${jakarta.validation.api.version}}",
+                            jakarta.decorator.*;version="[3.0,5)",
                             *
                         </Import-Package>
                     </instructions>
@@ -69,8 +71,8 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.glassfish.hk2.external</groupId>
-            <artifactId>jakarta.inject</artifactId>
+            <groupId>jakarta.inject</groupId>
+            <artifactId>jakarta.inject-api</artifactId>
         </dependency>
         <dependency>
             <groupId>org.glassfish.jersey.core</groupId>
@@ -92,10 +94,23 @@
             <artifactId>hibernate-validator</artifactId>
             <exclusions>
                 <exclusion>
-                    <groupId>javax.validation</groupId>
-                    <artifactId>validation-api</artifactId>
+                    <groupId>jakarta.validation</groupId>
+                    <artifactId>jakarta.validation-api</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>jakarta.el</groupId>
+                    <artifactId>jakarta.el-api</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.jboss.logging</groupId>
+                    <artifactId>jboss-logging</artifactId>
                 </exclusion>
             </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.logging</groupId>
+            <artifactId>jboss-logging</artifactId>
+            <version>${jboss.logging.version}</version>
         </dependency>
         <dependency>
             <groupId>jakarta.xml.bind</groupId>
@@ -103,8 +118,8 @@
             <optional>true</optional>
         </dependency>
         <dependency>
-            <groupId>javax.enterprise</groupId>
-            <artifactId>cdi-api</artifactId>
+            <groupId>jakarta.enterprise</groupId>
+            <artifactId>jakarta.enterprise.cdi-api</artifactId>
             <optional>true</optional>
         </dependency>
         <dependency>
@@ -127,12 +142,10 @@
         </dependency>
 
         <dependency>
-            <groupId>org.glassfish.jersey.test-framework.providers</groupId>
-            <artifactId>jersey-test-framework-provider-bundle</artifactId>
+            <groupId>org.glassfish.jersey.test-framework</groupId>
+            <artifactId>jersey-test-framework-core</artifactId>
             <version>${project.version}</version>
-            <type>pom</type>
             <scope>test</scope>
         </dependency>
     </dependencies>
-
 </project>

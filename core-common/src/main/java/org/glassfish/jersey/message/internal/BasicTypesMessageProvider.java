@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012, 2019 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2012, 2023 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -26,14 +26,14 @@ import java.security.AccessController;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
-import javax.ws.rs.Consumes;
-import javax.ws.rs.Produces;
-import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.MultivaluedMap;
-import javax.ws.rs.core.NoContentException;
+import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.WebApplicationException;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.MultivaluedMap;
+import jakarta.ws.rs.core.NoContentException;
 
-import javax.inject.Singleton;
+import jakarta.inject.Singleton;
 
 import org.glassfish.jersey.internal.LocalizationMessages;
 import org.glassfish.jersey.internal.util.ReflectionHelper;
@@ -144,7 +144,7 @@ final class BasicTypesMessageProvider extends AbstractMessageReaderWriterProvide
             MediaType mediaType,
             MultivaluedMap<String, String> httpHeaders,
             InputStream entityStream) throws IOException, WebApplicationException {
-        final String entityString = readFromAsString(entityStream, mediaType);
+        final String entityString = ReaderWriter.readFromAsString(entityStream, mediaType);
         if (entityString.isEmpty()) {
             throw new NoContentException(LocalizationMessages.ERROR_READING_ENTITY_MISSING());
         }
@@ -210,6 +210,6 @@ final class BasicTypesMessageProvider extends AbstractMessageReaderWriterProvide
             MediaType mediaType,
             MultivaluedMap<String, Object> httpHeaders,
             OutputStream entityStream) throws IOException, WebApplicationException {
-        writeToAsString(o.toString(), entityStream, mediaType);
+        ReaderWriter.writeToAsString(o.toString(), entityStream, mediaType);
     }
 }

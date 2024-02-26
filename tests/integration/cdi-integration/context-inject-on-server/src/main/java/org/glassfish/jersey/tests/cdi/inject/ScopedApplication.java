@@ -19,7 +19,7 @@ package org.glassfish.jersey.tests.cdi.inject;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.server.ServerProperties;
 
-import javax.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.ApplicationScoped;
 
 @ApplicationScoped
 public class ScopedApplication extends ResourceConfig {

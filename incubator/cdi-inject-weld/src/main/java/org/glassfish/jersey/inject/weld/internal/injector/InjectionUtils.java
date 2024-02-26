@@ -36,9 +36,9 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import javax.enterprise.inject.spi.Bean;
-import javax.inject.Named;
-import javax.inject.Provider;
+import jakarta.enterprise.inject.spi.Bean;
+import jakarta.inject.Named;
+import jakarta.inject.Provider;
 
 import org.glassfish.jersey.internal.inject.Injectee;
 import org.glassfish.jersey.internal.inject.InjecteeImpl;

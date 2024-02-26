@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013, 2019 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2013, 2022 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -18,18 +18,18 @@ package org.glassfish.jersey.test.grizzly.web;
 
 import java.io.IOException;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.client.WebTarget;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.client.WebTarget;
 
-import javax.servlet.Filter;
-import javax.servlet.FilterChain;
-import javax.servlet.FilterConfig;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.Filter;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.FilterConfig;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.ServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 import org.glassfish.jersey.server.ServerProperties;
 import org.glassfish.jersey.servlet.ServletContainer;
@@ -39,8 +39,8 @@ import org.glassfish.jersey.test.ServletDeploymentContext;
 import org.glassfish.jersey.test.grizzly.GrizzlyWebTestContainerFactory;
 import org.glassfish.jersey.test.spi.TestContainerFactory;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test {@link org.glassfish.jersey.test.grizzly.GrizzlyWebTestContainerFactory} support for
@@ -130,10 +130,10 @@ public class GrizzlyWebServletAndFilterTest extends JerseyTest {
         WebTarget target = target("GrizzlyWebServletAndFilterTest");
 
         String s = target.request().get(String.class);
-        Assert.assertEquals("GET", s);
+        Assertions.assertEquals("GET", s);
 
-        Assert.assertTrue(MyServlet.visited);
-        Assert.assertTrue(MyFilter1.visited);
-        Assert.assertTrue(MyFilter2.visited);
+        Assertions.assertTrue(MyServlet.visited);
+        Assertions.assertTrue(MyFilter1.visited);
+        Assertions.assertTrue(MyFilter2.visited);
     }
 }

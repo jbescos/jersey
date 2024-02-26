@@ -16,16 +16,16 @@
 
 package org.glassfish.jersey.tests.integration.jersey4949;
 
-import javax.ws.rs.core.Application;
-import javax.ws.rs.core.Response;
+import jakarta.ws.rs.core.Application;
+import jakarta.ws.rs.core.Response;
 
 import org.glassfish.jersey.test.JerseyTest;
 import org.glassfish.jersey.test.external.ExternalTestContainerFactory;
 import org.glassfish.jersey.test.spi.TestContainerException;
 import org.glassfish.jersey.test.spi.TestContainerFactory;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
@@ -57,9 +57,9 @@ public class Jersey4949ITCase extends JerseyTest {
             assertThat(response.getStatus(), is(200));
 
             String entity = response.readEntity(String.class);
-            Assert.assertTrue(entity.contains(CONTEXT_PATH));
-            Assert.assertTrue(entity.contains(SERVLET_PATH));
-            Assert.assertTrue(entity.contains(Issue4949Resource.PATH));
+            Assertions.assertTrue(entity.contains(CONTEXT_PATH));
+            Assertions.assertTrue(entity.contains(SERVLET_PATH));
+            Assertions.assertTrue(entity.contains(Issue4949Resource.PATH));
         }
     }
 }

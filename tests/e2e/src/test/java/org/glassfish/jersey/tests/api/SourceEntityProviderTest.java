@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2012, 2022 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -20,15 +20,15 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.StringWriter;
 
-import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.client.Entity;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
+import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.PUT;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.client.Entity;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.Response.Status;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -48,12 +48,12 @@ import javax.xml.transform.stream.StreamSource;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.test.JerseyTest;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Test of {@link javax.xml.transform.Source Source} MessageBody Provider
@@ -143,8 +143,8 @@ public class SourceEntityProviderTest extends JerseyTest {
         Response response = target().path("test").path("sax").request().get();
         assertEquals(Status.OK.getStatusCode(), response.getStatus());
         String content = extractContent(response.readEntity(SAXSource.class));
-        assertTrue("Content '" + content + "' does not start with the expected prefix '" + prefix + "'",
-                content.startsWith(prefix) || content.startsWith(xdkPrefix));
+        assertTrue(content.startsWith(prefix) || content.startsWith(xdkPrefix),
+                "Content '" + content + "' does not start with the expected prefix '" + prefix + "'");
     }
 
     @Test
@@ -152,8 +152,8 @@ public class SourceEntityProviderTest extends JerseyTest {
         Response response = target().path("test").path("dom").request().get();
         assertEquals(Status.OK.getStatusCode(), response.getStatus());
         String content = extractContent(response.readEntity(DOMSource.class));
-        assertTrue("Content '" + content + "' does not start with the expected prefix '" + prefix + "'",
-                content.startsWith(prefix) || content.startsWith(xdkPrefix));
+        assertTrue(content.startsWith(prefix) || content.startsWith(xdkPrefix),
+                "Content '" + content + "' does not start with the expected prefix '" + prefix + "'");
     }
 
     private static SAXSource createSAXSource(String content) throws SAXException, ParserConfigurationException {

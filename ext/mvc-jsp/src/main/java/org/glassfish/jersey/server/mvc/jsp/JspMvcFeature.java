@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2013, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -16,11 +16,11 @@
 
 package org.glassfish.jersey.server.mvc.jsp;
 
-import javax.ws.rs.ConstrainedTo;
-import javax.ws.rs.RuntimeType;
-import javax.ws.rs.core.Configuration;
-import javax.ws.rs.core.Feature;
-import javax.ws.rs.core.FeatureContext;
+import jakarta.ws.rs.ConstrainedTo;
+import jakarta.ws.rs.RuntimeType;
+import jakarta.ws.rs.core.Configuration;
+import jakarta.ws.rs.core.Feature;
+import jakarta.ws.rs.core.FeatureContext;
 
 import org.glassfish.jersey.server.mvc.MvcFeature;
 
@@ -45,7 +45,7 @@ public final class JspMvcFeature implements Feature {
      * <li>{@link org.glassfish.jersey.server.mvc.ErrorTemplate ErrorTemplate}</li>
      * </ul>
      * <p/>
-     * Value can be absolute or relative to current {@link javax.servlet.ServletContext servlet context}.
+     * Value can be absolute or relative to current {@link jakarta.servlet.ServletContext servlet context}.
      * <p/>
      * There is no default value.
      * <p/>

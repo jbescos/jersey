@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012, 2019 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2012, 2023 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -25,15 +25,15 @@ import java.lang.reflect.Type;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.ws.rs.ConstrainedTo;
-import javax.ws.rs.RuntimeType;
-import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.MultivaluedMap;
-import javax.ws.rs.ext.MessageBodyReader;
+import jakarta.ws.rs.ConstrainedTo;
+import jakarta.ws.rs.RuntimeType;
+import jakarta.ws.rs.WebApplicationException;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.MultivaluedMap;
+import jakarta.ws.rs.ext.MessageBodyReader;
 
-import javax.inject.Inject;
-import javax.inject.Provider;
+import jakarta.inject.Inject;
+import jakarta.inject.Provider;
 
 import org.glassfish.jersey.message.MessageBodyWorkers;
 import org.glassfish.jersey.message.MessageUtils;
@@ -49,8 +49,12 @@ class InboundEventReader implements MessageBodyReader<InboundEvent> {
     private static final Logger LOGGER = Logger.getLogger(InboundEventReader.class.getName());
     private static final byte[] EOL_DATA = new byte[] {'\n'};
 
+    private final Provider<MessageBodyWorkers> messageBodyWorkers;
+
     @Inject
-    private Provider<MessageBodyWorkers> messageBodyWorkers;
+    InboundEventReader(Provider<MessageBodyWorkers> messageBodyWorkers) {
+        this.messageBodyWorkers = messageBodyWorkers;
+    }
 
     private enum State {
         SKIPPING_PREPENDED_EMPTY_EVENTS,

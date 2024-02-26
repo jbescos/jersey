@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013, 2019 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2013, 2023 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -16,12 +16,12 @@
 
 package org.glassfish.jersey.jetty;
 
-import javax.ws.rs.ProcessingException;
-import javax.ws.rs.core.Application;
+import jakarta.ws.rs.ProcessingException;
+import jakarta.ws.rs.core.Application;
 
+import org.glassfish.jersey.internal.util.JdkVersion;
+import org.glassfish.jersey.jetty.internal.LocalizationMessages;
 import org.glassfish.jersey.server.spi.ContainerProvider;
-
-import org.eclipse.jetty.server.Handler;
 
 /**
  * Container provider for containers based on Jetty Server {@link org.eclipse.jetty.server.Handler}.
@@ -31,10 +31,25 @@ import org.eclipse.jetty.server.Handler;
  */
 public final class JettyHttpContainerProvider implements ContainerProvider {
 
+    public static final String HANDLER_NAME = "org.eclipse.jetty.server.Handler";
     @Override
     public <T> T createContainer(final Class<T> type, final Application application) throws ProcessingException {
-        if (Handler.class == type || JettyHttpContainer.class == type) {
+        if (JdkVersion.getJdkVersion().getMajor() < 17) {
+            throw new ProcessingException(LocalizationMessages.NOT_SUPPORTED());
+        }
+        if (type != null && (HANDLER_NAME.equalsIgnoreCase(type.getCanonicalName()) || JettyHttpContainer.class == type)) {
             return type.cast(new JettyHttpContainer(application));
+        }
+        return null;
+    }
+
+    public <T> T createContainer(final Class<T> type, final Application application,
+                                 Object parentContext) throws ProcessingException {
+        if (JdkVersion.getJdkVersion().getMajor() < 17) {
+            throw new ProcessingException(LocalizationMessages.NOT_SUPPORTED());
+        }
+        if (type != null && (HANDLER_NAME.equalsIgnoreCase(type.getCanonicalName()) || JettyHttpContainer.class == type)) {
+            return type.cast(new JettyHttpContainer(application, parentContext));
         }
         return null;
     }

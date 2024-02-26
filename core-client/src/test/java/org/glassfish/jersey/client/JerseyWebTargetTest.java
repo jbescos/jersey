@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2012, 2022 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -24,20 +24,21 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.core.UriBuilder;
-import javax.ws.rs.ext.ReaderInterceptor;
-import javax.ws.rs.ext.ReaderInterceptorContext;
+import jakarta.ws.rs.WebApplicationException;
+import jakarta.ws.rs.client.ClientBuilder;
+import jakarta.ws.rs.client.WebTarget;
+import jakarta.ws.rs.core.UriBuilder;
+import jakarta.ws.rs.ext.ReaderInterceptor;
+import jakarta.ws.rs.ext.ReaderInterceptorContext;
 
 import org.glassfish.jersey.uri.internal.JerseyUriBuilder;
 
-import org.junit.Before;
-import org.junit.Test;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.fail;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.fail;
 
 /**
  * {@code JerseyWebTarget} implementation unit tests.
@@ -48,7 +49,7 @@ public class JerseyWebTargetTest {
     private JerseyClient client;
     private JerseyWebTarget target;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         this.client = (JerseyClient) ClientBuilder.newClient();
         this.target = client.target("/");
@@ -377,46 +378,58 @@ public class JerseyWebTargetTest {
         assertEquals("/path1;matrix11=segment11/path2/path3;matrix30=segment30/path4", uri.toString());
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void testQueryParamNull() {
-        WebTarget wt = target;
+        assertThrows(NullPointerException.class, () -> {
+            WebTarget wt = target;
 
-        wt.queryParam(null);
+            wt.queryParam(null);
+        });
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void testPathNull() {
-        WebTarget wt = target;
+        assertThrows(NullPointerException.class, () -> {
+            WebTarget wt = target;
 
-        wt.path(null);
+            wt.path(null);
+        });
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void testResolveTemplateNull1() {
-        WebTarget wt = target;
+        assertThrows(NullPointerException.class, () -> {
+            WebTarget wt = target;
 
-        wt.resolveTemplate(null, "", true);
+            wt.resolveTemplate(null, "", true);
+        });
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void testResolveTemplateNull2() {
-        WebTarget wt = target;
+        assertThrows(NullPointerException.class, () -> {
+            WebTarget wt = target;
 
-        wt.resolveTemplate("name", null, true);
+            wt.resolveTemplate("name", null, true);
+        });
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void testResolveTemplateFromEncodedNull1() {
-        WebTarget wt = target;
+        assertThrows(NullPointerException.class, () -> {
+            WebTarget wt = target;
 
-        wt.resolveTemplateFromEncoded(null, "");
+            wt.resolveTemplateFromEncoded(null, "");
+        });
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void testResolveTemplateFromEncodedNull2() {
-        WebTarget wt = target;
+        assertThrows(NullPointerException.class, () -> {
+            WebTarget wt = target;
 
-        wt.resolveTemplateFromEncoded("name", null);
+            wt.resolveTemplateFromEncoded("name", null);
+        });
     }
 
     @Test

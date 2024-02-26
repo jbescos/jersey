@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010, 2019 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2010, 2023 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -18,18 +18,20 @@ package org.glassfish.jersey.jaxb.internal;
 
 import java.io.InputStream;
 
-import javax.ws.rs.Consumes;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.ext.Providers;
+import jakarta.inject.Inject;
+import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.core.Configuration;
+import jakarta.ws.rs.core.Context;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.ext.Providers;
 
-import javax.inject.Provider;
-import javax.inject.Singleton;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Unmarshaller;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlType;
+import jakarta.inject.Provider;
+import jakarta.inject.Singleton;
+import jakarta.xml.bind.JAXBException;
+import jakarta.xml.bind.Unmarshaller;
+import jakarta.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlType;
 import javax.xml.parsers.SAXParserFactory;
 import javax.xml.transform.sax.SAXSource;
 
@@ -45,14 +47,14 @@ public abstract class XmlRootElementJaxbProvider extends AbstractRootElementJaxb
     // Delay construction of factory
     private final Provider<SAXParserFactory> spf;
 
-    XmlRootElementJaxbProvider(Provider<SAXParserFactory> spf, Providers ps) {
-        super(ps);
+    XmlRootElementJaxbProvider(Provider<SAXParserFactory> spf, Providers ps, Configuration config) {
+        super(ps, config);
 
         this.spf = spf;
     }
 
-    XmlRootElementJaxbProvider(Provider<SAXParserFactory> spf, Providers ps, MediaType mt) {
-        super(ps, mt);
+    XmlRootElementJaxbProvider(Provider<SAXParserFactory> spf, Providers ps, MediaType mt, Configuration config) {
+        super(ps, mt, config);
 
         this.spf = spf;
     }
@@ -67,8 +69,9 @@ public abstract class XmlRootElementJaxbProvider extends AbstractRootElementJaxb
     @Singleton
     public static final class App extends XmlRootElementJaxbProvider {
 
-        public App(@Context Provider<SAXParserFactory> spf, @Context Providers ps) {
-            super(spf, ps, MediaType.APPLICATION_XML_TYPE);
+        @Inject
+        public App(@Context Provider<SAXParserFactory> spf, @Context Providers ps, @Context Configuration config) {
+            super(spf, ps, MediaType.APPLICATION_XML_TYPE, config);
         }
     }
 
@@ -82,8 +85,9 @@ public abstract class XmlRootElementJaxbProvider extends AbstractRootElementJaxb
     @Singleton
     public static final class Text extends XmlRootElementJaxbProvider {
 
-        public Text(@Context Provider<SAXParserFactory> spf, @Context Providers ps) {
-            super(spf, ps, MediaType.TEXT_XML_TYPE);
+        @Inject
+        public Text(@Context Provider<SAXParserFactory> spf, @Context Providers ps, @Context Configuration config) {
+            super(spf, ps, MediaType.TEXT_XML_TYPE, config);
         }
     }
 
@@ -97,8 +101,9 @@ public abstract class XmlRootElementJaxbProvider extends AbstractRootElementJaxb
     @Singleton
     public static final class General extends XmlRootElementJaxbProvider {
 
-        public General(@Context Provider<SAXParserFactory> spf, @Context Providers ps) {
-            super(spf, ps);
+        @Inject
+        public General(@Context Provider<SAXParserFactory> spf, @Context Providers ps, @Context Configuration config) {
+            super(spf, ps, config);
         }
 
         @Override

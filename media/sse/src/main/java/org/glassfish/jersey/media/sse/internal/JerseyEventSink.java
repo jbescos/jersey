@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017, 2020 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2017, 2023 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -25,10 +25,10 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.inject.Provider;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.sse.OutboundSseEvent;
-import javax.ws.rs.sse.SseEventSink;
+import jakarta.ws.rs.sse.OutboundSseEvent;
+import jakarta.ws.rs.sse.SseEventSink;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.inject.Provider;
 
 import org.glassfish.jersey.internal.jsr166.Flow;
 import org.glassfish.jersey.internal.jsr166.JerseyFlowSubscriber;
@@ -139,7 +139,7 @@ class JerseyEventSink extends ChunkedOutput<OutboundSseEvent>
         try {
             this.write(event);
             return CompletableFuture.completedFuture(null);
-        } catch (IOException e) {
+        } catch (Exception e) {
             CompletableFuture<Void> future = new CompletableFuture<>();
             future.completeExceptionally(e);
             return future;

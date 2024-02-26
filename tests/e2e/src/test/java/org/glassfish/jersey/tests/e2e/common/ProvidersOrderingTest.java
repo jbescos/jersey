@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012, 2019 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2012, 2023 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -27,32 +27,33 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-import javax.ws.rs.Consumes;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.client.Entity;
-import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.core.Application;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.MultivaluedMap;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.ext.MessageBodyReader;
-import javax.ws.rs.ext.MessageBodyWriter;
+import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.POST;
+import jakarta.ws.rs.PUT;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.WebApplicationException;
+import jakarta.ws.rs.client.Entity;
+import jakarta.ws.rs.client.WebTarget;
+import jakarta.ws.rs.core.Application;
+import jakarta.ws.rs.core.Context;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.MultivaluedMap;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.ext.MessageBodyReader;
+import jakarta.ws.rs.ext.MessageBodyWriter;
 
 import org.glassfish.jersey.message.MessageBodyWorkers;
 import org.glassfish.jersey.message.internal.AbstractMessageReaderWriterProvider;
+import org.glassfish.jersey.message.internal.ReaderWriter;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.test.JerseyTest;
 
-import org.junit.Test;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 /**
  * @author Pavel Bucek
@@ -343,8 +344,8 @@ public class ProvidersOrderingTest extends JerseyTest {
                     .put(Entity.entity("test", "application/test1"), Response.class);
 
             assertNotNull(response);
-            assertEquals("Request was not handled correctly, most likely fault in MessageBodyWorker selection.",
-                    200, response.getStatus());
+            assertEquals(200, response.getStatus(),
+                    "Request was not handled correctly, most likely fault in MessageBodyWorker selection.");
         } catch (Exception e) {
             System.out.println(e.getMessage());
             e.printStackTrace();
@@ -371,8 +372,8 @@ public class ProvidersOrderingTest extends JerseyTest {
             Response response = target.request().post(Entity.text("replaceBuiltInProvider"), Response.class);
 
             assertNotNull(response);
-            assertEquals("Request was not handled correctly, most likely fault in MessageBodyWorker selection.",
-                    200, response.getStatus());
+            assertEquals(200, response.getStatus(),
+                    "Request was not handled correctly, most likely fault in MessageBodyWorker selection.");
         } catch (Exception e) {
             System.out.println(e.getMessage());
             e.printStackTrace();
@@ -403,7 +404,7 @@ public class ProvidersOrderingTest extends JerseyTest {
                 MultivaluedMap<String, String> httpHeaders,
                 InputStream entityStream) throws IOException {
             ByteArrayOutputStream out = new ByteArrayOutputStream();
-            writeTo(entityStream, out);
+            ReaderWriter.writeTo(entityStream, out);
             counter++;
             return out.toByteArray();
         }

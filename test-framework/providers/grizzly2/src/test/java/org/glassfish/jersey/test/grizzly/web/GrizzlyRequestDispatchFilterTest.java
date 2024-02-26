@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013, 2019 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2013, 2022 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -19,18 +19,18 @@ package org.glassfish.jersey.test.grizzly.web;
 import java.io.IOException;
 import java.util.EnumSet;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.client.WebTarget;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.client.WebTarget;
 
-import javax.servlet.Filter;
-import javax.servlet.FilterChain;
-import javax.servlet.FilterConfig;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.Filter;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.FilterConfig;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.ServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 import org.glassfish.jersey.server.ServerProperties;
 import org.glassfish.jersey.servlet.ServletContainer;
@@ -42,15 +42,15 @@ import org.glassfish.jersey.test.spi.TestContainerFactory;
 
 import org.glassfish.grizzly.servlet.HttpServletRequestImpl;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 /**
  * Reproducer for JERSEY-1893.
  *
  * This is to make sure filters could be utilized even for filtering
  * requests that are being forwarded/included within the server side
- * using {@link javax.servlet.RequestDispatcher} mechanism.
+ * using {@link jakarta.servlet.RequestDispatcher} mechanism.
  *
  * @author Jakub Podlesak
  * @author Marek Potociar
@@ -190,9 +190,9 @@ public class GrizzlyRequestDispatchFilterTest extends JerseyTest {
     protected DeploymentContext configureDeployment() {
         return ServletDeploymentContext.forServlet(RequestDispatcherServlet.class)
                 .addFilter(ForwardFilter.class, "forwardFilter",
-                        EnumSet.of(javax.servlet.DispatcherType.FORWARD))
+                        EnumSet.of(jakarta.servlet.DispatcherType.FORWARD))
                 .addFilter(IncludeFilter.class, "includeFilter",
-                        EnumSet.of(javax.servlet.DispatcherType.INCLUDE))
+                        EnumSet.of(jakarta.servlet.DispatcherType.INCLUDE))
                 .addFilter(RegularFilter.class, "regularFilter")
                 .initParam(ServerProperties.PROVIDER_PACKAGES, this.getClass().getPackage().getName())
                 .build();
@@ -214,22 +214,22 @@ public class GrizzlyRequestDispatchFilterTest extends JerseyTest {
 
         // check that the regular filter gets involved
         s = target.path("direct").request().get(String.class);
-        Assert.assertEquals("[DIRECT]", s);
+        Assertions.assertEquals("[DIRECT]", s);
 
         // the regular filter should work for directly requested forward resource as well.
         s = target.path("forward").request().get(String.class);
-        Assert.assertEquals("[FORWARD]", s);
+        Assertions.assertEquals("[FORWARD]", s);
 
         // forward action should enforce forward filter to be invoked
         s = target.queryParam("action", "forward").request().get(String.class);
-        Assert.assertEquals(">>FORWARD", s);
+        Assertions.assertEquals(">>FORWARD", s);
 
         // direct call to the include resource
         s = target.path("included").request().get(String.class);
-        Assert.assertEquals("[INCLUDED]", s);
+        Assertions.assertEquals("[INCLUDED]", s);
 
         // include call should involve both regular and include filter
         s = target.path("included").queryParam("action", "include").request().get(String.class);
-        Assert.assertEquals("[SOMETHING INCLUDED]", s);
+        Assertions.assertEquals("[SOMETHING INCLUDED]", s);
     }
 }

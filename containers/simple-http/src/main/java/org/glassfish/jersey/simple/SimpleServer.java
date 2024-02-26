@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2014, 2021 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -17,6 +17,7 @@
 package org.glassfish.jersey.simple;
 
 import java.io.Closeable;
+import java.io.IOException;
 
 /**
  * Simple server facade providing convenient methods to obtain info about the server (i.e. port).
@@ -25,6 +26,8 @@ import java.io.Closeable;
  * @since 2.9
  */
 public interface SimpleServer extends Closeable {
+
+    public void start() throws IOException;
 
     /**
      * The port the server is listening to for incomming HTTP connections. If the port is not

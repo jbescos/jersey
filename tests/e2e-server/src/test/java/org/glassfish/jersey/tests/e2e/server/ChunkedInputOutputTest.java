@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012, 2019 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2012, 2022 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -26,25 +26,25 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.NameBinding;
-import javax.ws.rs.Path;
-import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.Application;
-import javax.ws.rs.core.GenericType;
-import javax.ws.rs.ext.WriterInterceptor;
-import javax.ws.rs.ext.WriterInterceptorContext;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.NameBinding;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.WebApplicationException;
+import jakarta.ws.rs.core.Application;
+import jakarta.ws.rs.core.GenericType;
+import jakarta.ws.rs.ext.WriterInterceptor;
+import jakarta.ws.rs.ext.WriterInterceptorContext;
 
 import org.glassfish.jersey.client.ChunkedInput;
 import org.glassfish.jersey.server.ChunkedOutput;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.test.JerseyTest;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.greaterThanOrEqualTo;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 /**
  * Chunked input/output tests.
@@ -178,8 +178,8 @@ public class ChunkedInputOutputTest extends JerseyTest {
     public void testChunkedOutputToSingleString() throws Exception {
         final String response = target().path("test").request().get(String.class);
 
-        assertEquals("Unexpected value of chunked response unmarshalled as a single string.",
-                "test\r\ntest\r\ntest\r\n", response);
+        assertEquals("test\r\ntest\r\ntest\r\n", response,
+                "Unexpected value of chunked response unmarshalled as a single string.");
     }
 
     /**
@@ -195,11 +195,11 @@ public class ChunkedInputOutputTest extends JerseyTest {
         int counter = 0;
         String chunk;
         while ((chunk = input.read()) != null) {
-            assertEquals("Unexpected value of chunk " + counter, "test", chunk);
+            assertEquals("test", chunk, "Unexpected value of chunk " + counter);
             counter++;
         }
 
-        assertEquals("Unexpected numbed of received chunks.", 3, counter);
+        assertEquals(3, counter, "Unexpected numbed of received chunks.");
     }
 
     /**
@@ -216,7 +216,7 @@ public class ChunkedInputOutputTest extends JerseyTest {
         int counter = 0;
         String chunk;
         while ((chunk = input.read()) != null) {
-            assertEquals("Unexpected value of chunk " + counter, "test", chunk);
+            assertEquals("test", chunk, "Unexpected value of chunk " + counter);
             counter++;
         }
 

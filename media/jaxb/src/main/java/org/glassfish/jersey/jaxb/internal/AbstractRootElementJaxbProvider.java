@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010, 2019 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2010, 2023 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -22,25 +22,28 @@ import java.io.OutputStream;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 
-import javax.ws.rs.BadRequestException;
-import javax.ws.rs.InternalServerErrorException;
-import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.MultivaluedMap;
-import javax.ws.rs.core.NoContentException;
-import javax.ws.rs.ext.Providers;
+import jakarta.ws.rs.BadRequestException;
+import jakarta.ws.rs.InternalServerErrorException;
+import jakarta.ws.rs.WebApplicationException;
+import jakarta.ws.rs.core.Configuration;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.MultivaluedMap;
+import jakarta.ws.rs.core.NoContentException;
+import jakarta.ws.rs.ext.Providers;
 
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-import javax.xml.bind.UnmarshalException;
-import javax.xml.bind.Unmarshaller;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlType;
+import jakarta.xml.bind.JAXBException;
+import jakarta.xml.bind.Marshaller;
+import jakarta.xml.bind.UnmarshalException;
+import jakarta.xml.bind.Unmarshaller;
+import jakarta.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlType;
 import javax.xml.transform.stream.StreamSource;
 
 import org.glassfish.jersey.internal.LocalizationMessages;
 import org.glassfish.jersey.message.internal.EntityInputStream;
+import org.glassfish.jersey.message.internal.ReaderWriter;
 
 /**
  * An abstract provider for JAXB types that are annotated with
@@ -69,8 +72,8 @@ public abstract class AbstractRootElementJaxbProvider extends AbstractJaxbProvid
      *
      * @param providers JAX-RS providers.
      */
-    public AbstractRootElementJaxbProvider(Providers providers) {
-        super(providers);
+    public AbstractRootElementJaxbProvider(Providers providers, Configuration config) {
+        super(providers, config);
     }
 
     /**
@@ -79,8 +82,8 @@ public abstract class AbstractRootElementJaxbProvider extends AbstractJaxbProvid
      * @param providers JAX-RS providers.
      * @param resolverMediaType JAXB component context resolver media type to be used.
      */
-    public AbstractRootElementJaxbProvider(Providers providers, MediaType resolverMediaType) {
-        super(providers, resolverMediaType);
+    public AbstractRootElementJaxbProvider(Providers providers, MediaType resolverMediaType, Configuration config) {
+        super(providers, resolverMediaType, config);
     }
 
     @Override
@@ -126,7 +129,7 @@ public abstract class AbstractRootElementJaxbProvider extends AbstractJaxbProvid
      * @param u            the unmarshaller to use for unmarshalling.
      * @param entityStream the input stream to unmarshal from.
      * @return an instance of the JAXB type.
-     * @throws javax.xml.bind.JAXBException in case the JAXB unmarshalling fails.
+     * @throws jakarta.xml.bind.JAXBException in case the JAXB unmarshalling fails.
      */
     protected Object readFrom(Class<Object> type, MediaType mediaType,
                               Unmarshaller u, InputStream entityStream)
@@ -149,8 +152,8 @@ public abstract class AbstractRootElementJaxbProvider extends AbstractJaxbProvid
             OutputStream entityStream) throws IOException {
         try {
             final Marshaller m = getMarshaller(type, mediaType);
-            final Charset c = getCharset(mediaType);
-            if (c != UTF8) {
+            final Charset c = ReaderWriter.getCharset(mediaType);
+            if (c != StandardCharsets.UTF_8) {
                 m.setProperty(Marshaller.JAXB_ENCODING, c.name());
             }
             setHeader(m, annotations);
@@ -170,7 +173,7 @@ public abstract class AbstractRootElementJaxbProvider extends AbstractJaxbProvid
      * @param c            the character set to serialize characters to.
      * @param m            the marshaller to marshaller the instance of the JAXB type.
      * @param entityStream the output stream to marshal to.
-     * @throws javax.xml.bind.JAXBException in case the JAXB marshalling fails.
+     * @throws jakarta.xml.bind.JAXBException in case the JAXB marshalling fails.
      */
     protected void writeTo(Object t, MediaType mediaType, Charset c,
                            Marshaller m, OutputStream entityStream)

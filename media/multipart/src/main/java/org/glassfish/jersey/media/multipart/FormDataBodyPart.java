@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2012, 2021 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -16,10 +16,15 @@
 
 package org.glassfish.jersey.media.multipart;
 
+import java.io.InputStream;
 import java.text.ParseException;
+import java.util.Optional;
+import java.util.concurrent.atomic.AtomicBoolean;
 
-import javax.ws.rs.ProcessingException;
-import javax.ws.rs.core.MediaType;
+import jakarta.ws.rs.ProcessingException;
+import jakarta.ws.rs.core.EntityPart;
+import jakarta.ws.rs.core.GenericType;
+import jakarta.ws.rs.core.MediaType;
 
 import org.glassfish.jersey.media.multipart.internal.LocalizationMessages;
 import org.glassfish.jersey.message.internal.MediaTypes;
@@ -59,9 +64,10 @@ import org.glassfish.jersey.message.internal.MediaTypes;
  * @author Paul Sandoz
  * @author Michal Gajdos
  */
-public class FormDataBodyPart extends BodyPart {
+public class FormDataBodyPart extends BodyPart implements EntityPart {
 
     private final boolean fileNameFix;
+    protected final AtomicBoolean contentRead = new AtomicBoolean(false);
 
     /**
      * Instantiates an unnamed new {@link FormDataBodyPart} with a
@@ -229,6 +235,34 @@ public class FormDataBodyPart extends BodyPart {
         }
 
         return formDataContentDisposition.getName();
+    }
+
+    @Override
+    public Optional<String> getFileName() {
+        return Optional.ofNullable(getFormDataContentDisposition().getFileName());
+    }
+
+    @Override
+    public InputStream getContent() {
+        return getContent(InputStream.class);
+    }
+
+    @Override
+    public <T> T getContent(Class<T> type) {
+        if (contentRead.compareAndExchange(false, true)) {
+            throw new IllegalStateException(LocalizationMessages.CONTENT_HAS_BEEN_ALREADY_READ());
+        }
+        final Object entity = getEntity();
+        return type.isInstance(entity) ? type.cast(entity) : getEntityAs(type);
+    }
+
+    @Override
+    public <T> T getContent(GenericType<T> type) {
+        if (contentRead.compareAndExchange(false, true)) {
+            throw new IllegalStateException(LocalizationMessages.CONTENT_HAS_BEEN_ALREADY_READ());
+        }
+        final Object entity = getEntity();
+        return type.getRawType().isInstance(entity) ? (T) entity : getEntityAs(type);
     }
 
     /**

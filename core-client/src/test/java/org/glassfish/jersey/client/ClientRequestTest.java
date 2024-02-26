@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013, 2021 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2013, 2023 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -21,10 +21,10 @@ import java.io.OutputStream;
 import java.lang.annotation.Annotation;
 import java.net.URI;
 
-import javax.ws.rs.core.GenericType;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.MultivaluedMap;
-import javax.ws.rs.ext.WriterInterceptor;
+import jakarta.ws.rs.core.GenericType;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.MultivaluedMap;
+import jakarta.ws.rs.ext.WriterInterceptor;
 
 import org.glassfish.jersey.internal.MapPropertiesDelegate;
 import org.glassfish.jersey.internal.PropertiesDelegate;
@@ -32,19 +32,20 @@ import org.glassfish.jersey.internal.util.ExceptionUtils;
 import org.glassfish.jersey.message.MessageBodyWorkers;
 
 import org.hamcrest.core.Is;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.hamcrest.MatcherAssert;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.same;
 
@@ -63,12 +64,12 @@ public class ClientRequestTest {
 
     private AutoCloseable mockito;
 
-    @Before
+    @BeforeEach
     public void initMocks() {
         mockito = MockitoAnnotations.openMocks(this);
     }
 
-    @After
+    @AfterEach
     public void closeMocks() throws Exception {
         mockito.close();
     }
@@ -92,6 +93,9 @@ public class ClientRequestTest {
         assertFalse(request.getConfiguration().getPropertyNames().contains("name"));
         assertFalse(request.getPropertyNames().contains("name"));
 
+        assertFalse(request.getConfiguration().hasProperty("name"));
+        assertFalse(request.hasProperty("name"));
+
         assertNull(request.getConfiguration().getProperty("name"));
         assertNull(request.getProperty("name"));
 
@@ -108,6 +112,9 @@ public class ClientRequestTest {
 
         assertTrue(request.getConfiguration().getPropertyNames().contains("name"));
         assertFalse(request.getPropertyNames().contains("name"));
+
+        assertTrue(request.getConfiguration().hasProperty("name"));
+        assertFalse(request.hasProperty("name"));
 
         assertEquals("value-global", request.getConfiguration().getProperty("name"));
         assertNull(request.getProperty("name"));
@@ -127,6 +134,9 @@ public class ClientRequestTest {
         assertFalse(request.getConfiguration().getPropertyNames().contains("name"));
         assertTrue(request.getPropertyNames().contains("name"));
 
+        assertFalse(request.getConfiguration().hasProperty("name"));
+        assertTrue(request.hasProperty("name"));
+
         assertNull(request.getConfiguration().getProperty("name"));
         assertEquals("value-request", request.getProperty("name"));
 
@@ -144,6 +154,9 @@ public class ClientRequestTest {
 
         assertTrue(request.getConfiguration().getPropertyNames().contains("name"));
         assertTrue(request.getPropertyNames().contains("name"));
+
+        assertTrue(request.getConfiguration().hasProperty("name"));
+        assertTrue(request.hasProperty("name"));
 
         assertEquals("value-global", request.getConfiguration().getProperty("name"));
         assertEquals("value-request", request.getProperty("name"));
@@ -178,7 +191,7 @@ public class ClientRequestTest {
             request.doWriteEntity(workers, entityType);
             fail("An IOException exception should be thrown.");
         } catch (IOException e) {
-            Assert.assertThat("Detected a un-expected exception! \n" + ExceptionUtils.exceptionStackTraceAsString(e),
+            MatcherAssert.assertThat("Detected a un-expected exception! \n" + ExceptionUtils.exceptionStackTraceAsString(e),
                     e, Is.is(ioException));
         }
     }
@@ -193,9 +206,9 @@ public class ClientRequestTest {
 
         try {
             request.doWriteEntity(workers, entityType);
-            Assert.fail("A RuntimeException exception should be thrown.");
+            Assertions.fail("A RuntimeException exception should be thrown.");
         } catch (RuntimeException e) {
-            Assert.assertThat("Detected a un-expected exception! \n" + ExceptionUtils.exceptionStackTraceAsString(e),
+            MatcherAssert.assertThat("Detected a un-expected exception! \n" + ExceptionUtils.exceptionStackTraceAsString(e),
                     e, Is.is(runtimeException));
         }
     }

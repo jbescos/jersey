@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2010, 2022 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -18,11 +18,10 @@ package org.glassfish.jersey.jettison;
 
 import java.util.Map;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-import javax.xml.bind.Unmarshaller;
-import javax.xml.bind.Validator;
+import jakarta.xml.bind.JAXBContext;
+import jakarta.xml.bind.JAXBException;
+import jakarta.xml.bind.Marshaller;
+import jakarta.xml.bind.Unmarshaller;
 
 import org.glassfish.jersey.jettison.internal.BaseJsonMarshaller;
 import org.glassfish.jersey.jettison.internal.BaseJsonUnmarshaller;
@@ -30,7 +29,7 @@ import org.glassfish.jersey.jettison.internal.JettisonJaxbMarshaller;
 import org.glassfish.jersey.jettison.internal.JettisonJaxbUnmarshaller;
 
 /**
- * An adaption of {@link javax.xml.bind.JAXBContext} that supports marshalling
+ * An adaption of {@link jakarta.xml.bind.JAXBContext} that supports marshalling
  * and unmarshalling of JAXB beans using the JSON format.
  * <p>
  * The JSON format may be configured by using a {@link JettisonConfig} object
@@ -47,7 +46,7 @@ public final class JettisonJaxbContext extends JAXBContext implements JettisonCo
      * @param classesToBeBound list of java classes to be recognized by the
      *        new JsonJaxbContext. Can be empty, in which case a JsonJaxbContext
      *        that only knows about spec-defined classes will be returned.
-     * @throws javax.xml.bind.JAXBException if an error was encountered while creating the
+     * @throws jakarta.xml.bind.JAXBException if an error was encountered while creating the
      *         underlying JAXBContext.
      */
     public JettisonJaxbContext(Class... classesToBeBound) throws JAXBException {
@@ -61,7 +60,7 @@ public final class JettisonJaxbContext extends JAXBContext implements JettisonCo
      * @param classesToBeBound list of java classes to be recognized by the
      *        new JsonJaxbContext. Can be empty, in which case a JsonJaxbContext
      *        that only knows about spec-defined classes will be returned.
-     * @throws javax.xml.bind.JAXBException if an error was encountered while creating the
+     * @throws jakarta.xml.bind.JAXBException if an error was encountered while creating the
      *         underlying JAXBContext.
      */
     public JettisonJaxbContext(final JettisonConfig config, final Class... classesToBeBound) throws JAXBException {
@@ -83,7 +82,7 @@ public final class JettisonJaxbContext extends JAXBContext implements JettisonCo
      *        that only knows about spec-defined classes will be returned.
      * @param properties the custom set of properties. If it contains(now deprecated) JSON related properties,
      *                  then a non-default {@link JettisonConfig} is used reflecting the JSON properties
-     * @throws javax.xml.bind.JAXBException if an error was encountered while creating the
+     * @throws jakarta.xml.bind.JAXBException if an error was encountered while creating the
      *         underlying JAXBContext.
      */
     public JettisonJaxbContext(Class[] classesToBeBound, Map<String, Object> properties)
@@ -105,7 +104,7 @@ public final class JettisonJaxbContext extends JAXBContext implements JettisonCo
      *        new JsonJaxbContext. Can be empty, in which case a JsonJaxbContext
      *        that only knows about spec-defined classes will be returned.
      * @param properties the custom set of properties.
-     * @throws javax.xml.bind.JAXBException if an error was encountered while creating the
+     * @throws jakarta.xml.bind.JAXBException if an error was encountered while creating the
      *         underlying JAXBContext.
      */
     public JettisonJaxbContext(final JettisonConfig config, final Class[] classesToBeBound, final Map<String,
@@ -126,7 +125,7 @@ public final class JettisonJaxbContext extends JAXBContext implements JettisonCo
      * @param contextPath list of java package names that contain schema
      *        derived class and/or java to schema (JAXB-annotated) mapped
      *        classes
-     * @throws javax.xml.bind.JAXBException if an error was encountered while creating the
+     * @throws jakarta.xml.bind.JAXBException if an error was encountered while creating the
      *         underlying JAXBContext.
      */
     public JettisonJaxbContext(String contextPath)
@@ -142,7 +141,7 @@ public final class JettisonJaxbContext extends JAXBContext implements JettisonCo
      * @param contextPath list of java package names that contain schema
      *        derived class and/or java to schema (JAXB-annotated) mapped
      *        classes
-     * @throws javax.xml.bind.JAXBException if an error was encountered while creating the
+     * @throws jakarta.xml.bind.JAXBException if an error was encountered while creating the
      *         underlying JAXBContext.
      */
     public JettisonJaxbContext(JettisonConfig config, String contextPath)
@@ -163,7 +162,7 @@ public final class JettisonJaxbContext extends JAXBContext implements JettisonCo
      *        derived class and/or java to schema (JAXB-annotated) mapped
      *        classes
      * @param classLoader
-     * @throws javax.xml.bind.JAXBException if an error was encountered while creating the
+     * @throws jakarta.xml.bind.JAXBException if an error was encountered while creating the
      *         underlying JAXBContext.
      */
     public JettisonJaxbContext(String contextPath, ClassLoader classLoader)
@@ -182,7 +181,7 @@ public final class JettisonJaxbContext extends JAXBContext implements JettisonCo
      *        classes
      * @param classLoader
      * @param properties the custom set of properties.
-     * @throws javax.xml.bind.JAXBException if an error was encountered while creating the
+     * @throws jakarta.xml.bind.JAXBException if an error was encountered while creating the
      *         underlying JAXBContext.
      */
     public JettisonJaxbContext(String contextPath, ClassLoader classLoader, Map<String, Object> properties)
@@ -203,7 +202,7 @@ public final class JettisonJaxbContext extends JAXBContext implements JettisonCo
      *        classes
      * @param classLoader
      * @param properties the custom set of properties.
-     * @throws javax.xml.bind.JAXBException if an error was encountered while creating the
+     * @throws jakarta.xml.bind.JAXBException if an error was encountered while creating the
      *         underlying JAXBContext.
      */
     public JettisonJaxbContext(JettisonConfig config, String contextPath, ClassLoader classLoader, Map<String, Object> properties)
@@ -217,7 +216,7 @@ public final class JettisonJaxbContext extends JAXBContext implements JettisonCo
     }
 
     /**
-     * Get a {@link org.glassfish.jersey.jettison.JettisonMarshaller} from a {@link javax.xml.bind.Marshaller}.
+     * Get a {@link org.glassfish.jersey.jettison.JettisonMarshaller} from a {@link jakarta.xml.bind.Marshaller}.
      *
      * @param marshaller the JAXB marshaller.
      * @return the JSON marshaller.
@@ -232,7 +231,7 @@ public final class JettisonJaxbContext extends JAXBContext implements JettisonCo
     }
 
     /**
-     * Get a {@link org.glassfish.jersey.jettison.JettisonUnmarshaller} from a {@link javax.xml.bind.Unmarshaller}.
+     * Get a {@link org.glassfish.jersey.jettison.JettisonUnmarshaller} from a {@link jakarta.xml.bind.Unmarshaller}.
      *
      * @param unmarshaller the JAXB unmarshaller.
      * @return the JSON unmarshaller.
@@ -260,7 +259,7 @@ public final class JettisonJaxbContext extends JAXBContext implements JettisonCo
      *
      * @return the JSON unmarshaller
      *
-     * @throws javax.xml.bind.JAXBException if there is an error creating the unmarshaller.
+     * @throws jakarta.xml.bind.JAXBException if there is an error creating the unmarshaller.
      */
     public org.glassfish.jersey.jettison.JettisonUnmarshaller createJsonUnmarshaller() throws JAXBException {
         return new JettisonJaxbUnmarshaller(this, getJSONConfiguration());
@@ -271,7 +270,7 @@ public final class JettisonJaxbContext extends JAXBContext implements JettisonCo
      *
      * @return the JSON marshaller.
      *
-     * @throws javax.xml.bind.JAXBException if there is an error creating the marshaller.
+     * @throws jakarta.xml.bind.JAXBException if there is an error creating the marshaller.
      */
     public org.glassfish.jersey.jettison.JettisonMarshaller createJsonMarshaller() throws JAXBException {
         return new JettisonJaxbMarshaller(this, getJSONConfiguration());
@@ -282,7 +281,7 @@ public final class JettisonJaxbContext extends JAXBContext implements JettisonCo
      * an unmarshaller which is capable of JSON deserialization.
      *
      * @return unmarshaller instance with JSON capabilities
-     * @throws javax.xml.bind.JAXBException
+     * @throws jakarta.xml.bind.JAXBException
      */
     @Override
     public Unmarshaller createUnmarshaller() throws JAXBException {
@@ -294,21 +293,10 @@ public final class JettisonJaxbContext extends JAXBContext implements JettisonCo
      * a marshaller which is capable of JSON serialization.
      *
      * @return marshaller instance with JSON capabilities
-     * @throws javax.xml.bind.JAXBException
+     * @throws jakarta.xml.bind.JAXBException
      */
     @Override
     public Marshaller createMarshaller() throws JAXBException {
         return new JettisonJaxbMarshaller(jaxbContext, getJSONConfiguration());
-    }
-
-    /**
-     * Simply delegates to underlying JAXBContext implementation.
-     *
-     * @return what underlying JAXBContext returns
-     * @throws javax.xml.bind.JAXBException
-     */
-    @Override
-    public Validator createValidator() throws JAXBException {
-        return jaxbContext.createValidator();
     }
 }

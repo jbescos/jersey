@@ -22,10 +22,24 @@ public enum JaxRSFeature implements ConfigFeature
      * If set to true, empty content is allowed and will be read as Java 'null': if false,
      * an {@link java.io.IOException} will be thrown.
      *<p>
-     * NOTE: in case of JAX-RS 2.0, specific exception will be <code>javax.ws.rs.core.NoContentException</code>;
+     * NOTE: in case of JAX-RS 2.0, specific exception will be <code>jakarta.ws.rs.core.NoContentException</code>;
      * but this is not defined in JAX-RS 1.x.
      */
     ALLOW_EMPTY_INPUT(true),
+
+    /**
+     * For HTTP keep-alive or multipart content to work correctly, Jackson must read the entire HTTP input
+     * stream up until reading EOF (-1).
+     * <a href="https://github.com/FasterXML/jackson-jaxrs-providers/issues/108">Issue #108</a>
+     * If set to true, always consume all input content. This has a side-effect of failing on trailing content.
+     *<p>
+     * Feature is enabled by default.
+     * Note that this means that behavior in earlier versions
+     * (2.14 and before) differs from 2.15 and later.
+     *
+     * @since 2.15
+     */
+    READ_FULL_STREAM(true),
 
     /*
     /**********************************************************

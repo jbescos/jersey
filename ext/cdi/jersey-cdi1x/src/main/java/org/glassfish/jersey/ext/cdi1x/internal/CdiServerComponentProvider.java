@@ -20,7 +20,7 @@ import org.glassfish.jersey.internal.inject.InjectionManager;
 import org.glassfish.jersey.model.ContractProvider;
 import org.glassfish.jersey.server.spi.ComponentProvider;
 
-import javax.enterprise.inject.spi.BeanManager;
+import jakarta.enterprise.inject.spi.BeanManager;
 import java.util.Set;
 
 /**

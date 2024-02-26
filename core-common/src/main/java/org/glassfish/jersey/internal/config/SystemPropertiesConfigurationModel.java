@@ -31,8 +31,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Function;
 import java.util.logging.Logger;
 
-import javax.ws.rs.RuntimeType;
-import javax.ws.rs.core.Feature;
+import jakarta.ws.rs.RuntimeType;
+import jakarta.ws.rs.core.Feature;
 
 import org.glassfish.jersey.CommonProperties;
 import org.glassfish.jersey.internal.LocalizationMessages;
@@ -86,7 +86,7 @@ public class SystemPropertiesConfigurationModel implements ExternalConfiguration
     }
     @Override
     public <T> Optional<T> getOptionalProperty(String name, Class<T> clazz) {
-        return Optional.of(as(name, clazz));
+        return Optional.ofNullable(as(name, clazz));
     }
 
     @Override
@@ -229,10 +229,5 @@ public class SystemPropertiesConfigurationModel implements ExternalConfiguration
     @Override
     public Set<Object> getInstances() {
         return null;
-    }
-
-    // Jersey 2.x
-    private boolean hasProperty(String name) {
-        return getProperty(name) != null;
     }
 }

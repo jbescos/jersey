@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2015, 2022 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -17,24 +17,30 @@
 package org.glassfish.jersey.tests.e2e.container;
 
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.Collection;
 
-import javax.ws.rs.Encoded;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.QueryParam;
-import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.core.Application;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriBuilder;
+import jakarta.ws.rs.Encoded;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.PathParam;
+import jakarta.ws.rs.QueryParam;
+import jakarta.ws.rs.client.WebTarget;
+import jakarta.ws.rs.core.Application;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.UriBuilder;
 
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.server.ServerProperties;
+import org.glassfish.jersey.test.jetty.JettyTestContainerFactory;
+import org.glassfish.jersey.test.spi.TestContainerFactory;
+import org.glassfish.jersey.test.spi.TestHelper;
+import org.junit.jupiter.api.DynamicContainer;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestFactory;
 
-import org.junit.Test;
-import static org.junit.Assert.assertNotEquals;
-
-import static junit.framework.TestCase.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * Test Jersey container implementation of URL resolving.
@@ -44,19 +50,9 @@ import static junit.framework.TestCase.assertEquals;
  *
  * @author Petr Bouda
  */
-public class LeadingSlashesTest extends JerseyContainerTest {
+public class LeadingSlashesTest {
 
     public static final String CONTAINER_RESPONSE = "Container-Response";
-
-    @Override
-    protected Application configure() {
-        ResourceConfig resourceConfig = new ResourceConfig(SimpleResource.class,
-                EmptyResource.class,
-                EmptyPathParamResource.class);
-
-        resourceConfig.property(ServerProperties.REDUCE_CONTEXT_PATH_SLASHES_ENABLED, true);
-        return resourceConfig;
-    }
 
     @Path("simple")
     public static class SimpleResource {
@@ -101,53 +97,87 @@ public class LeadingSlashesTest extends JerseyContainerTest {
         }
     }
 
-    @Test
-    public void testSimpleSlashes() {
-        Response result = call("/simple");
-        assertEquals(CONTAINER_RESPONSE, result.readEntity(String.class));
-
-        result = call("//simple");
-        assertNotEquals(CONTAINER_RESPONSE, result.readEntity(String.class));
+    @TestFactory
+    public Collection<DynamicContainer> generateTests() {
+        Collection<DynamicContainer> tests = new ArrayList<>();
+        JerseyContainerTest.parameters().forEach(testContainerFactory -> {
+            LeadingSlashesTemplateTest test = new LeadingSlashesTemplateTest(testContainerFactory) {};
+            tests.add(TestHelper.toTestContainer(test, testContainerFactory.getClass().getSimpleName()));
+        });
+        return tests;
     }
 
-    @Test
-    public void testSlashesWithBeginningEmpty() {
-        Response result = call("/test");
-        assertEquals(CONTAINER_RESPONSE, result.readEntity(String.class));
+    public abstract static class LeadingSlashesTemplateTest extends JerseyContainerTest {
+
+        public LeadingSlashesTemplateTest(TestContainerFactory testContainerFactory) {
+            super(testContainerFactory);
+        }
+
+        @Override
+        protected Application configure() {
+            ResourceConfig resourceConfig = new ResourceConfig(SimpleResource.class,
+                    EmptyResource.class,
+                    EmptyPathParamResource.class);
+
+            resourceConfig.property(ServerProperties.REDUCE_CONTEXT_PATH_SLASHES_ENABLED, true);
+            return resourceConfig;
+        }
+
+        @Test
+        public void testSimpleSlashes() {
+            Response result = call("/simple");
+            assertEquals(CONTAINER_RESPONSE, result.readEntity(String.class));
+
+            result = call("//simple");
+            assertNotEquals(CONTAINER_RESPONSE, result.readEntity(String.class));
+        }
+
+        @Test
+        public void testSlashesWithBeginningEmpty() {
+            Response result = call("/test");
+            assertEquals(CONTAINER_RESPONSE, result.readEntity(String.class));
+        }
+
+        @Test
+        public void testSlashesWithBeginningEmptyPathParam() {
+            if (JettyTestContainerFactory.class.isInstance(getTestContainerFactory())) {
+                return; // since Jetty 11.0.5
+            }
+            Response result = call("///test");
+            assertEquals("-", result.readEntity(String.class));
+        }
+
+        @Test
+        public void testSlashesWithBeginningEmptyPathParamWithQueryParams() {
+            if (JettyTestContainerFactory.class.isInstance(getTestContainerFactory())) {
+                return; // since Jetty 11.0.5
+            }
+            URI hostPort = UriBuilder.fromUri("http://localhost/").port(getPort()).build();
+            WebTarget target = client().target(hostPort).path("///testParams")
+                    .queryParam("bar", "Container")
+                    .queryParam("baz", "Response");
+
+            Response result = target.request().get();
+            assertEquals("PATH PARAM: -, QUERY PARAM Container-Response", result.readEntity(String.class));
+        }
+
+        @Test
+        public void testEncodedQueryParams() {
+            if (JettyTestContainerFactory.class.isInstance(getTestContainerFactory())) {
+                return; // since Jetty 11.0.5
+            }
+            URI hostPort = UriBuilder.fromUri("http://localhost/").port(getPort()).build();
+            WebTarget target = client().target(hostPort).path("///encoded")
+                    .queryParam("query", "%dummy23+a");
+
+            Response response = target.request().get();
+            assertEquals(200, response.getStatus());
+            assertEquals("true:%25dummy23%2Ba", response.readEntity(String.class));
+        }
+
+        private Response call(String path) {
+            URI hostPort = UriBuilder.fromUri("http://localhost/").port(getPort()).build();
+            return client().target(hostPort).path(path).request().get();
+        }
     }
-
-    @Test
-    public void testSlashesWithBeginningEmptyPathParam() {
-        Response result = call("///test");
-        assertEquals("-", result.readEntity(String.class));
-    }
-
-    @Test
-    public void testSlashesWithBeginningEmptyPathParamWithQueryParams() {
-        URI hostPort = UriBuilder.fromUri("http://localhost/").port(getPort()).build();
-        WebTarget target = client().target(hostPort).path("///testParams")
-                .queryParam("bar", "Container")
-                .queryParam("baz", "Response");
-
-        Response result = target.request().get();
-        assertEquals("PATH PARAM: -, QUERY PARAM Container-Response", result.readEntity(String.class));
-    }
-
-    @Test
-    public void testEncodedQueryParams() {
-        URI hostPort = UriBuilder.fromUri("http://localhost/").port(getPort()).build();
-        WebTarget target = client().target(hostPort).path("///encoded")
-                .queryParam("query", "%dummy23+a");
-
-        Response response = target.request().get();
-        assertEquals(200, response.getStatus());
-        assertEquals("true:%25dummy23%2Ba", response.readEntity(String.class));
-    }
-
-
-    private Response call(String path) {
-        URI hostPort = UriBuilder.fromUri("http://localhost/").port(getPort()).build();
-        return client().target(hostPort).path(path).request().get();
-    }
-
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019, 2021 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2019, 2023 Oracle and/or its affiliates. All rights reserved.
  * Copyright (c) 2019, 2021 Payara Foundation and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
@@ -39,17 +39,16 @@ import java.util.function.Supplier;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.annotation.Priority;
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLContext;
-import javax.ws.rs.Priorities;
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.core.Configuration;
-import javax.ws.rs.core.Feature;
-import javax.ws.rs.core.FeatureContext;
-import javax.ws.rs.ext.ParamConverterProvider;
+import jakarta.ws.rs.Priorities;
+import jakarta.ws.rs.client.Client;
+import jakarta.ws.rs.client.ClientBuilder;
+import jakarta.ws.rs.client.WebTarget;
+import jakarta.ws.rs.core.Configuration;
+import jakarta.ws.rs.core.Feature;
+import jakarta.ws.rs.core.FeatureContext;
+import jakarta.ws.rs.ext.ParamConverterProvider;
 
 import org.eclipse.microprofile.config.Config;
 import org.eclipse.microprofile.config.ConfigProvider;
@@ -61,6 +60,7 @@ import org.eclipse.microprofile.rest.client.ext.AsyncInvocationInterceptorFactor
 import org.eclipse.microprofile.rest.client.ext.QueryParamStyle;
 import org.eclipse.microprofile.rest.client.ext.ResponseExceptionMapper;
 import org.eclipse.microprofile.rest.client.spi.RestClientListener;
+import org.glassfish.jersey.JerseyPriorities;
 import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.client.ClientProperties;
 import org.glassfish.jersey.client.Initializable;
@@ -299,8 +299,7 @@ class RestClientBuilderImpl implements RestClientBuilder {
         } else if (providerPriorityJersey instanceof Integer) {
             return (int) providerPriorityJersey;
         }
-        Priority priority = providerClass.getAnnotation(Priority.class);
-        return priority == null ? -1 : priority.value();
+        return JerseyPriorities.getPriorityValue(providerClass, -1);
     }
 
     @Override
@@ -524,9 +523,7 @@ class RestClientBuilderImpl implements RestClientBuilder {
 
         Integer getPriority() {
             if (priority == null) {
-                priority = Optional.ofNullable(factory.getClass().getAnnotation(Priority.class))
-                        .map(Priority::value)
-                        .orElse(Priorities.USER);
+                priority = JerseyPriorities.getPriorityValue(factory.getClass(), Priorities.USER);
             }
             return priority;
         }

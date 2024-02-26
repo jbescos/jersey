@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012, 2019 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2012, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -26,10 +26,10 @@ import java.util.function.Function;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.ws.rs.container.ResourceContext;
+import jakarta.ws.rs.container.ResourceContext;
 
-import javax.inject.Scope;
-import javax.inject.Singleton;
+import jakarta.inject.Scope;
+import jakarta.inject.Singleton;
 
 import org.glassfish.jersey.internal.inject.Binding;
 import org.glassfish.jersey.internal.inject.Bindings;
@@ -102,7 +102,7 @@ public class JerseyResourceContext implements ExtendedResourceContext {
      *
      * @param <T>           type of the resource class.
      * @param resourceClass resource class that should be bound. If the class is not
-     *                      annotated with {@link javax.inject.Singleton Singleton annotation} it
+     *                      annotated with {@link jakarta.inject.Singleton Singleton annotation} it
      *                      will be ignored by this method.
      */
     public <T> void bindResource(Class<T> resourceClass) {
@@ -125,7 +125,7 @@ public class JerseyResourceContext implements ExtendedResourceContext {
      * as a singleton is silently ignored.
      *
      * @param resource singleton resource instance that should be bound as singleton. If the class is not
-     *                 annotated with {@link javax.inject.Singleton Singleton annotation} it
+     *                 annotated with {@link jakarta.inject.Singleton Singleton annotation} it
      *                 will be ignored by this method.
      */
     @SuppressWarnings("unchecked")

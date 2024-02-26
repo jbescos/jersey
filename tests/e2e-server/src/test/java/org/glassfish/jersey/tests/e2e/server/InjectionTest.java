@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013, 2019 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2013, 2022 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -18,29 +18,29 @@ package org.glassfish.jersey.tests.e2e.server;
 
 import java.util.concurrent.Executors;
 
-import javax.ws.rs.DELETE;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.client.Entity;
-import javax.ws.rs.container.AsyncResponse;
-import javax.ws.rs.container.Suspended;
-import javax.ws.rs.core.Application;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.HttpHeaders;
-import javax.ws.rs.core.Request;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.SecurityContext;
-import javax.ws.rs.core.UriInfo;
+import jakarta.ws.rs.DELETE;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.PathParam;
+import jakarta.ws.rs.client.Entity;
+import jakarta.ws.rs.container.AsyncResponse;
+import jakarta.ws.rs.container.Suspended;
+import jakarta.ws.rs.core.Application;
+import jakarta.ws.rs.core.Context;
+import jakarta.ws.rs.core.HttpHeaders;
+import jakarta.ws.rs.core.Request;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.SecurityContext;
+import jakarta.ws.rs.core.UriInfo;
 
 import org.glassfish.jersey.client.ClientProperties;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.test.JerseyTest;
 
-import org.junit.Ignore;
-import org.junit.Test;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 /**
  * Injection E2E tests.
@@ -105,23 +105,23 @@ public class InjectionTest extends JerseyTest {
      * We would need to by-pass these issues in underlying layer to un-ignore the test.
      */
     @Test
-    @Ignore
+    @Disabled
     public void testInjectionIntoDeleteMethod() {
         Response response;
 
         response = target("injection").path("delete-path-param/test").request()
                 .property(ClientProperties.SUPPRESS_HTTP_COMPLIANCE_VALIDATION, true)
                 .method("DELETE", Entity.text("body"));
-        assertNotNull("Response is null.", response);
-        assertEquals("Unexpected response status.", 200, response.getStatus());
-        assertEquals("Unexpected response entity.", "deleted: test-body", response.readEntity(String.class));
+        assertNotNull(response, "Response is null.");
+        assertEquals(200, response.getStatus(), "Unexpected response status.");
+        assertEquals("deleted: test-body", response.readEntity(String.class), "Unexpected response entity.");
 
         response = target("injection").path("delete-path-param-async/test").request()
                 .property(ClientProperties.SUPPRESS_HTTP_COMPLIANCE_VALIDATION, true)
                 .method("DELETE", Entity.text("body"));
-        assertNotNull("Response is null.", response);
-        assertEquals("Unexpected response status.", 200, response.getStatus());
-        assertEquals("Unexpected response entity.", "deleted: test-body", response.readEntity(String.class));
+        assertNotNull(response, "Response is null.");
+        assertEquals(200, response.getStatus(), "Unexpected response status.");
+        assertEquals("deleted: test-body", response.readEntity(String.class), "Unexpected response entity.");
     }
 
     /**
@@ -133,7 +133,7 @@ public class InjectionTest extends JerseyTest {
     public void testAsyncMethodParamInjection() {
 
         Response response = target("injection").path("async").request().get();
-        assertEquals("Unexpected response status.", 200, response.getStatus());
-        assertNotNull("Response is null.", response);
+        assertEquals(200, response.getStatus(), "Unexpected response status.");
+        assertNotNull(response, "Response is null.");
     }
 }

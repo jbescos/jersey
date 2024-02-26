@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2013, 2023 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -18,17 +18,17 @@ package org.glassfish.jersey.jetty.connector;
 
 import java.util.logging.Logger;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.core.Application;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.Cookie;
-import javax.ws.rs.core.HttpHeaders;
-import javax.ws.rs.core.NewCookie;
-import javax.ws.rs.core.Response;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.client.Client;
+import jakarta.ws.rs.client.ClientBuilder;
+import jakarta.ws.rs.client.WebTarget;
+import jakarta.ws.rs.core.Application;
+import jakarta.ws.rs.core.Context;
+import jakarta.ws.rs.core.Cookie;
+import jakarta.ws.rs.core.HttpHeaders;
+import jakarta.ws.rs.core.NewCookie;
+import jakarta.ws.rs.core.Response;
 
 import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.client.JerseyClient;
@@ -37,11 +37,11 @@ import org.glassfish.jersey.logging.LoggingFeature;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.test.JerseyTest;
 
-import org.junit.Test;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * @author Paul Sandoz
@@ -95,7 +95,7 @@ public class CookieTest extends JerseyTest {
 
         final JettyConnector connector = (JettyConnector) client.getConfiguration().getConnector();
         if (connector.getCookieStore() != null) {
-            assertTrue(connector.getCookieStore().getCookies().isEmpty());
+            assertTrue(connector.getCookieStore().all().isEmpty());
         } else {
             assertNull(connector.getCookieStore());
         }
@@ -113,9 +113,9 @@ public class CookieTest extends JerseyTest {
         assertEquals("value", r.request().get(String.class));
 
         final JettyConnector connector = (JettyConnector) client.getConfiguration().getConnector();
-        assertNotNull(connector.getCookieStore().getCookies());
-        assertEquals(1, connector.getCookieStore().getCookies().size());
-        assertEquals("value", connector.getCookieStore().getCookies().get(0).getValue());
+        assertNotNull(connector.getCookieStore().all());
+        assertEquals(1, connector.getCookieStore().all().size());
+        assertEquals("value", connector.getCookieStore().all().get(0).getValue());
         client.close();
     }
 }

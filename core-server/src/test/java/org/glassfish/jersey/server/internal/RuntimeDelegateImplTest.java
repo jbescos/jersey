@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2012, 2023 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -16,12 +16,18 @@
 
 package org.glassfish.jersey.server.internal;
 
-import javax.ws.rs.core.Application;
-import javax.ws.rs.ext.RuntimeDelegate;
+import jakarta.ws.rs.SeBootstrap;
+import jakarta.ws.rs.core.Application;
+import jakarta.ws.rs.ext.RuntimeDelegate;
 
-import org.junit.Test;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.fail;
+import org.junit.jupiter.api.Test;
+
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.notNullValue;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 /**
  * Unit test that checks that the right RuntimeDelegateImpl is loaded by JAX-RS.
@@ -43,8 +49,64 @@ public class RuntimeDelegateImplTest {
         }
     }
 
+    /**
+     * Checks that the right RuntimeDelegateImpl is loaded by JAX-RS.
+     */
     @Test
     public void testRuntimeDelegateInstance() {
         assertSame(RuntimeDelegateImpl.class, RuntimeDelegate.getInstance().getClass());
+    }
+
+    @Test
+    public final void shouldCreateConfigurationBuilder() {
+        // given
+        final RuntimeDelegate runtimeDelegate = new RuntimeDelegateImpl();
+        // when
+        final SeBootstrap.Configuration.Builder configurationBuilder = runtimeDelegate.createConfigurationBuilder();
+        // then
+        assertThat(configurationBuilder, is(notNullValue()));
+    }
+
+    @Test
+    public final void shouldBuildDefaultConfiguration() {
+        // given
+        final SeBootstrap.Configuration.Builder configurationBuilder = new RuntimeDelegateImpl().createConfigurationBuilder();
+        // when
+        final SeBootstrap.Configuration configuration = configurationBuilder.build();
+
+        // then
+        assertThat(configuration, is(notNullValue()));
+        assertTrue(configuration.hasProperty(SeBootstrap.Configuration.PROTOCOL));
+        assertTrue(configuration.hasProperty(SeBootstrap.Configuration.HOST));
+        assertTrue(configuration.hasProperty(SeBootstrap.Configuration.PORT));
+        assertTrue(configuration.hasProperty(SeBootstrap.Configuration.ROOT_PATH));
+        assertTrue(configuration.hasProperty(SeBootstrap.Configuration.SSL_CLIENT_AUTHENTICATION));
+        assertTrue(configuration.hasProperty(SeBootstrap.Configuration.SSL_CONTEXT));
+        assertThat(configuration.property(SeBootstrap.Configuration.PROTOCOL), is("HTTP"));
+        assertThat(configuration.property(SeBootstrap.Configuration.HOST), is("localhost"));
+        assertThat(configuration.property(SeBootstrap.Configuration.PORT), is(SeBootstrap.Configuration.DEFAULT_PORT));
+        assertThat(configuration.property(SeBootstrap.Configuration.ROOT_PATH), is("/"));
+        assertThat(configuration.property(SeBootstrap.Configuration.SSL_CLIENT_AUTHENTICATION),
+                is(SeBootstrap.Configuration.SSLClientAuthentication.NONE));
+//        assertThat(configuration.property(SeBootstrap.Configuration.SSL_CONTEXT), is(theInstance(SSLContext.getDefault())));
+        assertThat(configuration.protocol(), is("HTTP"));
+        assertThat(configuration.host(), is("localhost"));
+        assertThat(configuration.port(), is(SeBootstrap.Configuration.DEFAULT_PORT));
+        assertThat(configuration.rootPath(), is("/"));
+        assertThat(configuration.sslClientAuthentication(), is(SeBootstrap.Configuration.SSLClientAuthentication.NONE));
+//        assertThat(configuration.sslContext(), is(theInstance(SSLContext.getDefault())));
+    }
+
+    @Test
+    public final void shouldBuildConfigurationContainingCustomProperties() {
+        // given
+        final SeBootstrap.Configuration.Builder configurationBuilder = new RuntimeDelegateImpl().createConfigurationBuilder();
+        // when
+        final SeBootstrap.Configuration configuration = configurationBuilder.property("property", "value").build();
+
+        // then
+        assertThat(configuration, is(notNullValue()));
+        assertTrue(configuration.hasProperty("property"));
+        assertThat(configuration.property("property"), is("value"));
     }
 }

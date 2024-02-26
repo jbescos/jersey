@@ -16,7 +16,7 @@
 
 package org.glassfish.jersey.inject.weld.internal.managed;
 
-import javax.enterprise.inject.Vetoed;
+import jakarta.enterprise.inject.Vetoed;
 
 /**
  * @author Petr Bouda

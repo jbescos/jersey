@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012, 2019 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2012, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -37,7 +37,7 @@ public final class ServletProperties {
      * without parsing the {@code web.xml}, hence why this property is necessary.)
      * <p>
      * The property is only applicable when {@link ServletContainer Jersey servlet
-     * container} is configured to run as a {@link javax.servlet.Filter}, otherwise this property
+     * container} is configured to run as a {@link jakarta.servlet.Filter}, otherwise this property
      * will be ignored.
      * <p>
      * The value of the property may consist of one or more path segments separate by
@@ -62,7 +62,7 @@ public final class ServletProperties {
      * may be invoked when this feature is enabled.
      * <p></p>
      * The property is only applicable when {@link ServletContainer Jersey servlet
-     * container} is configured to run as a {@link javax.servlet.Filter}, otherwise
+     * container} is configured to run as a {@link jakarta.servlet.Filter}, otherwise
      * this property will be ignored.
      * <p></p>
      * Application code, such as methods corresponding to sub-resource locators
@@ -80,7 +80,7 @@ public final class ServletProperties {
      * by the underlying servlet engine.
      * <p></p>
      * The property is only applicable when {@link ServletContainer Jersey servlet
-     * container} is configured to run as a {@link javax.servlet.Filter}, otherwise
+     * container} is configured to run as a {@link jakarta.servlet.Filter}, otherwise
      * this property will be ignored. If a servlet path matches this regular
      * expression then the filter forwards the request to the next filter in the
      * filter chain so that the underlying servlet engine can process the request
@@ -100,20 +100,20 @@ public final class ServletProperties {
 
     /**
      * Application configuration initialization property whose value is a fully
-     * qualified class name of a class that implements {@link javax.ws.rs.core.Application}.
+     * qualified class name of a class that implements {@link jakarta.ws.rs.core.Application}.
      * <p></p>
      * A default value is not set.
      * <p></p>
      * The name of the configuration property is <tt>{@value}</tt>.
      */
     // TODO implement generic support
-    public static final String JAXRS_APPLICATION_CLASS = "javax.ws.rs.Application";
+    public static final String JAXRS_APPLICATION_CLASS = "jakarta.ws.rs.Application";
 
     /**
      * Indicates that Jersey should scan the whole web app for application-specific resources and
      * providers. If the property is present and the value is not {@code false}, the whole web app
-     * will be scanned for JAX-RS root resources (annotated with {@link javax.ws.rs.Path @Path})
-     * and providers (annotated with {@link javax.ws.rs.ext.Provider @Provider}).
+     * will be scanned for JAX-RS root resources (annotated with {@link jakarta.ws.rs.Path @Path})
+     * and providers (annotated with {@link jakarta.ws.rs.ext.Provider @Provider}).
      * <p></p>
      * The property value MUST be an instance of {@link String}. The allowed values are {@code true}
      * and {@code false}.
@@ -126,7 +126,7 @@ public final class ServletProperties {
 
     /**
      * If {@code true} then query parameters will not be treated as form parameters (e.g. injectable using
-     * {@link javax.ws.rs.FormParam}) in case a Form request is processed by server.
+     * {@link jakarta.ws.rs.FormParam}) in case a Form request is processed by server.
      * <p>
      * The default value is {@code false}.
      * </p>

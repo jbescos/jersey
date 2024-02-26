@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2013, 2022 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -23,38 +23,38 @@ import java.io.OutputStream;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 
-import javax.ws.rs.Consumes;
-import javax.ws.rs.HeaderParam;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.ProcessingException;
-import javax.ws.rs.Produces;
-import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.client.Entity;
-import javax.ws.rs.container.ContainerRequestContext;
-import javax.ws.rs.container.ContainerRequestFilter;
-import javax.ws.rs.container.ContainerResponseContext;
-import javax.ws.rs.container.ContainerResponseFilter;
-import javax.ws.rs.core.Application;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.MultivaluedMap;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.ext.ExceptionMapper;
-import javax.ws.rs.ext.MessageBodyReader;
-import javax.ws.rs.ext.MessageBodyWriter;
-import javax.ws.rs.ext.ReaderInterceptor;
-import javax.ws.rs.ext.ReaderInterceptorContext;
-import javax.ws.rs.ext.WriterInterceptor;
-import javax.ws.rs.ext.WriterInterceptorContext;
+import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.HeaderParam;
+import jakarta.ws.rs.POST;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.ProcessingException;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.WebApplicationException;
+import jakarta.ws.rs.client.Entity;
+import jakarta.ws.rs.container.ContainerRequestContext;
+import jakarta.ws.rs.container.ContainerRequestFilter;
+import jakarta.ws.rs.container.ContainerResponseContext;
+import jakarta.ws.rs.container.ContainerResponseFilter;
+import jakarta.ws.rs.core.Application;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.MultivaluedMap;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.ext.ExceptionMapper;
+import jakarta.ws.rs.ext.MessageBodyReader;
+import jakarta.ws.rs.ext.MessageBodyWriter;
+import jakarta.ws.rs.ext.ReaderInterceptor;
+import jakarta.ws.rs.ext.ReaderInterceptorContext;
+import jakarta.ws.rs.ext.WriterInterceptor;
+import jakarta.ws.rs.ext.WriterInterceptorContext;
 
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.test.JerseyTest;
-import org.glassfish.jersey.test.util.runner.ConcurrentRunner;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * Test exception mappers handling exceptions thrown from different part of code.
@@ -65,7 +65,7 @@ import static org.junit.Assert.assertEquals;
  * @author Miroslav Fuksa
  *
  */
-@RunWith(ConcurrentRunner.class)
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class ExceptionMapperPropagationTest extends JerseyTest {
 
     public static final String EXCEPTION_TYPE = "exception-type";
@@ -298,186 +298,222 @@ public class ExceptionMapperPropagationTest extends JerseyTest {
 
     // Resource
     @Test
+    @Execution(ExecutionMode.CONCURRENT)
     public void testCheckedExceptionInResource() {
         _test(TestCheckedException.class, ExceptionResource.class);
     }
 
     @Test
+    @Execution(ExecutionMode.CONCURRENT)
     public void testRuntimeExceptionInResource() {
         _test(TestRuntimeException.class, ExceptionResource.class);
     }
 
     @Test
+    @Execution(ExecutionMode.CONCURRENT)
     public void testWebApplicationExceptionInResource() {
         _testWae(ExceptionResource.class);
     }
 
     @Test
+    @Execution(ExecutionMode.CONCURRENT)
     public void testProcessingExceptionInResource() {
         _test(ProcessingException.class, ExceptionResource.class);
     }
 
     // Sub resource
     @Test
+    @Execution(ExecutionMode.CONCURRENT)
     public void testCheckedExceptionInSubResourceLocatorMethod() {
         _test(TestCheckedException.class, ExceptionResource.class, "exception/sub");
     }
 
     @Test
+    @Execution(ExecutionMode.CONCURRENT)
     public void testRuntimeExceptionInSubResourceLocatorMethod() {
         _test(TestRuntimeException.class, ExceptionResource.class, "exception/sub");
     }
 
     @Test
+    @Execution(ExecutionMode.CONCURRENT)
     public void testWaeInSubResourceLocatorMethod() {
         _testWae(ExceptionResource.class, "exception/sub");
     }
 
     @Test
+    @Execution(ExecutionMode.CONCURRENT)
     public void testProcessingExceptionInSubResourceLocatorMethod() {
         _test(ProcessingException.class, ExceptionResource.class, "exception/sub");
     }
 
     @Test
+    @Execution(ExecutionMode.CONCURRENT)
     public void testCheckedExceptionInSubResource() {
         _test(TestCheckedException.class, SubResourceLocator.class, "exception/sub");
     }
 
     @Test
+    @Execution(ExecutionMode.CONCURRENT)
     public void testRuntimeExceptionInSubResource() {
         _test(TestRuntimeException.class, SubResourceLocator.class, "exception/sub");
     }
 
     @Test
+    @Execution(ExecutionMode.CONCURRENT)
     public void testWaeInSubResource() {
         _testWae(SubResourceLocator.class, "exception/sub");
     }
 
     @Test
+    @Execution(ExecutionMode.CONCURRENT)
     public void testProcessingExceptionInSubResource() {
         _test(ProcessingException.class, SubResourceLocator.class, "exception/sub");
     }
 
     // response filters
     @Test
+    @Execution(ExecutionMode.CONCURRENT)
     public void testRuntimeExceptionInResponseFilter() {
         _test(TestRuntimeException.class, TestResponseFilter.class);
     }
 
     @Test
+    @Execution(ExecutionMode.CONCURRENT)
     public void testIOExceptionInResponseFilter() {
         _test(IOException.class, TestResponseFilter.class);
     }
 
     @Test
+    @Execution(ExecutionMode.CONCURRENT)
     public void testWaeInResponseFilter() {
         _testWae(TestResponseFilter.class);
     }
 
     @Test
+    @Execution(ExecutionMode.CONCURRENT)
     public void testProcessingExceptionInResponseFilter() {
         _test(ProcessingException.class, TestResponseFilter.class);
     }
 
     // response filters
     @Test
+    @Execution(ExecutionMode.CONCURRENT)
     public void testRuntimeExceptionInRequestFilter() {
         _test(TestRuntimeException.class, TestRequestFilter.class);
     }
 
     @Test
+    @Execution(ExecutionMode.CONCURRENT)
     public void testIOExceptionInRequestFilter() {
         _test(IOException.class, TestRequestFilter.class);
     }
 
     @Test
+    @Execution(ExecutionMode.CONCURRENT)
     public void testWaeInRequestFilter() {
         _testWae(TestRequestFilter.class);
     }
 
     @Test
+    @Execution(ExecutionMode.CONCURRENT)
     public void testProcessingExceptionInRequestFilter() {
         _test(ProcessingException.class, TestRequestFilter.class);
     }
 
     // MBR/W
     @Test
+    @Execution(ExecutionMode.CONCURRENT)
     public void testRuntimeExceptionInMBW() {
         _test(TestRuntimeException.class, TestMBW.class);
     }
 
     @Test
+    @Execution(ExecutionMode.CONCURRENT)
     public void testIOExceptionInMBW() {
         _test(IOException.class, TestMBW.class);
     }
 
     @Test
+    @Execution(ExecutionMode.CONCURRENT)
     public void testWaeInMBW() {
         _testWae(TestMBW.class);
     }
 
     @Test
+    @Execution(ExecutionMode.CONCURRENT)
     public void testProcessingExceptionInMBW() {
         _test(ProcessingException.class, TestMBW.class);
     }
 
     @Test
+    @Execution(ExecutionMode.CONCURRENT)
     public void testRuntimeExceptionInMBR() {
         _test(TestRuntimeException.class, TestMBR.class);
     }
 
     @Test
+    @Execution(ExecutionMode.CONCURRENT)
     public void testIOExceptionInMBR() {
         _test(IOException.class, TestMBR.class);
     }
 
     @Test
+    @Execution(ExecutionMode.CONCURRENT)
     public void testWaeInMBR() {
         _testWae(TestMBR.class);
     }
 
     @Test
+    @Execution(ExecutionMode.CONCURRENT)
     public void testProcessingExceptionInMBR() {
         _test(ProcessingException.class, TestMBR.class);
     }
 
     // interceptors
     @Test
+    @Execution(ExecutionMode.CONCURRENT)
     public void testRuntimeExceptionInReaderInterceptor() {
         _test(TestRuntimeException.class, TestReaderInterceptor.class);
     }
 
     @Test
+    @Execution(ExecutionMode.CONCURRENT)
     public void testIOExceptionInReaderInterceptor() {
         _test(IOException.class, TestReaderInterceptor.class);
     }
 
     @Test
+    @Execution(ExecutionMode.CONCURRENT)
     public void testWaeInReaderInterceptor() {
         _testWae(TestReaderInterceptor.class);
     }
 
     @Test
+    @Execution(ExecutionMode.CONCURRENT)
     public void testProcessingExceptionInReaderInterceptor() {
         _test(ProcessingException.class, TestReaderInterceptor.class);
     }
 
     @Test
+    @Execution(ExecutionMode.CONCURRENT)
     public void testRuntimeExceptionInWriterInterceptor() {
         _test(TestRuntimeException.class, TestWriterInterceptor.class);
     }
 
     @Test
+    @Execution(ExecutionMode.CONCURRENT)
     public void testIOExceptionInWriterInterceptor() {
         _test(IOException.class, TestWriterInterceptor.class);
     }
 
     @Test
+    @Execution(ExecutionMode.CONCURRENT)
     public void testWaeInWriterInterceptor() {
         _testWae(TestWriterInterceptor.class);
     }
 
     @Test
+    @Execution(ExecutionMode.CONCURRENT)
     public void testProcessingExceptionInWriterInterceptor() {
         _test(ProcessingException.class, TestWriterInterceptor.class);
     }

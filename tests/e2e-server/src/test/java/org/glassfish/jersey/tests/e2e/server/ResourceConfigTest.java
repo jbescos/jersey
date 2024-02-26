@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2012, 2022 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -18,22 +18,22 @@ package org.glassfish.jersey.tests.e2e.server;
 
 import java.util.Formatter;
 
-import javax.ws.rs.Consumes;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.client.Entity;
+import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.POST;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.client.Entity;
 
-import javax.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlRootElement;
 
 import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.jettison.JettisonFeature;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.test.JerseyTest;
 
-import org.junit.Ignore;
-import org.junit.Test;
-import static org.junit.Assert.assertEquals;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * End to end test class for testing {@code ResourceConfig} features.
@@ -144,7 +144,7 @@ public class ResourceConfigTest extends JerseyTest {
      * {@code ApplicationHandler}.
      * <p/>
      * Test is trying to simulate the behaviour of Jersey as if the application was deployed into a servlet container
-     * with a servlet defined in {@code web.xml} file using {@code init-param} {@code javax.ws.rs.Application}.
+     * with a servlet defined in {@code web.xml} file using {@code init-param} {@code jakarta.ws.rs.Application}.
      */
     @Test
     public void testJersey1094() throws Exception {
@@ -159,7 +159,7 @@ public class ResourceConfigTest extends JerseyTest {
     }
 
     @Test
-    @Ignore("TODO: Add test for reloading resource config in the container (once it is supported)")
+    @Disabled("TODO: Add test for reloading resource config in the container (once it is supported)")
     public void testJersey1094ReloadResourceConfig() throws Exception {
         // TODO test reloading resource config in the container (once it is supported)
     }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2021, 2023 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -16,12 +16,12 @@
 
 package org.glassfish.jersey.message.internal;
 
-import javax.inject.Singleton;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.Produces;
-import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.MultivaluedMap;
+import jakarta.inject.Singleton;
+import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.WebApplicationException;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.MultivaluedMap;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -50,7 +50,7 @@ final class EnumMessageProvider extends AbstractMessageReaderWriterProvider<Enum
             MediaType mediaType,
             MultivaluedMap<String, String> httpHeaders,
             InputStream entityStream) throws IOException, WebApplicationException {
-        final String value = readFromAsString(entityStream, mediaType);
+        final String value = ReaderWriter.readFromAsString(entityStream, mediaType);
         return Enum.valueOf(type, value);
     }
 
@@ -67,6 +67,6 @@ final class EnumMessageProvider extends AbstractMessageReaderWriterProvider<Enum
             MediaType mediaType,
             MultivaluedMap<String, Object> httpHeaders,
             OutputStream entityStream) throws IOException, WebApplicationException {
-        writeToAsString(anEnum.name(), entityStream, mediaType);
+        ReaderWriter.writeToAsString(anEnum.name(), entityStream, mediaType);
     }
 }

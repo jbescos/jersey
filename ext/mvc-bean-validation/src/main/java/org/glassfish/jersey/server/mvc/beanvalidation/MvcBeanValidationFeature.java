@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2013, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -16,11 +16,11 @@
 
 package org.glassfish.jersey.server.mvc.beanvalidation;
 
-import javax.ws.rs.ConstrainedTo;
-import javax.ws.rs.RuntimeType;
-import javax.ws.rs.core.Configuration;
-import javax.ws.rs.core.Feature;
-import javax.ws.rs.core.FeatureContext;
+import jakarta.ws.rs.ConstrainedTo;
+import jakarta.ws.rs.RuntimeType;
+import jakarta.ws.rs.core.Configuration;
+import jakarta.ws.rs.core.Feature;
+import jakarta.ws.rs.core.FeatureContext;
 
 import org.glassfish.jersey.server.mvc.MvcFeature;
 import org.glassfish.jersey.server.validation.ValidationFeature;
@@ -31,7 +31,7 @@ import org.glassfish.jersey.server.validation.ValidationFeature;
  * {@link org.glassfish.jersey.server.mvc.Viewable Viewable} (template) defined by
  * {@link org.glassfish.jersey.server.mvc.ErrorTemplate ErrorTemplate} annotation, present directly on an executed resource method
  * or on a resource class the resource method is defined in, is processed to display an error message caused by an
- * {@link javax.validation.ConstraintViolationException Bean Validation exception}. Model is, in this case, a list of
+ * {@link jakarta.validation.ConstraintViolationException Bean Validation exception}. Model is, in this case, a list of
  * {@link org.glassfish.jersey.server.validation.ValidationError validation errors}.
  * <p/>
  * Note: This feature also registers {@link MvcFeature}.

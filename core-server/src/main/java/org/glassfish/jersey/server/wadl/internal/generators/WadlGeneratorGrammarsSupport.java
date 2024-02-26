@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2010, 2023 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -17,15 +17,15 @@
 package org.glassfish.jersey.server.wadl.internal.generators;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.InputStream;
+import java.nio.file.Files;
 import java.util.List;
 import java.util.logging.Logger;
 
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Context;
+import jakarta.ws.rs.core.MediaType;
 
-import javax.inject.Provider;
+import jakarta.inject.Provider;
 import javax.xml.parsers.SAXParserFactory;
 
 import org.glassfish.jersey.server.model.Parameter;
@@ -116,7 +116,7 @@ public class WadlGeneratorGrammarsSupport implements WadlGenerator {
                     + " is set, one of both is required.");
         }
         _delegate.init();
-        _grammars = WadlUtils.unmarshall(_grammarsFile != null ? new FileInputStream(_grammarsFile) : _grammarsStream,
+        _grammars = WadlUtils.unmarshall(_grammarsFile != null ? Files.newInputStream(_grammarsFile.toPath()) : _grammarsStream,
                 saxFactoryProvider.get(), Grammars.class);
     }
 
@@ -187,7 +187,7 @@ public class WadlGeneratorGrammarsSupport implements WadlGenerator {
      * @param mt  media type
      * @return respresentation type
      * @see org.glassfish.jersey.server.wadl.WadlGenerator#createRequestRepresentation(org.glassfish.jersey.server.model.Resource,
-     * org.glassfish.jersey.server.model.ResourceMethod, javax.ws.rs.core.MediaType)
+     * org.glassfish.jersey.server.model.ResourceMethod, jakarta.ws.rs.core.MediaType)
      */
     public Representation createRequestRepresentation(
             org.glassfish.jersey.server.model.Resource ar, org.glassfish.jersey.server.model.ResourceMethod arm, MediaType mt) {

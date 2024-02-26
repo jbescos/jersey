@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010, 2019 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2010, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -16,19 +16,12 @@
 
 package org.glassfish.jersey.tests.e2e.json.entity;
 
-import javax.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlRootElement;
 
 /**
  * @author Jakub Podlesak
  * @author Michal Gajdos
  */
-// Jackson 1
-@org.codehaus.jackson.annotate.JsonTypeInfo(
-        use = org.codehaus.jackson.annotate.JsonTypeInfo.Id.NAME,
-        include = org.codehaus.jackson.annotate.JsonTypeInfo.As.PROPERTY)
-@org.codehaus.jackson.annotate.JsonSubTypes({
-        @org.codehaus.jackson.annotate.JsonSubTypes.Type(value = Cat.class),
-        @org.codehaus.jackson.annotate.JsonSubTypes.Type(value = Dog.class) })
 // Jackson 2
 @com.fasterxml.jackson.annotation.JsonTypeInfo(
         use = com.fasterxml.jackson.annotation.JsonTypeInfo.Id.NAME,

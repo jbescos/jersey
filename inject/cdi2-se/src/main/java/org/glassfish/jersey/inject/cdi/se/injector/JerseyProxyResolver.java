@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2017, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -30,27 +30,27 @@ import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Supplier;
 
-import javax.ws.rs.core.Application;
+import jakarta.ws.rs.core.Application;
 
-import javax.enterprise.context.RequestScoped;
+import jakarta.enterprise.context.RequestScoped;
 
 import org.glassfish.jersey.internal.inject.Injectee;
 import org.glassfish.jersey.internal.inject.InjectionResolver;
 
 /**
- * Class working with JAX-RS/Jersey types injected using {@link javax.ws.rs.core.Context} annotation and all other types which
+ * Class working with JAX-RS/Jersey types injected using {@link jakarta.ws.rs.core.Context} annotation and all other types which
  * can be injected using using other {@code *Param} annotations.
  * <p>
  * Processed JAX-RS interfaces:
  *
  * @author Petr Bouda
- * @see javax.ws.rs.core.UriInfo
- * @see javax.ws.rs.core.Request
- * @see javax.ws.rs.core.HttpHeaders
- * @see javax.ws.rs.core.SecurityContext
- * @see javax.ws.rs.core.Configuration
- * @see javax.ws.rs.core.Application not proxiable because is registered as a singleton.
- * @see javax.ws.rs.ext.Providers
+ * @see jakarta.ws.rs.core.UriInfo
+ * @see jakarta.ws.rs.core.Request
+ * @see jakarta.ws.rs.core.HttpHeaders
+ * @see jakarta.ws.rs.core.SecurityContext
+ * @see jakarta.ws.rs.core.Configuration
+ * @see jakarta.ws.rs.core.Application not proxiable because is registered as a singleton.
+ * @see jakarta.ws.rs.ext.Providers
  */
 public class JerseyProxyResolver {
 
@@ -71,7 +71,7 @@ public class JerseyProxyResolver {
      * In these cases the value is not proxiable:
      * <ul>
      * <li>Class without the annotation</li>
-     * <li>Class annotated by {@link javax.enterprise.context.RequestScoped}</li>
+     * <li>Class annotated by {@link jakarta.enterprise.context.RequestScoped}</li>
      * <li>Class annotated by {@link org.glassfish.jersey.process.internal.RequestScoped}</li>
      * <ul/>
      *
@@ -88,7 +88,7 @@ public class JerseyProxyResolver {
      * In these cases the value is not proxiable:
      * <ul>
      * <li>Class without the annotation</li>
-     * <li>Class annotated by {@link javax.enterprise.context.RequestScoped}</li>
+     * <li>Class annotated by {@link jakarta.enterprise.context.RequestScoped}</li>
      * <li>Class annotated by {@link org.glassfish.jersey.process.internal.RequestScoped}</li>
      * <ul/>
      *

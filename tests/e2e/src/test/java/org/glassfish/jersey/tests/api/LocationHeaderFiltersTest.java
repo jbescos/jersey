@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015, 2019 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2015, 2022 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -19,30 +19,31 @@ package org.glassfish.jersey.tests.api;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.test.JerseyTest;
 import org.glassfish.jersey.test.TestProperties;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.container.AsyncResponse;
-import javax.ws.rs.container.ContainerRequestContext;
-import javax.ws.rs.container.ContainerRequestFilter;
-import javax.ws.rs.container.ContainerResponseContext;
-import javax.ws.rs.container.ContainerResponseFilter;
-import javax.ws.rs.container.DynamicFeature;
-import javax.ws.rs.container.PreMatching;
-import javax.ws.rs.container.ResourceInfo;
-import javax.ws.rs.container.Suspended;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.FeatureContext;
-import javax.ws.rs.core.HttpHeaders;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.MultivaluedMap;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriInfo;
-import javax.ws.rs.ext.ExceptionMapper;
-import javax.ws.rs.ext.WriterInterceptor;
-import javax.ws.rs.ext.WriterInterceptorContext;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.WebApplicationException;
+import jakarta.ws.rs.container.AsyncResponse;
+import jakarta.ws.rs.container.ContainerRequestContext;
+import jakarta.ws.rs.container.ContainerRequestFilter;
+import jakarta.ws.rs.container.ContainerResponseContext;
+import jakarta.ws.rs.container.ContainerResponseFilter;
+import jakarta.ws.rs.container.DynamicFeature;
+import jakarta.ws.rs.container.PreMatching;
+import jakarta.ws.rs.container.ResourceInfo;
+import jakarta.ws.rs.container.Suspended;
+import jakarta.ws.rs.core.Context;
+import jakarta.ws.rs.core.FeatureContext;
+import jakarta.ws.rs.core.HttpHeaders;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.MultivaluedMap;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.UriInfo;
+import jakarta.ws.rs.ext.ExceptionMapper;
+import jakarta.ws.rs.ext.WriterInterceptor;
+import jakarta.ws.rs.ext.WriterInterceptorContext;
 import java.io.IOException;
 import java.net.URI;
 import java.util.List;
@@ -50,10 +51,10 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.logging.Logger;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 /**
  * Test if the location response header relative URI is correctly resolved within complex cases with interceptors, filters,
@@ -85,6 +86,7 @@ public class LocationHeaderFiltersTest extends JerseyTest {
      * In this case it prepares executor thread pool of size one and initializes the thread.
      * @throws Exception
      */
+    @BeforeEach
     @Override
     public void setUp() throws Exception {
         super.setUp();
@@ -147,8 +149,8 @@ public class LocationHeaderFiltersTest extends JerseyTest {
         @GET
         @Path("locationAborted")
         public String locationTestAborted() {
-            assertTrue("The resource method locationTestAborted() should not have been called. The post-matching filter was "
-                    + "not configured correctly. ", false);
+            assertTrue(false, "The resource method locationTestAborted() should not have been called. "
+                    + "The post-matching filter was not configured correctly.");
             return "DUMMY_RESPONSE"; // this string should never reach the client (the resource method will not be called)
         }
 
@@ -161,8 +163,8 @@ public class LocationHeaderFiltersTest extends JerseyTest {
         @GET
         @Path("locationAbortedPreMatching")
         public String locationTestPreMatchingAborted() {
-            assertTrue("The resource method locationTestPreMatchingAborted() should not have been called. The pre-matching "
-                    + "filter was not configured correctly. ", false);
+            assertTrue(false, "The resource method locationTestPreMatchingAborted() should not have been called. "
+                    + "The pre-matching filter was not configured correctly.");
             return "DUMMY_RESPONSE"; // this string should never reach the client (the resource method will not be called)
         }
 
@@ -587,8 +589,8 @@ public class LocationHeaderFiltersTest extends JerseyTest {
 
     private void checkResponseFilter(final String resourcePath, final String expectedRelativeUri) {
         final Response response = target().path(resourcePath).request().get(Response.class);
-        assertNotEquals("Message from response filter: " + response.readEntity(String.class),
-                response.getStatus(), Response.Status.INTERNAL_SERVER_ERROR.getStatusCode());
+        assertNotEquals(response.getStatus(), Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(),
+                "Message from response filter: " + response.readEntity(String.class));
         assertEquals(getBaseUri() + expectedRelativeUri, response.getLocation().toString());
     }
 }

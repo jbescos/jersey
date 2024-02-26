@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2012, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -19,8 +19,8 @@ package org.glassfish.jersey.moxy.json;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.ws.rs.ext.ContextResolver;
-import javax.xml.bind.Marshaller;
+import jakarta.ws.rs.ext.ContextResolver;
+import jakarta.xml.bind.Marshaller;
 
 import org.eclipse.persistence.jaxb.MarshallerProperties;
 import org.eclipse.persistence.jaxb.UnmarshallerProperties;
@@ -49,7 +49,7 @@ public final class MoxyJsonConfig {
      * Create a new configuration for {@link org.eclipse.persistence.jaxb.rs.MOXyJsonProvider}. If the
      * {@code initDefaultProperties} is set to {@code true} then the following values are set:
      * <ul>
-     *     <li>{@link javax.xml.bind.Marshaller#JAXB_FORMATTED_OUTPUT} - {@code false}</li>
+     *     <li>{@link jakarta.xml.bind.Marshaller#JAXB_FORMATTED_OUTPUT} - {@code false}</li>
      *     <li>{@link org.eclipse.persistence.jaxb.JAXBContextProperties#JSON_INCLUDE_ROOT} - {@code false}</li>
      *     <li>{@link org.eclipse.persistence.jaxb.MarshallerProperties#JSON_MARSHAL_EMPTY_COLLECTIONS} - {@code true}</li>
      *     <li>{@link org.eclipse.persistence.jaxb.JAXBContextProperties#JSON_NAMESPACE_SEPARATOR} -
@@ -61,7 +61,7 @@ public final class MoxyJsonConfig {
      */
     public MoxyJsonConfig(final boolean initDefaultProperties) {
         if (initDefaultProperties) {
-            // javax.xml.bind.Marshaller.JAXB_FORMATTED_OUTPUT
+            // jakarta.xml.bind.Marshaller.JAXB_FORMATTED_OUTPUT
             setFormattedOutput(false);
 
             // org.eclipse.persistence.jaxb.JAXBContextProperties.JSON_INCLUDE_ROOT

@@ -1,4 +1,5 @@
 /*
+ * Copyright (c) 2019, 2021 Oracle and/or its affiliates. All rights reserved.
  * Copyright (c) 2019 Christian Kaltepoth. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
@@ -15,9 +16,9 @@
  */
 package org.glassfish.jersey.tests.integration.jersey4099;
 
-import javax.enterprise.context.RequestScoped;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
+import jakarta.enterprise.context.RequestScoped;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.Path;
 
 @RequestScoped
 @Path("/exception")

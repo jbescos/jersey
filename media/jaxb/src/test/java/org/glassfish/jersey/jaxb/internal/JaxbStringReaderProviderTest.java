@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012, 2020 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2012, 2023 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -24,23 +24,23 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.Map;
 
-import javax.ws.rs.RuntimeType;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.ext.ContextResolver;
-import javax.ws.rs.ext.ExceptionMapper;
-import javax.ws.rs.ext.MessageBodyReader;
-import javax.ws.rs.ext.MessageBodyWriter;
-import javax.ws.rs.ext.Providers;
+import jakarta.ws.rs.RuntimeType;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.ext.ContextResolver;
+import jakarta.ws.rs.ext.ExceptionMapper;
+import jakarta.ws.rs.ext.MessageBodyReader;
+import jakarta.ws.rs.ext.MessageBodyWriter;
+import jakarta.ws.rs.ext.Providers;
 
-import javax.inject.Provider;
-import javax.xml.bind.annotation.XmlRootElement;
+import jakarta.inject.Provider;
+import jakarta.xml.bind.annotation.XmlRootElement;
 import javax.xml.parsers.SAXParserFactory;
 
 import org.glassfish.jersey.jaxb.FeatureSupplier;
 import org.glassfish.jersey.model.internal.CommonConfig;
 import org.glassfish.jersey.model.internal.ComponentBag;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class JaxbStringReaderProviderTest {
 
@@ -48,7 +48,7 @@ public class JaxbStringReaderProviderTest {
     public void stringReaderDoesNotReadExternalDtds() {
 
         Provider<SAXParserFactory> saxParserFactoryProvider = new Provider<SAXParserFactory>() {
-            final SaxParserFactoryInjectionProvider spf = new SaxParserFactoryInjectionProvider(
+            final SaxParserFactoryInjectionProvider spf = new SaxParserFactoryInjectionProvider(null,
                     new CommonConfig(RuntimeType.SERVER, ComponentBag.INCLUDE_ALL));
 
             @Override

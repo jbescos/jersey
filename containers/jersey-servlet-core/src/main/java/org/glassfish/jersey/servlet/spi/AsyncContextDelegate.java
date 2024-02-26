@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012, 2019 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2012, 2021 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -34,7 +34,7 @@ public interface AsyncContextDelegate {
      * behavior).
      *
      * @see ContainerResponseWriter#suspend(long, java.util.concurrent.TimeUnit, org.glassfish.jersey.server.spi.ContainerResponseWriter.TimeoutHandler)
-     * @throws IllegalStateException if underlying {@link javax.servlet.ServletRequest servlet request} throws an exception.
+     * @throws IllegalStateException if underlying {@link jakarta.servlet.ServletRequest servlet request} throws an exception.
      */
     public void suspend() throws IllegalStateException;
 

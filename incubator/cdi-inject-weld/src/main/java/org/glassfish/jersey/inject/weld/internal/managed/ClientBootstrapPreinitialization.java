@@ -16,10 +16,10 @@
 
 package org.glassfish.jersey.inject.weld.internal.managed;
 
-import javax.inject.Inject;
-import javax.inject.Provider;
-import javax.ws.rs.RuntimeType;
-import javax.ws.rs.client.ClientBuilder;
+import jakarta.inject.Inject;
+import jakarta.inject.Provider;
+import jakarta.ws.rs.RuntimeType;
+import jakarta.ws.rs.client.ClientBuilder;
 
 import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.client.ClientRequest;

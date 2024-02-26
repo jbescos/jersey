@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012, 2019 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2012, 2023 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -36,23 +36,23 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
-import javax.ws.rs.RuntimeType;
-import javax.ws.rs.core.Form;
-import javax.ws.rs.core.GenericType;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.MultivaluedMap;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.SecurityContext;
+import jakarta.ws.rs.RuntimeType;
+import jakarta.ws.rs.core.Form;
+import jakarta.ws.rs.core.GenericType;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.MultivaluedMap;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.SecurityContext;
 
-import javax.inject.Inject;
-import javax.inject.Provider;
-import javax.inject.Singleton;
-import javax.servlet.FilterConfig;
-import javax.servlet.ServletConfig;
-import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.inject.Inject;
+import jakarta.inject.Provider;
+import jakarta.inject.Singleton;
+import jakarta.servlet.FilterConfig;
+import jakarta.servlet.ServletConfig;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 import org.glassfish.jersey.internal.ServiceFinderBinder;
 import org.glassfish.jersey.internal.inject.AbstractBinder;
@@ -325,10 +325,10 @@ public class WebComponent {
      *
      * @param baseUri         the base URI of the request.
      * @param requestUri      the URI of the request.
-     * @param servletRequest  the {@link javax.servlet.http.HttpServletRequest} object that
+     * @param servletRequest  the {@link jakarta.servlet.http.HttpServletRequest} object that
      *                        contains the request the client made to
      *                        the Web component.
-     * @param servletResponse the {@link javax.servlet.http.HttpServletResponse} object that
+     * @param servletResponse the {@link jakarta.servlet.http.HttpServletResponse} object that
      *                        contains the response the Web component returns
      *                        to the client.
      * @return lazily initialized response status code {@link Value value provider}. If not resolved in the moment of call to
@@ -336,7 +336,7 @@ public class WebComponent {
      * @throws java.io.IOException            if an input or output error occurs
      *                                        while the Web component is handling the
      *                                        HTTP request.
-     * @throws javax.servlet.ServletException if the HTTP request cannot be handled.
+     * @throws jakarta.servlet.ServletException if the HTTP request cannot be handled.
      */
     public Value<Integer> service(
             final URI baseUri,
@@ -357,10 +357,10 @@ public class WebComponent {
      *
      * @param baseUri         the base URI of the request.
      * @param requestUri      the URI of the request.
-     * @param servletRequest  the {@link javax.servlet.http.HttpServletRequest} object that
+     * @param servletRequest  the {@link jakarta.servlet.http.HttpServletRequest} object that
      *                        contains the request the client made to
      *                        the Web component.
-     * @param servletResponse the {@link javax.servlet.http.HttpServletResponse} object that
+     * @param servletResponse the {@link jakarta.servlet.http.HttpServletResponse} object that
      *                        contains the response the Web component returns
      *                        to the client.
      * @return returns {@link ResponseWriter}, Servlet's {@link org.glassfish.jersey.server.spi.ContainerResponseWriter}
@@ -368,7 +368,7 @@ public class WebComponent {
      * @throws java.io.IOException            if an input or output error occurs
      *                                        while the Web component is handling the
      *                                        HTTP request.
-     * @throws javax.servlet.ServletException if the HTTP request cannot be handled.
+     * @throws jakarta.servlet.ServletException if the HTTP request cannot be handled.
      */
      /* package */ ResponseWriter serviceImpl(
             final URI baseUri,
@@ -401,8 +401,7 @@ public class WebComponent {
 
             if (configSetStatusOverSendError) {
                 servletResponse.reset();
-                //noinspection deprecation
-                servletResponse.setStatus(status.getStatusCode(), status.getReasonPhrase());
+                servletResponse.setStatus(status.getStatusCode());
             } else {
                 servletResponse.sendError(status.getStatusCode(), status.getReasonPhrase());
             }
@@ -442,7 +441,7 @@ public class WebComponent {
     }
 
     /**
-     * Get default {@link javax.ws.rs.core.SecurityContext} for given {@code request}.
+     * Get default {@link jakarta.ws.rs.core.SecurityContext} for given {@code request}.
      *
      * @param request http servlet request to create a security context for.
      * @return a non-null security context instance.
@@ -506,16 +505,16 @@ public class WebComponent {
         }
 
         try {
-            final Class<? extends javax.ws.rs.core.Application> jaxrsApplicationClass = AccessController.doPrivileged(
-                    ReflectionHelper.<javax.ws.rs.core.Application>classForNameWithExceptionPEA(jaxrsApplicationClassName)
+            final Class<? extends jakarta.ws.rs.core.Application> jaxrsApplicationClass = AccessController.doPrivileged(
+                    ReflectionHelper.<jakarta.ws.rs.core.Application>classForNameWithExceptionPEA(jaxrsApplicationClassName)
             );
 
-            if (javax.ws.rs.core.Application.class.isAssignableFrom(jaxrsApplicationClass)) {
+            if (jakarta.ws.rs.core.Application.class.isAssignableFrom(jaxrsApplicationClass)) {
                 return ResourceConfig.forApplicationClass(jaxrsApplicationClass)
                         .addProperties(initParams).addProperties(contextParams);
             } else {
                 throw new ServletException(LocalizationMessages.RESOURCE_CONFIG_PARENT_CLASS_INVALID(
-                        jaxrsApplicationClassName, javax.ws.rs.core.Application.class));
+                        jaxrsApplicationClassName, jakarta.ws.rs.core.Application.class));
             }
         } catch (final PrivilegedActionException e) {
             throw new ServletException(
@@ -603,7 +602,11 @@ public class WebComponent {
                 final String name = (String) parameterNames.nextElement();
                 final List<String> values = Arrays.asList(servletRequest.getParameterValues(name));
 
-                formMap.put(name, keepQueryParams ? values : filterQueryParams(name, values, queryParams));
+                final List<String> filteredValues = keepQueryParams ? values : filterQueryParams(name, values, queryParams);
+
+                if (!filteredValues.isEmpty()) {
+                    formMap.put(name, filteredValues);
+                }
             }
 
             if (!formMap.isEmpty()) {

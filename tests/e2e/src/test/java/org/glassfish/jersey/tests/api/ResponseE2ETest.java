@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013, 2019 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2013, 2022 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -23,29 +23,29 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.client.Entity;
-import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.core.Application;
-import javax.ws.rs.core.EntityTag;
-import javax.ws.rs.core.GenericType;
-import javax.ws.rs.core.Link;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.MultivaluedMap;
-import javax.ws.rs.core.NewCookie;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.ext.RuntimeDelegate;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.PUT;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.client.Entity;
+import jakarta.ws.rs.client.WebTarget;
+import jakarta.ws.rs.core.Application;
+import jakarta.ws.rs.core.EntityTag;
+import jakarta.ws.rs.core.GenericType;
+import jakarta.ws.rs.core.Link;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.MultivaluedMap;
+import jakarta.ws.rs.core.NewCookie;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.ext.RuntimeDelegate;
 
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.server.Uri;
 import org.glassfish.jersey.test.JerseyTest;
 
-import org.junit.Test;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 /**
  * Response E2E tests.
@@ -273,9 +273,9 @@ public class ResponseE2ETest extends JerseyTest {
     public void testCustomResponse() {
         final Response response = target("response").path("custom").request().get();
 
-        assertNotNull("Response is null.", response);
-        assertEquals("Unexpected response status.", 200, response.getStatus());
-        assertEquals("Unexpected response entity.", "subresponse", response.readEntity(String.class));
+        assertNotNull(response, "Response is null.");
+        assertEquals(200, response.getStatus(), "Unexpected response status.");
+        assertEquals("subresponse", response.readEntity(String.class), "Unexpected response entity.");
     }
 
     /**
@@ -287,14 +287,14 @@ public class ResponseE2ETest extends JerseyTest {
         Response response;
 
         response = target.resolveTemplate("param", "with").request().get();
-        assertNotNull("Response is null.", response);
-        assertEquals("Unexpected response status.", 200, response.getStatus());
-        assertEquals("Unexpected response entity.", "1234567890", response.readEntity(String.class));
+        assertNotNull(response, "Response is null.");
+        assertEquals(200, response.getStatus(), "Unexpected response status.");
+        assertEquals("1234567890", response.readEntity(String.class), "Unexpected response entity.");
 
         response = target.resolveTemplate("param", "without").request().get();
-        assertNotNull("Response is null.", response);
-        assertEquals("Unexpected response status.", 204, response.getStatus());
-        assertFalse("Unexpected non-empty response entity.", response.hasEntity());
+        assertNotNull(response, "Response is null.");
+        assertEquals(204, response.getStatus(), "Unexpected response status.");
+        assertFalse(response.hasEntity(), "Unexpected non-empty response entity.");
     }
 
     /**
@@ -304,9 +304,9 @@ public class ResponseE2ETest extends JerseyTest {
     public void testNullResponse() {
         final Response response = target("response").path("null").request().get();
 
-        assertNotNull("Response is null.", response);
-        assertEquals("Unexpected response status.", 204, response.getStatus());
-        assertFalse("Unexpected non-empty response entity.", response.hasEntity());
+        assertNotNull(response, "Response is null.");
+        assertEquals(204, response.getStatus(), "Unexpected response status.");
+        assertFalse(response.hasEntity(), "Unexpected non-empty response entity.");
     }
 
     /**
@@ -318,9 +318,9 @@ public class ResponseE2ETest extends JerseyTest {
         Response response;
 
         response = target.request().get();
-        assertNotNull("Response is null.", response);
-        assertEquals("Unexpected response status.", 200, response.getStatus());
-        assertEquals("Unexpected response entity.", "internal", response.readEntity(String.class));
+        assertNotNull(response, "Response is null.");
+        assertEquals(200, response.getStatus(), "Unexpected response status.");
+        assertEquals("internal", response.readEntity(String.class), "Unexpected response entity.");
     }
 
     /**
@@ -334,9 +334,9 @@ public class ResponseE2ETest extends JerseyTest {
         Response response;
 
         response = target.request().put(Entity.text("put-data"));
-        assertNotNull("Response is null.", response);
-        assertEquals("Unexpected response status.", Response.Status.NOT_MODIFIED.getStatusCode(), response.getStatus());
+        assertNotNull(response, "Response is null.");
+        assertEquals(Response.Status.NOT_MODIFIED.getStatusCode(), response.getStatus(), "Unexpected response status.");
         // response entity is dropped by server container in compliance with HTTP 1.1 spec
-        assertFalse("Unexpected response entity.", response.hasEntity());
+        assertFalse(response.hasEntity(), "Unexpected response entity.");
     }
 }

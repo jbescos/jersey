@@ -16,7 +16,7 @@
 
 package org.glassfish.jersey.inject.weld.spi;
 
-import javax.ws.rs.RuntimeType;
+import jakarta.ws.rs.RuntimeType;
 
 import org.glassfish.jersey.Beta;
 import org.glassfish.jersey.internal.inject.AbstractBinder;

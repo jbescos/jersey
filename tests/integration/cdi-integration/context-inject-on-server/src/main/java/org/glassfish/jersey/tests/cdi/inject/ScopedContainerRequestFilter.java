@@ -16,7 +16,7 @@
 
 package org.glassfish.jersey.tests.cdi.inject;
 
-import javax.enterprise.context.RequestScoped;
+import jakarta.enterprise.context.RequestScoped;
 
 @RequestScoped
 public class ScopedContainerRequestFilter extends RequestScopedParentInject implements ParentContainerRequestFilter {

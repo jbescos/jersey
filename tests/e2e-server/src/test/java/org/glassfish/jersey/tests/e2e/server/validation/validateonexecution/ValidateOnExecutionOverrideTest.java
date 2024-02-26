@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2013, 2023 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -19,27 +19,28 @@ package org.glassfish.jersey.tests.e2e.server.validation.validateonexecution;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
+import java.util.stream.Collectors;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.core.Application;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.core.Application;
 
-import javax.validation.ValidationException;
-import javax.validation.constraints.NotNull;
-import javax.validation.executable.ExecutableType;
-import javax.validation.executable.ValidateOnExecution;
+import jakarta.validation.ValidationException;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.executable.ExecutableType;
+import jakarta.validation.executable.ValidateOnExecution;
 
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.test.JerseyTest;
 import org.glassfish.jersey.test.TestProperties;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.instanceOf;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 /**
- * Testing whether an {@link javax.validation.ValidationException} is raised when {@link ValidateOnExecution} is present on
+ * Testing whether an {@link jakarta.validation.ValidationException} is raised when {@link ValidateOnExecution} is present on
  * overriding/implementing method as well.
  *
  * @author Michal Gajdos
@@ -101,8 +102,13 @@ public class ValidateOnExecutionOverrideTest extends JerseyTest {
     private void _test(final String path) throws Exception {
         assertThat(target(path).request().get().getStatus(), equalTo(500));
 
-        final List<LogRecord> loggedRecords = getLoggedRecords();
+        final List<LogRecord> loggedRecords = getLoggedRecords()
+                .stream()
+                .filter(log -> log.getSourceClassName().equals(LOGGER_NAME)) // Skip warnings from outside of Validation
+                .collect(Collectors.toList());
         assertThat(loggedRecords.size(), equalTo(1));
         assertThat(loggedRecords.get(0).getThrown(), instanceOf(ValidationException.class));
     }
+
+    private static final String LOGGER_NAME = "org.glassfish.jersey.server.validation.internal.ValidationExceptionMapper";
 }

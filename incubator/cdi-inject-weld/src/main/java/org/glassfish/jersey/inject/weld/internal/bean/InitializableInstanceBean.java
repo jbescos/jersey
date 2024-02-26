@@ -15,10 +15,10 @@
  */
 package org.glassfish.jersey.inject.weld.internal.bean;
 
-import javax.enterprise.context.Dependent;
-import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.inject.spi.InjectionTarget;
-import javax.ws.rs.RuntimeType;
+import jakarta.enterprise.context.Dependent;
+import jakarta.enterprise.context.spi.CreationalContext;
+import jakarta.enterprise.inject.spi.InjectionTarget;
+import jakarta.ws.rs.RuntimeType;
 
 import org.glassfish.jersey.inject.weld.internal.inject.InitializableInstanceBinding;
 import org.glassfish.jersey.inject.weld.internal.injector.JerseyClientCreationalContext;
@@ -34,9 +34,9 @@ public class InitializableInstanceBean<T> extends JerseyBean<T> {
     private InjectionTarget<T> injectionTarget;
 
     /**
-     * Creates a new Jersey-specific {@link javax.enterprise.inject.spi.Bean} instance.
+     * Creates a new Jersey-specific {@link jakarta.enterprise.inject.spi.Bean} instance.
      *
-     * @param binding {@link javax.enterprise.inject.spi.BeanAttributes} part of the bean.
+     * @param binding {@link jakarta.enterprise.inject.spi.BeanAttributes} part of the bean.
      */
     InitializableInstanceBean(RuntimeType runtimeType, InitializableInstanceBinding<T> binding) {
         super(runtimeType, binding);
@@ -67,7 +67,7 @@ public class InitializableInstanceBean<T> extends JerseyBean<T> {
     /**
      * Lazy set of an injection target because to create fully functional injection target needs already created bean.
      *
-     * @param injectionTarget {@link javax.enterprise.context.spi.Contextual} information belonging to this bean.
+     * @param injectionTarget {@link jakarta.enterprise.context.spi.Contextual} information belonging to this bean.
      */
     void setInjectionTarget(InjectionTarget<T> injectionTarget) {
         this.injectionTarget = injectionTarget;

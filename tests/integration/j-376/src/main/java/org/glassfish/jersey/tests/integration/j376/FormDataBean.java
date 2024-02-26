@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2015, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -16,16 +16,16 @@
 
 package org.glassfish.jersey.tests.integration.j376;
 
-import javax.ws.rs.FormParam;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.UriInfo;
+import jakarta.ws.rs.FormParam;
+import jakarta.ws.rs.core.Context;
+import jakarta.ws.rs.core.UriInfo;
 
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.RequestScoped;
-import javax.inject.Inject;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
+import jakarta.annotation.PostConstruct;
+import jakarta.enterprise.context.RequestScoped;
+import jakarta.inject.Inject;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 /**
  * Test bean containingboth JAX-RS and CDI injection points.
@@ -59,7 +59,7 @@ public class FormDataBean {
     }
 
     /**
-     * Exposes the state of injected {@code UriInfo} in the time of the call of {@link javax.annotation.PostConstruct}
+     * Exposes the state of injected {@code UriInfo} in the time of the call of {@link jakarta.annotation.PostConstruct}
      * annotated method. The returned value will be used in test to ensure, that {@code UriInfo} is injected in time
      *
      * @return path injected via {@code UriInfo} at the time-point of the {@link #postConstruct()} method call.

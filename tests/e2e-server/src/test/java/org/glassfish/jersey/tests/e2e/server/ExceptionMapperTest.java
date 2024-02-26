@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2012, 2023 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -26,41 +26,41 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.reflect.Type;
 import java.util.List;
 
-import javax.ws.rs.ClientErrorException;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
-import javax.ws.rs.InternalServerErrorException;
-import javax.ws.rs.NameBinding;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.client.Entity;
-import javax.ws.rs.container.ContainerRequestContext;
-import javax.ws.rs.container.ContainerResponseContext;
-import javax.ws.rs.container.ContainerResponseFilter;
-import javax.ws.rs.core.Application;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.HttpHeaders;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.MultivaluedMap;
-import javax.ws.rs.core.Request;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriInfo;
-import javax.ws.rs.ext.ExceptionMapper;
-import javax.ws.rs.ext.MessageBodyReader;
-import javax.ws.rs.ext.MessageBodyWriter;
-import javax.ws.rs.ext.Provider;
-import javax.ws.rs.ext.Providers;
+import jakarta.ws.rs.ClientErrorException;
+import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.InternalServerErrorException;
+import jakarta.ws.rs.NameBinding;
+import jakarta.ws.rs.POST;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.WebApplicationException;
+import jakarta.ws.rs.client.Entity;
+import jakarta.ws.rs.container.ContainerRequestContext;
+import jakarta.ws.rs.container.ContainerResponseContext;
+import jakarta.ws.rs.container.ContainerResponseFilter;
+import jakarta.ws.rs.core.Application;
+import jakarta.ws.rs.core.Context;
+import jakarta.ws.rs.core.HttpHeaders;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.MultivaluedMap;
+import jakarta.ws.rs.core.Request;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.UriInfo;
+import jakarta.ws.rs.ext.ExceptionMapper;
+import jakarta.ws.rs.ext.MessageBodyReader;
+import jakarta.ws.rs.ext.MessageBodyWriter;
+import jakarta.ws.rs.ext.Provider;
+import jakarta.ws.rs.ext.Providers;
 
 import org.glassfish.jersey.message.internal.MessageBodyProviderNotFoundException;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.test.JerseyTest;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * Tests throwing exceptions in {@link MessageBodyReader} and {@link MessageBodyWriter}.
@@ -137,6 +137,13 @@ public class ExceptionMapperTest extends JerseyTest {
         assertEquals(500, res.getStatus());
     }
 
+    @Test
+    public void testDefaultExceptionMapper() {
+        Response res = target().path("test/defaultExceptionMapper")
+                .request("test/test").get();
+        assertEquals(200, res.getStatus());
+    }
+
     @Path("test")
     public static class Resource {
 
@@ -173,6 +180,14 @@ public class ExceptionMapperTest extends JerseyTest {
             throw new Throwable("throwable",
                     new RuntimeException("runtime-exception",
                             new ClientErrorException("client-error", 499)));
+        }
+
+        @GET
+        @Path("defaultExceptionMapper")
+        public Response isRegisteredDefaultExceptionTest(@Context Providers providers) {
+            ExceptionMapper<Throwable> em = providers
+                    .getExceptionMapper(Throwable.class);
+            return Response.status((em == null) ? 500 : 200).build();
         }
     }
 
@@ -541,7 +556,7 @@ public class ExceptionMapperTest extends JerseyTest {
     }
 
     /**
-     * Tests that {@link MessageBodyProviderNotFoundException} wrapped into {@link javax.ws.rs.InternalServerErrorException}
+     * Tests that {@link MessageBodyProviderNotFoundException} wrapped into {@link jakarta.ws.rs.InternalServerErrorException}
      * is correctly mapped using an {@link ExceptionMapper}.
      */
     @Test

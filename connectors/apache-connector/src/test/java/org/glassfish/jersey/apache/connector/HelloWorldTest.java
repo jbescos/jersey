@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012, 2019 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2012, 2022 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -27,17 +27,17 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.InternalServerErrorException;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.client.InvocationCallback;
-import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.core.Application;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.InternalServerErrorException;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.client.Client;
+import jakarta.ws.rs.client.ClientBuilder;
+import jakarta.ws.rs.client.InvocationCallback;
+import jakarta.ws.rs.client.WebTarget;
+import jakarta.ws.rs.core.Application;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
 
 import javax.net.ssl.SSLSession;
 
@@ -63,11 +63,11 @@ import org.apache.http.impl.conn.BasicClientConnectionManager;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.params.HttpParams;
 import org.apache.http.protocol.HttpContext;
-import org.junit.Assert;
-import org.junit.Test;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 /**
  * @author Jakub Podlesak
@@ -160,11 +160,11 @@ public class HelloWorldTest extends JerseyTest {
         try {
             target.request().get();
             if (exceptionExpected) {
-                Assert.fail("Exception expected");
+                Assertions.fail("Exception expected");
             }
         } catch (Exception e) {
             if (!exceptionExpected) {
-                Assert.fail("Exception not expected");
+                Assertions.fail("Exception not expected");
             }
         } finally {
             clientTwo.close();
@@ -367,7 +367,7 @@ public class HelloWorldTest extends JerseyTest {
                          * is released by AHC runtime. In our test, this is expected to happen
                          * as soon as the exception is created for an error response
                          * (as the error response entity gets buffered in
-                         * {@link org.glassfish.jersey.client.JerseyInvocation#convertToException(javax.ws.rs.core.Response)}).
+                         * {@link org.glassfish.jersey.client.JerseyInvocation#convertToException(jakarta.ws.rs.core.Response)}).
                          */
                         return new ClientConnectionRequest() {
                             @Override
@@ -603,10 +603,10 @@ public class HelloWorldTest extends JerseyTest {
             final String response = rootTarget.path("error2").request().get(String.class);
             fail("Exception expected. Received: " + response);
         } catch (InternalServerErrorException isee) {
-            assertEquals("Received unexpected data.", "Error2.", isee.getResponse().readEntity(String.class));
+            assertEquals("Error2.", isee.getResponse().readEntity(String.class), "Received unexpected data.");
             // Test buffering:
             // second read would fail if entity was not buffered
-            assertEquals("Unexpected data in the entity buffer.", "Error2.", isee.getResponse().readEntity(String.class));
+            assertEquals("Error2.", isee.getResponse().readEntity(String.class), "Unexpected data in the entity buffer.");
         }
 
         assertEquals(0, connectionCounter.get());

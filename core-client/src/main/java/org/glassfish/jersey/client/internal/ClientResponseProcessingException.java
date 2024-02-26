@@ -18,7 +18,7 @@ package org.glassfish.jersey.client.internal;
 
 import org.glassfish.jersey.client.ClientResponse;
 
-import javax.ws.rs.ProcessingException;
+import jakarta.ws.rs.ProcessingException;
 
 /**
  * This is a representation of a @{link ProcessingException} containing a @{link ClientResponse} instance.

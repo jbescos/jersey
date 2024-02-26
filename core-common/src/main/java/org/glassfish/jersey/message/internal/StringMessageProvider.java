@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2010, 2023 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -22,12 +22,12 @@ import java.io.OutputStream;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 
-import javax.ws.rs.Consumes;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.MultivaluedMap;
+import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.MultivaluedMap;
 
-import javax.inject.Singleton;
+import jakarta.inject.Singleton;
 
 /**
  *
@@ -51,7 +51,7 @@ final class StringMessageProvider extends AbstractMessageReaderWriterProvider<St
             MediaType mediaType,
             MultivaluedMap<String, String> httpHeaders,
             InputStream entityStream) throws IOException {
-        return readFromAsString(entityStream, mediaType);
+        return ReaderWriter.readFromAsString(entityStream, mediaType);
     }
 
     @Override
@@ -73,6 +73,6 @@ final class StringMessageProvider extends AbstractMessageReaderWriterProvider<St
             MediaType mediaType,
             MultivaluedMap<String, Object> httpHeaders,
             OutputStream entityStream) throws IOException {
-        writeToAsString(t, entityStream, mediaType);
+        ReaderWriter.writeToAsString(t, entityStream, mediaType);
     }
 }

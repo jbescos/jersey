@@ -1,5 +1,6 @@
 /*
- * Copyright (c) 2015, 2019 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2022 Contributors to the Eclipse Foundation
+ * Copyright (c) 2015, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -31,27 +32,28 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Supplier;
 
-import javax.servlet.http.HttpUpgradeHandler;
-import javax.ws.rs.core.GenericType;
+import jakarta.servlet.http.HttpUpgradeHandler;
+import jakarta.ws.rs.core.GenericType;
 
-import javax.inject.Inject;
-import javax.inject.Provider;
-import javax.servlet.AsyncContext;
-import javax.servlet.DispatcherType;
-import javax.servlet.RequestDispatcher;
-import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
-import javax.servlet.ServletInputStream;
-import javax.servlet.ServletOutputStream;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletRequestWrapper;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpServletResponseWrapper;
-import javax.servlet.http.HttpSession;
-import javax.servlet.http.Part;
+import jakarta.inject.Inject;
+import jakarta.inject.Provider;
+import jakarta.servlet.AsyncContext;
+import jakarta.servlet.DispatcherType;
+import jakarta.servlet.RequestDispatcher;
+import jakarta.servlet.ServletConnection;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.ServletInputStream;
+import jakarta.servlet.ServletOutputStream;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.ServletResponse;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequestWrapper;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletResponseWrapper;
+import jakarta.servlet.http.HttpSession;
+import jakarta.servlet.http.Part;
 
 import org.glassfish.jersey.inject.hk2.DelayedHk2InjectionManager;
 import org.glassfish.jersey.inject.hk2.ImmediateHk2InjectionManager;
@@ -191,7 +193,7 @@ public class RequestResponseWrapperProvider extends NoOpServletContainerProvider
         };
 
         final ServiceLocator locator;
-        volatile javax.inject.Provider<Ref<HttpServletRequestWrapper>> request;
+        volatile jakarta.inject.Provider<Ref<HttpServletRequestWrapper>> request;
 
         public HttpServletRequestDescriptor(final ServiceLocator locator) {
             super(advertisedContracts,
@@ -254,10 +256,10 @@ public class RequestResponseWrapperProvider extends NoOpServletContainerProvider
     }
 
     private static class HttpServletResponseFactory implements Supplier<HttpServletResponse> {
-        private final javax.inject.Provider<Ref<HttpServletResponseWrapper>> response;
+        private final jakarta.inject.Provider<Ref<HttpServletResponseWrapper>> response;
 
         @Inject
-        public HttpServletResponseFactory(javax.inject.Provider<Ref<HttpServletResponseWrapper>> response) {
+        public HttpServletResponseFactory(jakarta.inject.Provider<Ref<HttpServletResponseWrapper>> response) {
             this.response = response;
         }
 
@@ -291,16 +293,6 @@ public class RequestResponseWrapperProvider extends NoOpServletContainerProvider
                 }
 
                 @Override
-                public String encodeUrl(String s) {
-                    return getHttpServletResponse().encodeUrl(s);
-                }
-
-                @Override
-                public String encodeRedirectUrl(String s) {
-                    return getHttpServletResponse().encodeRedirectUrl(s);
-                }
-
-                @Override
                 public void sendError(int i, String s) throws IOException {
                     getHttpServletResponse().sendError(i, s);
                 }
@@ -330,14 +322,17 @@ public class RequestResponseWrapperProvider extends NoOpServletContainerProvider
                     getHttpServletResponse().setHeader(h, v);
                 }
 
+                @Override
                 public Collection<String> getHeaderNames() {
                     return getHttpServletResponse().getHeaderNames();
                 }
 
+                @Override
                 public Collection<String> getHeaders(String s) {
                     return getHttpServletResponse().getHeaders(s);
                 }
 
+                @Override
                 public String getHeader(String s) {
                     return getHttpServletResponse().getHeader(s);
                 }
@@ -365,11 +360,6 @@ public class RequestResponseWrapperProvider extends NoOpServletContainerProvider
                 @Override
                 public int getStatus() {
                     return getHttpServletResponse().getStatus();
-                }
-
-                @Override
-                public void setStatus(int i, String s) {
-                    getHttpServletResponse().setStatus(i, s);
                 }
 
                 @Override
@@ -467,7 +457,7 @@ public class RequestResponseWrapperProvider extends NoOpServletContainerProvider
 
         @Inject
         public HttpServletRequestReferencingFactory(
-                final javax.inject.Provider<Ref<HttpServletRequestWrapper>> referenceFactory) {
+                final jakarta.inject.Provider<Ref<HttpServletRequestWrapper>> referenceFactory) {
 
             super(referenceFactory);
         }
@@ -478,7 +468,7 @@ public class RequestResponseWrapperProvider extends NoOpServletContainerProvider
 
         @Inject
         public HttpServletResponseReferencingFactory(
-                final javax.inject.Provider<Ref<HttpServletResponseWrapper>> referenceFactory) {
+                final jakarta.inject.Provider<Ref<HttpServletResponseWrapper>> referenceFactory) {
 
             super(referenceFactory);
         }
@@ -499,6 +489,22 @@ public class RequestResponseWrapperProvider extends NoOpServletContainerProvider
     }
 
     private abstract static class MyHttpServletRequestImpl implements HttpServletRequest {
+
+        @Override
+        public String getRequestId() {
+            return getHttpServletRequest().getRequestId();
+        }
+
+        @Override
+        public String getProtocolRequestId() {
+            return getHttpServletRequest().getProtocolRequestId();
+        }
+
+        @Override
+        public ServletConnection getServletConnection() {
+            return getHttpServletRequest().getServletConnection();
+        }
+
 
         @Override
         public String getAuthType() {
@@ -658,11 +664,6 @@ public class RequestResponseWrapperProvider extends NoOpServletContainerProvider
         }
 
         @Override
-        public boolean isRequestedSessionIdFromUrl() {
-            return getHttpServletRequest().isRequestedSessionIdFromUrl();
-        }
-
-        @Override
         public Object getAttribute(String s) {
             return getHttpServletRequest().getAttribute(s);
         }
@@ -780,11 +781,6 @@ public class RequestResponseWrapperProvider extends NoOpServletContainerProvider
         @Override
         public RequestDispatcher getRequestDispatcher(String s) {
             return getHttpServletRequest().getRequestDispatcher(s);
-        }
-
-        @Override
-        public String getRealPath(String s) {
-            return getHttpServletRequest().getRealPath(s);
         }
 
         @Override

@@ -16,7 +16,7 @@
 
 package org.glassfish.jersey.inject.weld.internal.injector;
 
-import javax.enterprise.context.spi.CreationalContext;
+import jakarta.enterprise.context.spi.CreationalContext;
 import org.jboss.weld.injection.ConstructorInjectionPoint;
 import org.jboss.weld.injection.producer.AbstractInstantiator;
 import org.jboss.weld.manager.BeanManagerImpl;

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2012, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -18,30 +18,30 @@ package org.glassfish.jersey.server.filter;
 
 import java.io.IOException;
 
-import javax.ws.rs.ForbiddenException;
-import javax.ws.rs.NotAuthorizedException;
-import javax.ws.rs.Priorities;
-import javax.ws.rs.container.ContainerRequestContext;
-import javax.ws.rs.container.ContainerRequestFilter;
-import javax.ws.rs.container.DynamicFeature;
-import javax.ws.rs.container.ResourceInfo;
-import javax.ws.rs.core.FeatureContext;
+import jakarta.ws.rs.ForbiddenException;
+import jakarta.ws.rs.NotAuthorizedException;
+import jakarta.ws.rs.Priorities;
+import jakarta.ws.rs.container.ContainerRequestContext;
+import jakarta.ws.rs.container.ContainerRequestFilter;
+import jakarta.ws.rs.container.DynamicFeature;
+import jakarta.ws.rs.container.ResourceInfo;
+import jakarta.ws.rs.core.FeatureContext;
 
-import javax.annotation.Priority;
-import javax.annotation.security.DenyAll;
-import javax.annotation.security.PermitAll;
-import javax.annotation.security.RolesAllowed;
+import jakarta.annotation.Priority;
+import jakarta.annotation.security.DenyAll;
+import jakarta.annotation.security.PermitAll;
+import jakarta.annotation.security.RolesAllowed;
 
 import org.glassfish.jersey.server.internal.LocalizationMessages;
 import org.glassfish.jersey.server.model.AnnotatedMethod;
 
 /**
- * A {@link DynamicFeature} supporting the {@code javax.annotation.security.RolesAllowed},
- * {@code javax.annotation.security.PermitAll} and {@code javax.annotation.security.DenyAll}
+ * A {@link DynamicFeature} supporting the {@code jakarta.annotation.security.RolesAllowed},
+ * {@code jakarta.annotation.security.PermitAll} and {@code jakarta.annotation.security.DenyAll}
  * on resource methods and sub-resource methods.
  * <p/>
- * The {@link javax.ws.rs.core.SecurityContext} is utilized, using the
- * {@link javax.ws.rs.core.SecurityContext#isUserInRole(String) } method,
+ * The {@link jakarta.ws.rs.core.SecurityContext} is utilized, using the
+ * {@link jakarta.ws.rs.core.SecurityContext#isUserInRole(String) } method,
  * to ascertain if the user is in one
  * of the roles declared in by a {@code &#64;RolesAllowed}. If a user is in none of
  * the declared roles then a 403 (Forbidden) response is returned.

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2011, 2022 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Distribution License v. 1.0, which is available at
@@ -10,12 +10,12 @@
 
 package org.glassfish.jersey.examples.httptrace;
 
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.client.Entity;
-import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
+import jakarta.ws.rs.client.Client;
+import jakarta.ws.rs.client.ClientBuilder;
+import jakarta.ws.rs.client.Entity;
+import jakarta.ws.rs.client.WebTarget;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
 
 import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.grizzly.connector.GrizzlyConnectorProvider;
@@ -24,10 +24,10 @@ import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.test.JerseyTest;
 import org.glassfish.jersey.test.TestProperties;
 
-import org.junit.Test;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public class TraceSupportTest extends JerseyTest {
 
@@ -59,9 +59,9 @@ public class TraceSupportTest extends JerseyTest {
 
         String responseEntity = response.readEntity(String.class);
         for (String expectedFragment : expectedFragmentsProgrammatic) {
-            assertTrue("Expected fragment '" + expectedFragment + "' not found in response:\n" + responseEntity,
-                    // toLowerCase - http header field names are case insensitive
-                    responseEntity.contains(expectedFragment));
+            assertTrue(// toLowerCase - http header field names are case insensitive
+                    responseEntity.contains(expectedFragment),
+                    "Expected fragment '" + expectedFragment + "' not found in response:\n" + responseEntity);
         }
     }
 
@@ -73,9 +73,9 @@ public class TraceSupportTest extends JerseyTest {
 
         String responseEntity = response.readEntity(String.class);
         for (String expectedFragment : expectedFragmentsAnnotated) {
-            assertTrue("Expected fragment '" + expectedFragment + "' not found in response:\n" + responseEntity,
-                    // toLowerCase - http header field names are case insensitive
-                    responseEntity.contains(expectedFragment));
+            assertTrue(// toLowerCase - http header field names are case insensitive
+                    responseEntity.contains(expectedFragment),
+                    "Expected fragment '" + expectedFragment + "' not found in response:\n" + responseEntity);
         }
     }
 

@@ -25,25 +25,25 @@ import java.util.function.Supplier;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.ws.rs.container.ResourceContext;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.ext.ContextResolver;
-import javax.ws.rs.ext.ExceptionMapper;
-import javax.ws.rs.ext.MessageBodyWriter;
-import javax.ws.rs.ext.Providers;
+import jakarta.ws.rs.container.ResourceContext;
+import jakarta.ws.rs.core.Context;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.ext.ContextResolver;
+import jakarta.ws.rs.ext.ExceptionMapper;
+import jakarta.ws.rs.ext.MessageBodyWriter;
+import jakarta.ws.rs.ext.Providers;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
-import javax.validation.Configuration;
-import javax.validation.TraversableResolver;
-import javax.validation.Validation;
-import javax.validation.ValidationException;
-import javax.validation.ValidationProviderResolver;
-import javax.validation.Validator;
-import javax.validation.ValidatorContext;
-import javax.validation.ValidatorFactory;
-import javax.validation.spi.ValidationProvider;
+import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
+import jakarta.validation.Configuration;
+import jakarta.validation.TraversableResolver;
+import jakarta.validation.Validation;
+import jakarta.validation.ValidationException;
+import jakarta.validation.ValidationProviderResolver;
+import jakarta.validation.Validator;
+import jakarta.validation.ValidatorContext;
+import jakarta.validation.ValidatorFactory;
+import jakarta.validation.spi.ValidationProvider;
 
 import org.glassfish.jersey.internal.ServiceFinder;
 import org.glassfish.jersey.internal.inject.AbstractBinder;
@@ -81,7 +81,7 @@ public final class ValidationBinder extends AbstractBinder {
     }
 
     /**
-     * Factory providing default {@link javax.validation.Configuration} instance.
+     * Factory providing default {@link jakarta.validation.Configuration} instance.
      */
     private static class DefaultConfigurationProvider implements Supplier<Configuration> {
 
@@ -164,7 +164,7 @@ public final class ValidationBinder extends AbstractBinder {
         private ValidatorFactory factory;
 
         @Context
-        private javax.ws.rs.core.Configuration jaxRsConfig;
+        private jakarta.ws.rs.core.Configuration jaxRsConfig;
         @Context
         private Providers providers;
         @Context
@@ -278,14 +278,14 @@ public final class ValidationBinder extends AbstractBinder {
         private boolean isCDIAvailable() {
             // Both CDI & Jersey CDI modules must be available
             return AccessController.doPrivileged(
-                        ReflectionHelper.classForNamePA("javax.enterprise.inject.spi.BeanManager")) != null
+                        ReflectionHelper.classForNamePA("jakarta.enterprise.inject.spi.BeanManager")) != null
                    &&
                    AccessController.doPrivileged(
                         ReflectionHelper.classForNamePA("org.glassfish.jersey.ext.cdi1x.internal.CdiUtil")) != null;
         }
 
         /**
-         * Create traversable resolver able to process {@link javax.validation.executable.ValidateOnExecution} annotation on
+         * Create traversable resolver able to process {@link jakarta.validation.executable.ValidateOnExecution} annotation on
          * beans.
          *
          * @param delegate resolver to be wrapped into the custom traversable resolver.

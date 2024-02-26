@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 
-    Copyright (c) 2013, 2021 Oracle and/or its affiliates. All rights reserved.
+    Copyright (c) 2013, 2023 Oracle and/or its affiliates. All rights reserved.
 
     This program and the accompanying materials are made available under the
     terms of the Eclipse Public License v. 2.0, which is available at
@@ -24,13 +24,13 @@
     <parent>
         <groupId>org.eclipse.ee4j</groupId>
         <artifactId>project</artifactId>
-        <version>1.0.6</version>
+        <version>1.0.8</version>
         <relativePath/>
     </parent>
 
     <groupId>org.glassfish.jersey</groupId>
     <artifactId>jersey-bom</artifactId>
-    <version>2.36-SNAPSHOT</version>
+    <version>3.1.99-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>jersey-bom</name>
 
@@ -65,6 +65,11 @@
             </dependency>
             <dependency>
                 <groupId>org.glassfish.jersey.connectors</groupId>
+                <artifactId>jersey-apache5-connector</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.glassfish.jersey.connectors</groupId>
                 <artifactId>jersey-helidon-connector</artifactId>
                 <version>${project.version}</version>
             </dependency>
@@ -75,7 +80,22 @@
             </dependency>
             <dependency>
                 <groupId>org.glassfish.jersey.connectors</groupId>
+                <artifactId>jersey-jnh-connector</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.glassfish.jersey.connectors</groupId>
                 <artifactId>jersey-jetty-connector</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.glassfish.jersey.connectors</groupId>
+                <artifactId>jersey-jetty11-connector</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.glassfish.jersey.connectors</groupId>
+                <artifactId>jersey-jetty-http2-connector</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
@@ -91,6 +111,16 @@
             <dependency>
                 <groupId>org.glassfish.jersey.containers</groupId>
                 <artifactId>jersey-container-jetty-http</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.glassfish.jersey.containers</groupId>
+                <artifactId>jersey-container-jetty11-http</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.glassfish.jersey.containers</groupId>
+                <artifactId>jersey-container-jetty-http2</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
@@ -150,6 +180,11 @@
             </dependency>
             <dependency>
                 <groupId>org.glassfish.jersey.ext</groupId>
+                <artifactId>jersey-micrometer</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.glassfish.jersey.ext</groupId>
                 <artifactId>jersey-metainf-services</artifactId>
                 <version>${project.version}</version>
             </dependency>
@@ -190,17 +225,7 @@
             </dependency>
             <dependency>
                 <groupId>org.glassfish.jersey.ext</groupId>
-                <artifactId>jersey-servlet-portability</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.glassfish.jersey.ext</groupId>
-                <artifactId>jersey-spring4</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.glassfish.jersey.ext</groupId>
-                <artifactId>jersey-spring5</artifactId>
+                <artifactId>jersey-spring6</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
@@ -278,14 +303,6 @@
                 <artifactId>jersey-media-json-jackson</artifactId>
                 <version>${project.version}</version>
             </dependency>
-<!--
-            Legacy Jackson1 is removed from bom pom, as obsolete.
-            <dependency>
-                <groupId>org.glassfish.jersey.media</groupId>
-                <artifactId>jersey-media-json-jackson1</artifactId>
-                <version>${project.version}</version>
-            </dependency>
--->
             <dependency>
                 <groupId>org.glassfish.jersey.media</groupId>
                 <artifactId>jersey-media-json-jettison</artifactId>
@@ -294,6 +311,11 @@
             <dependency>
                 <groupId>org.glassfish.jersey.media</groupId>
                 <artifactId>jersey-media-json-processing</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.glassfish.jersey.media</groupId>
+                <artifactId>jersey-media-json-gson</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
@@ -393,6 +415,11 @@
                 <version>${project.version}</version>
             </dependency>
             <dependency>
+                <groupId>org.glassfish.jersey.test-framework.providers</groupId>
+                <artifactId>jersey-test-framework-provider-jetty-http2</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>org.glassfish.jersey.test-framework</groupId>
                 <artifactId>jersey-test-framework-util</artifactId>
                 <version>${project.version}</version>
@@ -411,7 +438,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-site-plugin</artifactId>
-                <version>3.7.1</version>
+                <version>3.9.1</version>
             </plugin>
         </plugins>
     </build>

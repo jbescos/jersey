@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017, 2019 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2017, 2022 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -24,32 +24,32 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.ProcessingException;
-import javax.ws.rs.Produces;
-import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.core.Application;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.sse.InboundSseEvent;
-import javax.ws.rs.sse.OutboundSseEvent;
-import javax.ws.rs.sse.SseEventSink;
-import javax.ws.rs.sse.SseEventSource;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.ProcessingException;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.client.WebTarget;
+import jakarta.ws.rs.core.Application;
+import jakarta.ws.rs.core.Context;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.sse.InboundSseEvent;
+import jakarta.ws.rs.sse.OutboundSseEvent;
+import jakarta.ws.rs.sse.SseEventSink;
+import jakarta.ws.rs.sse.SseEventSource;
 
-import javax.inject.Singleton;
+import jakarta.inject.Singleton;
 
 import org.glassfish.jersey.media.sse.EventListener;
 import org.glassfish.jersey.media.sse.EventSource;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.test.JerseyTest;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test that {@link org.glassfish.jersey.media.sse.OutboundEventWriter} works with custom
- * {@link javax.ws.rs.sse.OutboundSseEvent} implementation.
+ * {@link jakarta.ws.rs.sse.OutboundSseEvent} implementation.
  *
  * @author Adam Lindenthal
  */
@@ -91,11 +91,11 @@ public class SseCustomEventImplTest extends JerseyTest {
 
             eventSource.open();
             final boolean allReceived = receivedLatch.await(5000, TimeUnit.MILLISECONDS);
-            Assert.assertTrue(allReceived);
-            Assert.assertEquals(3, results.size());
-            Assert.assertEquals("foo", results.get(0).readData());
-            Assert.assertEquals("bar", results.get(1).readData());
-            Assert.assertEquals("baz", results.get(2).readData());
+            Assertions.assertTrue(allReceived);
+            Assertions.assertEquals(3, results.size());
+            Assertions.assertEquals("foo", results.get(0).readData());
+            Assertions.assertEquals("bar", results.get(1).readData());
+            Assertions.assertEquals("baz", results.get(2).readData());
         } catch (final InterruptedException e) {
             e.printStackTrace();
         }
@@ -112,18 +112,18 @@ public class SseCustomEventImplTest extends JerseyTest {
             try {
                 results.add(inboundEvent.readData());
                 receiveLatch.countDown();
-                Assert.assertEquals(SSE_EVENT_NAME, inboundEvent.getName());
+                Assertions.assertEquals(SSE_EVENT_NAME, inboundEvent.getName());
             } catch (ProcessingException ex) {
                 throw new RuntimeException("Error when deserializing of data.", ex);
             }
         };
         eventSource.register(listener, SSE_EVENT_NAME);
         eventSource.open();
-        Assert.assertTrue(receiveLatch.await(5000, TimeUnit.MILLISECONDS));
-        Assert.assertEquals(3, results.size());
-        Assert.assertEquals("foo", results.get(0));
-        Assert.assertEquals("bar", results.get(1));
-        Assert.assertEquals("baz", results.get(2));
+        Assertions.assertTrue(receiveLatch.await(5000, TimeUnit.MILLISECONDS));
+        Assertions.assertEquals(3, results.size());
+        Assertions.assertEquals("foo", results.get(0));
+        Assertions.assertEquals("bar", results.get(1));
+        Assertions.assertEquals("baz", results.get(2));
     }
 
     static class MyOutboundEvent implements OutboundSseEvent {

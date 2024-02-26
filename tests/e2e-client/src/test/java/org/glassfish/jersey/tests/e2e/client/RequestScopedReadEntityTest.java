@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012, 2019 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2012, 2023 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -22,26 +22,27 @@ import java.io.OutputStream;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.client.Invocation;
-import javax.ws.rs.core.Application;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.MultivaluedMap;
-import javax.ws.rs.core.Response;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.WebApplicationException;
+import jakarta.ws.rs.client.Invocation;
+import jakarta.ws.rs.core.Application;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.MultivaluedMap;
+import jakarta.ws.rs.core.Response;
 
-import javax.inject.Inject;
-import javax.inject.Provider;
+import jakarta.inject.Inject;
+import jakarta.inject.Provider;
 
 import org.glassfish.jersey.client.ClientRequest;
 import org.glassfish.jersey.message.internal.AbstractMessageReaderWriterProvider;
+import org.glassfish.jersey.message.internal.ReaderWriter;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.test.JerseyTest;
 
-import org.junit.Test;
-import static org.junit.Assert.assertEquals;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * TODO: javadoc.
@@ -71,9 +72,12 @@ public class RequestScopedReadEntityTest extends JerseyTest {
 
     @Produces("text/plain")
     public static class ScopedMessageEntityProvider extends AbstractMessageReaderWriterProvider<Message> {
+        private final Provider<ClientRequest> clientRequestProvider;
 
         @Inject
-        private Provider<ClientRequest> clientRequestProvider;
+        public ScopedMessageEntityProvider(Provider<ClientRequest> clientRequestProvider) {
+            this.clientRequestProvider = clientRequestProvider;
+        }
 
         @Override
         public boolean isReadable(Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType) {
@@ -88,7 +92,7 @@ public class RequestScopedReadEntityTest extends JerseyTest {
                 MultivaluedMap<String, String> httpHeaders,
                 InputStream entityStream) throws IOException, WebApplicationException {
             return clientRequestProvider.get() != null
-                    ? new Message(readFromAsString(entityStream, mediaType)) : new Message("failed");
+                    ? new Message(ReaderWriter.readFromAsString(entityStream, mediaType)) : new Message("failed");
         }
 
         @Override
@@ -105,7 +109,8 @@ public class RequestScopedReadEntityTest extends JerseyTest {
                 MediaType mediaType,
                 MultivaluedMap<String, Object> httpHeaders,
                 OutputStream entityStream) throws IOException, WebApplicationException {
-            writeToAsString((clientRequestProvider.get() != null) ? message.text : "failed", entityStream, mediaType);
+            ReaderWriter
+                    .writeToAsString((clientRequestProvider.get() != null) ? message.text : "failed", entityStream, mediaType);
         }
     }
 

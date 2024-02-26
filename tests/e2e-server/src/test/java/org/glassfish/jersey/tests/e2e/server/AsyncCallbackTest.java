@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2012, 2022 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -22,22 +22,22 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.container.AsyncResponse;
-import javax.ws.rs.container.ConnectionCallback;
-import javax.ws.rs.container.Suspended;
-import javax.ws.rs.core.Application;
-import javax.ws.rs.core.Response;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.container.AsyncResponse;
+import jakarta.ws.rs.container.ConnectionCallback;
+import jakarta.ws.rs.container.Suspended;
+import jakarta.ws.rs.core.Application;
+import jakarta.ws.rs.core.Response;
 
 import org.glassfish.jersey.server.ChunkedOutput;
 import org.glassfish.jersey.server.ManagedAsync;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.test.JerseyTest;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests {@link ConnectionCallback connection callback}.
@@ -103,13 +103,12 @@ public class AsyncCallbackTest extends JerseyTest {
         @Override
         public void await() throws InterruptedException {
             final boolean success = super.await(10 * multiplier, TimeUnit.SECONDS);
-            Assert.assertTrue(
-                    Thread.currentThread().getName() + ": Latch [" + name + "] awaiting -> timeout!!!",
-                    success);
+            Assertions.assertTrue(success,
+                    Thread.currentThread().getName() + ": Latch [" + name + "] awaiting -> timeout!!!");
         }
     }
 
-    @Before
+    @BeforeEach
     public void setup() {
         onDisconnectCalled.set(false);
         streamClosedSignal = new TestLatch(1, "streamClosedSignal", getAsyncTimeoutMultiplier());
@@ -141,7 +140,7 @@ public class AsyncCallbackTest extends JerseyTest {
         response.close();
         streamClosedSignal.countDown();
         callbackCalledSignal.await();
-        Assert.assertTrue(onDisconnectCalled.get());
+        Assertions.assertTrue(onDisconnectCalled.get());
     }
 
     public static class MyConnectionCallback implements ConnectionCallback {

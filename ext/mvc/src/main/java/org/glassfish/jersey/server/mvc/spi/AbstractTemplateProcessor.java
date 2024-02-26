@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013, 2019 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2013, 2024 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -16,13 +16,13 @@
 
 package org.glassfish.jersey.server.mvc.spi;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -38,12 +38,12 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
-import javax.ws.rs.core.Configuration;
-import javax.ws.rs.core.HttpHeaders;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.MultivaluedMap;
+import jakarta.ws.rs.core.Configuration;
+import jakarta.ws.rs.core.HttpHeaders;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.MultivaluedMap;
 
-import javax.servlet.ServletContext;
+import jakarta.servlet.ServletContext;
 
 import org.glassfish.jersey.internal.util.PropertiesHelper;
 import org.glassfish.jersey.internal.util.ReflectionHelper;
@@ -80,7 +80,7 @@ public abstract class AbstractTemplateProcessor<T> implements TemplateProcessor<
     private final Charset encoding;
 
     /**
-     * Create an instance of the processor with injected {@link javax.ws.rs.core.Configuration config} and
+     * Create an instance of the processor with injected {@link jakarta.ws.rs.core.Configuration config} and
      * (optional) {@link ServletContext servlet context}.
      *
      * @param config configuration to configure this processor from.
@@ -182,8 +182,8 @@ public abstract class AbstractTemplateProcessor<T> implements TemplateProcessor<
             // File-system path.
             if (reader == null) {
                 try {
-                    reader = new InputStreamReader(new FileInputStream(template), encoding);
-                } catch (final FileNotFoundException fnfe) {
+                    reader = new InputStreamReader(Files.newInputStream(Paths.get(template)), encoding);
+                } catch (final IOException ioe) {
                     // NOOP.
                 }
             }
@@ -237,7 +237,7 @@ public abstract class AbstractTemplateProcessor<T> implements TemplateProcessor<
 
     /**
      * Retrieve a template object factory. The factory is, at first, looked for in
-     * {@link javax.ws.rs.core.Configuration configuration} and if not found, given default value is used.
+     * {@link jakarta.ws.rs.core.Configuration configuration} and if not found, given default value is used.
      *
      * @param createInstance function that delegates a creation and an initialization to injection manager.
      * @param type           type of requested template object factory.

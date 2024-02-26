@@ -16,7 +16,7 @@
 
 package org.glassfish.jersey.tests.cdi.inject;
 
-import javax.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.ApplicationScoped;
 
 @ApplicationScoped
 public class ScopedExceptionMapper extends ParentExceptionMapper {

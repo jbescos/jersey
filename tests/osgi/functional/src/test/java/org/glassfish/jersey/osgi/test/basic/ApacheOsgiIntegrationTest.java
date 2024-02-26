@@ -19,12 +19,12 @@ package org.glassfish.jersey.osgi.test.basic;
 import java.net.URI;
 import java.util.List;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriBuilder;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.client.Client;
+import jakarta.ws.rs.client.ClientBuilder;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.UriBuilder;
 
 import org.glassfish.grizzly.http.server.HttpServer;
 import org.glassfish.jersey.apache.connector.ApacheConnectorProvider;
@@ -41,6 +41,7 @@ import org.ops4j.pax.exam.junit.PaxExam;
 
 import static org.junit.Assert.assertEquals;
 import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
+import static org.ops4j.pax.exam.CoreOptions.systemProperty;
 
 /**
  * @author Adam Lindenthal
@@ -49,6 +50,7 @@ import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
 public class ApacheOsgiIntegrationTest {
 
     private static final URI baseUri = UriBuilder.fromUri("http://localhost").port(Helper.getPort()).path("/jersey").build();
+    private static final String JAXRS_RUNTIME_DELEGATE_PROPERTY = "jakarta.ws.rs.ext.RuntimeDelegate";
 
     @Configuration
     public static Option[] configuration() {
@@ -59,9 +61,9 @@ public class ApacheOsgiIntegrationTest {
                 mavenBundle().groupId("org.apache.httpcomponents").artifactId("httpcore-osgi").versionAsInProject(),
                 mavenBundle().groupId("org.apache.httpcomponents").artifactId("httpclient-osgi").versionAsInProject(),
                 mavenBundle().groupId("org.glassfish.jersey.connectors").artifactId("jersey-apache-connector")
-                        .versionAsInProject()
-
-        ));
+                        .versionAsInProject(),
+                systemProperty(JAXRS_RUNTIME_DELEGATE_PROPERTY).value("org.glassfish.jersey.internal.RuntimeDelegateImpl")
+                ));
         return Helper.asArray(options);
     }
 

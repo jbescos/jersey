@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2012, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -20,8 +20,8 @@ import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.Formatter;
 
-import javax.json.bind.annotation.JsonbTypeAdapter;
-import javax.xml.bind.annotation.XmlRootElement;
+import jakarta.json.bind.annotation.JsonbTypeAdapter;
+import jakarta.xml.bind.annotation.XmlRootElement;
 
 import org.glassfish.jersey.tests.e2e.json.Jersey1199Test;
 
@@ -52,13 +52,6 @@ public class Jersey1199List {
         this.total = objects.length;
     }
 
-    // Jackson 1
-    @org.codehaus.jackson.annotate.JsonTypeInfo(
-            use = org.codehaus.jackson.annotate.JsonTypeInfo.Id.NAME,
-            include = org.codehaus.jackson.annotate.JsonTypeInfo.As.PROPERTY)
-    @org.codehaus.jackson.annotate.JsonSubTypes({
-            @org.codehaus.jackson.annotate.JsonSubTypes.Type(value = ColorHolder.class)
-    })
     // Jackson 2
     @com.fasterxml.jackson.annotation.JsonTypeInfo(
             use = com.fasterxml.jackson.annotation.JsonTypeInfo.Id.NAME,

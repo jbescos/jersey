@@ -19,8 +19,8 @@ package org.glassfish.jersey.tests.cdi.bv;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.enterprise.inject.Vetoed;
-import javax.validation.ConstraintViolation;
+import jakarta.enterprise.inject.Vetoed;
+import jakarta.validation.ConstraintViolation;
 
 /**
  * HK2 managed validation result bean.

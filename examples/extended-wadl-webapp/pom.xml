@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 
-    Copyright (c) 2012, 2021 Oracle and/or its affiliates. All rights reserved.
+    Copyright (c) 2012, 2023 Oracle and/or its affiliates. All rights reserved.
 
     This program and the accompanying materials are made available under the
     terms of the Eclipse Distribution License v. 1.0, which is available at
@@ -19,7 +19,7 @@
         <groupId>org.glassfish.jersey.examples</groupId>
         <artifactId>webapp-example-parent</artifactId>
         <relativePath>../webapp-example-parent/pom.xml</relativePath>
-        <version>2.36-SNAPSHOT</version>
+        <version>3.1.99-SNAPSHOT</version>
     </parent>
 
     <artifactId>extended-wadl-webapp</artifactId>
@@ -90,6 +90,12 @@
             <artifactId>pax-exam-link-mvn</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>${junit4.version}</version>
+            <scope>test</scope>
+        </dependency>
 
         <!-- OSGi runtime - Felix -->
         <dependency>
@@ -103,7 +109,7 @@
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-log4j12</artifactId>
-            <version>1.6.4</version>
+            <version>${slf4j.version}</version>
             <scope>test</scope>
         </dependency>
 
@@ -126,11 +132,15 @@
         <dependency>
             <groupId>com.sun.xml.bind</groupId>
             <artifactId>jaxb-osgi</artifactId>
-            <scope>test</scope>
+<!--            <scope>test</scope>-->
         </dependency>
         <dependency>
             <groupId>jakarta.xml.bind</groupId>
             <artifactId>jakarta.xml.bind-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.angus</groupId>
+            <artifactId>angus-activation</artifactId>
         </dependency>
     </dependencies>
 
@@ -138,27 +148,49 @@
         <plugins>
             <!-- Extended Wadl Config: this plugin generates the jaxb beans from xsd schemas -->
             <plugin>
-                <groupId>org.jvnet.jaxb2.maven2</groupId>
-                <artifactId>maven-jaxb2-plugin</artifactId>
-                <version>0.14.0</version>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>jaxb2-maven-plugin</artifactId>
+                <version>2.5.0</version>
                 <executions>
                     <execution>
-                        <phase>generate-sources</phase>
+                        <id>xjc</id>
                         <goals>
-                            <goal>generate</goal>
+                            <goal>xjc</goal>
                         </goals>
                     </execution>
                 </executions>
                 <configuration>
-                    <generatePackage>org.glassfish.jersey.examples.extendedwadl</generatePackage>
-                    <schemaDirectory>src/main/xsd</schemaDirectory>
-                    <!--<includeSchemas>-->
-                    <!--<includeSchema>**/*.xsd</includeSchema>-->
-                    <!--</includeSchemas>-->
+                    <sources>
+                        <source>src/main/xsd</source>
+                    </sources>
+                    <packageName>org.glassfish.jersey.examples.extendedwadl</packageName>
                     <extension>true</extension>
                     <strict>false</strict>
                     <verbose>true</verbose>
                 </configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.glassfish.jaxb</groupId>
+                        <artifactId>jaxb-xjc</artifactId>
+                        <version>${jaxb.ri.version}</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>jakarta.activation</groupId>
+                        <artifactId>jakarta.activation-api</artifactId>
+                        <version>${jakarta.activation-api.version}</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>jakarta.xml.bind</groupId>
+                        <artifactId>jakarta.xml.bind-api</artifactId>
+                        <version>${jakarta.jaxb.api.version}</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>com.sun.xml.bind</groupId>
+                        <artifactId>jaxb-impl</artifactId>
+                        <version>${jaxb.ri.version}</version>
+                    </dependency>
+
+                </dependencies>
             </plugin>
 
             <!-- Extended Wadl Config: javadoc plugin generates resourcedoc.xml during the compilation using doclet.
@@ -202,32 +234,45 @@
                             <artifactId>xercesImpl</artifactId>
                             <version>${xerces.version}</version>
                         </docletArtifact>
+                        <docletArtifact>
+                            <groupId>xml-apis</groupId>
+                            <artifactId>xml-apis</artifactId>
+                            <version>1.4.01</version>
+                        </docletArtifact>
+                        <docletArtifact>
+                            <groupId>jakarta.xml.bind</groupId>
+                            <artifactId>jakarta.xml.bind-api</artifactId>
+                            <version>${jakarta.jaxb.api.version}</version>
+                        </docletArtifact>
                     </docletArtifacts>
                     <!-- the following option is required as a work around for
                          version 2.5 of the javadoc plugin which will be used
                          by a maven version > 2.0.9 -->
                     <useStandardDocletOptions>false</useStandardDocletOptions>
                     <additionalOptions>
-                        <additionalOption>-output</additionalOption>
-                        <additionalOption>${project.build.outputDirectory}/resourcedoc.xml</additionalOption>
+                        <additionalOption>-output ${project.build.outputDirectory}/resourcedoc.xml</additionalOption>
                     </additionalOptions>
-                    <additionalDependencies>
-                        <additionalDependency>
-                            <groupId>com.sun.xml.bind</groupId>
-                            <artifactId>jaxb-osgi</artifactId>
-                            <version>${jaxb.ri.version}</version>
-                        </additionalDependency>
-                    </additionalDependencies>
-<!--                    <additionalparam>-output ${project.build.outputDirectory}/resourcedoc.xml</additionalparam>-->
+                    <doclint>none</doclint>
                 </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
-                    <forkMode>always</forkMode>
+                    <forkCount>1</forkCount>
+                    <reuseForks>false</reuseForks>
                     <enableAssertions>false</enableAssertions>
+                    <excludes>
+                        <exclude>org/glassfish/jersey/examples/extendedwadl/ExtendedWadlWebappOsgiTest.java</exclude>
+                    </excludes>
                 </configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.apache.maven.surefire</groupId>
+                        <artifactId>surefire-junit47</artifactId>
+                        <version>${surefire.mvn.plugin.version}</version>
+                    </dependency>
+                </dependencies>
             </plugin>
             <plugin>
                 <groupId>org.ops4j.pax.exam</groupId>
@@ -245,42 +290,6 @@
     </build>
 
     <profiles>
-        <profile>
-            <id>testsJdk11</id>
-            <activation>
-                <jdk>[11,)</jdk>
-            </activation>
-            <dependencies>
-                <dependency>
-                    <groupId>com.sun.activation</groupId>
-                    <artifactId>jakarta.activation</artifactId>
-                </dependency>
-            </dependencies>
-        </profile>
-        <profile>
-            <id>javadocAndTestsSkipJDK13</id>
-            <activation>
-                <jdk>[13,)</jdk>
-            </activation>
-            <build>
-            <plugins>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-javadoc-plugin</artifactId>
-                    <configuration>
-                        <skip>true</skip>
-                    </configuration>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-surefire-plugin</artifactId>
-                    <configuration>
-                        <skip>true</skip>
-                    </configuration>
-                </plugin>
-            </plugins>
-            </build>
-        </profile>
         <profile>
             <id>pre-release</id>
             <build>

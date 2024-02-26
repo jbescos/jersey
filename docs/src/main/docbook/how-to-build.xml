@@ -64,17 +64,17 @@
     <section xml:id="building">
         <title>Building the Source</title>
         <para>
-            Jersey source code requires Java SE 8 or higher. The build is based on Maven.
-            Maven 3.6.3 or higher is highly recommended. Also it is recommended you use the following
-            Maven options when building the workspace (can be set in <literal>MAVEN_OPTS</literal> environment
-            variable):
+            Jersey source code requires Java SE 8 or higher. Support of Jetty HTTP container/client requires JDK 11+.
+            The build is based on Maven. Maven 3.6.3 or higher is highly recommended. Also it is recommended you use
+            the following Maven options when building the workspace (can be set in <literal>MAVEN_OPTS</literal>
+            environment variable):
             <programlisting language="bash" linenumbering="unnumbered">-Xmx1048m -XX:PermSize=64M -XX:MaxPermSize=128M</programlisting>
         </para>
         <para>
             It is recommended to build all of Jersey after you cloned the source code repository.
             To do that execute the following commands in the directory where jersey source repository
             was cloned (typically the directory named "jersey"):
-            <programlisting language="bash" linenumbering="unnumbered">mvn -Dmaven.test.skip=true clean install -DskipTests</programlisting>
+            <programlisting language="bash" linenumbering="unnumbered">mvn -Dmaven.test.skip=true -DskipTests clean install</programlisting>
             This command will build Jersey, but skip the test execution.
             If you don't want to skip the tests, execute the following instead:
             <programlisting language="bash" linenumbering="unnumbered">mvn clean install</programlisting>
@@ -92,8 +92,8 @@
             where
             <literal>pattern</literal>
             may be a comma separated set of names matching tests classes or individual methods (like
-            <literal>LinkTest#testDelimiters</literal>).
-            And [modulename] is name of a module from which tests are called. If module does not contain those tests
+            <literal>LinkTest#testDelimiters</literal>)
+            and [modulename] is name of a module from which tests are called. If module does not contain those tests
             build failure (as no tests run) occurs.
         </para>
     </section>

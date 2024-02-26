@@ -20,10 +20,10 @@ import java.util.Formatter;
 import java.util.LinkedList;
 import java.util.List;
 
-import javax.json.bind.annotation.JsonbVisibility;
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
+import jakarta.json.bind.annotation.JsonbVisibility;
+import jakarta.xml.bind.annotation.XmlAttribute;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlRootElement;
 
 import org.glassfish.jersey.tests.e2e.json.JsonTestHelper;
 

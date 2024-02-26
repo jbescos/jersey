@@ -23,7 +23,7 @@
         <servlet-name>jersey4949Servlet</servlet-name>
         <servlet-class>org.glassfish.jersey.servlet.ServletContainer</servlet-class>
         <init-param>
-            <param-name>javax.ws.rs.Application</param-name>
+            <param-name>jakarta.ws.rs.Application</param-name>
             <param-value>org.glassfish.jersey.tests.integration.jersey4949.Jersey4949</param-value>
         </init-param>
         <load-on-startup>1</load-on-startup>

@@ -1,4 +1,5 @@
 /*
+ * Copyright (c) 2019, 2021 Oracle and/or its affiliates. All rights reserved.
  * Copyright (c) 2019 Christian Kaltepoth. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
@@ -19,7 +20,7 @@ package org.glassfish.jersey.tests.integration.jersey4099;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.ws.rs.core.Application;
+import jakarta.ws.rs.core.Application;
 
 public class MyApplication extends Application {
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010, 2019 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2010, 2022 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -32,12 +32,12 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.ws.rs.core.Application;
-import javax.ws.rs.core.GenericType;
-import javax.ws.rs.core.SecurityContext;
+import jakarta.ws.rs.core.Application;
+import jakarta.ws.rs.core.GenericType;
+import jakarta.ws.rs.core.SecurityContext;
 
-import javax.inject.Inject;
-import javax.inject.Provider;
+import jakarta.inject.Inject;
+import jakarta.inject.Provider;
 
 import org.glassfish.jersey.internal.MapPropertiesDelegate;
 import org.glassfish.jersey.internal.inject.AbstractBinder;
@@ -138,7 +138,7 @@ public final class SimpleContainer implements org.simpleframework.http.core.Cont
         @Override
         public OutputStream writeResponseStatusAndHeaders(final long contentLength,
                                                           final ContainerResponse context) throws ContainerException {
-            final javax.ws.rs.core.Response.StatusType statusInfo = context.getStatusInfo();
+            final jakarta.ws.rs.core.Response.StatusType statusInfo = context.getStatusInfo();
 
             final int code = statusInfo.getStatusCode();
             final String reason = statusInfo.getReasonPhrase() == null
@@ -220,7 +220,7 @@ public final class SimpleContainer implements org.simpleframework.http.core.Cont
         public void failure(final Throwable error) {
             try {
                 if (!response.isCommitted()) {
-                    response.setCode(javax.ws.rs.core.Response.Status.INTERNAL_SERVER_ERROR.getStatusCode());
+                    response.setCode(jakarta.ws.rs.core.Response.Status.INTERNAL_SERVER_ERROR.getStatusCode());
                     response.setDescription(error.getMessage());
                 }
             } finally {
@@ -407,7 +407,7 @@ public final class SimpleContainer implements org.simpleframework.http.core.Cont
 
     @Override
     public void reload() {
-        reload(getConfiguration());
+        reload(new ResourceConfig(getConfiguration()));
     }
 
     @Override
@@ -463,6 +463,17 @@ public final class SimpleContainer implements org.simpleframework.http.core.Cont
      */
     SimpleContainer(final Application application) {
         this.appHandler = new ApplicationHandler(application, new SimpleBinder());
+        this.scheduler = new ScheduledThreadPoolExecutor(2, new DaemonFactory(TimeoutDispatcher.class));
+    }
+
+    /**
+     * Create a new Simple framework HTTP container.
+     *
+     * @param applicationClass JAX-RS / Jersey application class to be deployed on Simple framework HTTP
+     *                    container.
+     */
+    SimpleContainer(final Class<? extends Application> applicationClass) {
+        this.appHandler = new ApplicationHandler(applicationClass, new SimpleBinder());
         this.scheduler = new ScheduledThreadPoolExecutor(2, new DaemonFactory(TimeoutDispatcher.class));
     }
 }

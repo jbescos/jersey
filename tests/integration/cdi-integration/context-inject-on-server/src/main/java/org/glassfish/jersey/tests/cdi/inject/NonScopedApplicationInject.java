@@ -16,7 +16,7 @@
 
 package org.glassfish.jersey.tests.cdi.inject;
 
-import javax.ws.rs.Path;
+import jakarta.ws.rs.Path;
 import java.util.Collections;
 import java.util.Set;
 

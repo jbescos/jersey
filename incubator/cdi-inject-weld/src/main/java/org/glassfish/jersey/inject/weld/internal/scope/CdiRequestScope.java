@@ -16,7 +16,7 @@
 
 package org.glassfish.jersey.inject.weld.internal.scope;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 import org.glassfish.jersey.process.internal.RequestContext;
 import org.glassfish.jersey.process.internal.RequestScope;

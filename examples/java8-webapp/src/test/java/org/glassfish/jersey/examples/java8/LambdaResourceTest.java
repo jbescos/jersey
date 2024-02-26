@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015, 2019 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2015, 2022 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Distribution License v. 1.0, which is available at
@@ -10,14 +10,14 @@
 
 package org.glassfish.jersey.examples.java8;
 
-import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.core.Application;
+import jakarta.ws.rs.client.WebTarget;
+import jakarta.ws.rs.core.Application;
 
 import org.glassfish.jersey.test.JerseyTest;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import static org.hamcrest.CoreMatchers.equalTo;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 /**
  * Test usage of Java SE 8 lambdas in JAX-RS resource methods.
@@ -36,7 +36,7 @@ public class LambdaResourceTest extends JerseyTest {
      */
     @Test
     public void testLambdas() {
-        final WebTarget target = target("lambdas/{p}");
+        final WebTarget target = target("j8").path("lambdas/{p}");
 
         // test default method with no @Path annotation
         String response = target.resolveTemplate("p", "test").request().get(String.class);

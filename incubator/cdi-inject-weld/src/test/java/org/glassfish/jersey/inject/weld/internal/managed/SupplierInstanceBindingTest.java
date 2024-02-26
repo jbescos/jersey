@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2021, 2022 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -19,26 +19,26 @@ package org.glassfish.jersey.inject.weld.internal.managed;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Supplier;
 
-import javax.enterprise.event.Observes;
-import javax.enterprise.inject.se.SeContainerInitializer;
-import javax.enterprise.inject.spi.BeanManager;
-import javax.enterprise.inject.spi.BeforeBeanDiscovery;
-import javax.enterprise.inject.spi.Extension;
-import javax.enterprise.inject.Vetoed;
-import javax.inject.Inject;
-import javax.ws.rs.core.GenericType;
+import jakarta.enterprise.event.Observes;
+import jakarta.enterprise.inject.se.SeContainerInitializer;
+import jakarta.enterprise.inject.spi.BeanManager;
+import jakarta.enterprise.inject.spi.BeforeBeanDiscovery;
+import jakarta.enterprise.inject.spi.Extension;
+import jakarta.enterprise.inject.Vetoed;
+import jakarta.inject.Inject;
+import jakarta.ws.rs.core.GenericType;
 
 import org.glassfish.jersey.internal.inject.AbstractBinder;
 
 import org.hamcrest.core.StringStartsWith;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 /**
  * Tests that {@link Supplier} can be registered as a instance-factory.
@@ -51,14 +51,14 @@ public class SupplierInstanceBindingTest extends TestParent {
     private static long supplierHit = 2;
     private static AtomicBoolean runOnlyOnceGuard = new AtomicBoolean(false);
 
-    @BeforeClass
+    @BeforeAll
     public static void setup() {
         SeContainerInitializer containerInitializer = SeContainerInitializer.newInstance();
         containerInitializer.addExtensions(new SupplierInstanceBindingTestExtension());
         container = containerInitializer.initialize();
     }
 
-    @Before
+    @BeforeEach
     public void initBinding() {
         if (!runOnlyOnceGuard.getAndSet(true)) {
             MyVetoedLongSupplier supplier = new MyVetoedLongSupplier();

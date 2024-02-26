@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010, 2019 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2010, 2022 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -24,19 +24,19 @@ import java.lang.annotation.Target;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
-import javax.ws.rs.DELETE;
-import javax.ws.rs.GET;
-import javax.ws.rs.HttpMethod;
-import javax.ws.rs.OPTIONS;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.container.ContainerRequestContext;
-import javax.ws.rs.container.ContainerResponseContext;
-import javax.ws.rs.container.ContainerResponseFilter;
-import javax.ws.rs.core.HttpHeaders;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
+import jakarta.ws.rs.DELETE;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.HttpMethod;
+import jakarta.ws.rs.OPTIONS;
+import jakarta.ws.rs.POST;
+import jakarta.ws.rs.PUT;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.container.ContainerRequestContext;
+import jakarta.ws.rs.container.ContainerResponseContext;
+import jakarta.ws.rs.container.ContainerResponseFilter;
+import jakarta.ws.rs.core.HttpHeaders;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
 
 import org.glassfish.jersey.message.internal.MediaTypes;
 import org.glassfish.jersey.server.ApplicationHandler;
@@ -46,10 +46,10 @@ import org.glassfish.jersey.server.RequestContextBuilder;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.server.ServerProperties;
 
-import org.junit.Assert;
-import org.junit.Test;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.sun.research.ws.wadl.Application;
 
@@ -194,9 +194,9 @@ public class OptionsTest {
         ApplicationHandler application = new ApplicationHandler(new ResourceConfig(WadlResource.class));
         final ContainerRequest request = RequestContextBuilder.from("/resource", "OPTIONS").build();
         final ContainerResponse response = application.apply(request).get();
-        Assert.assertEquals(200, response.getStatus());
+        Assertions.assertEquals(200, response.getStatus());
         final MediaType type = response.getMediaType();
-        Assert.assertTrue(type.equals(MediaTypes.WADL_TYPE) || type.equals(MediaType.TEXT_HTML_TYPE)
+        Assertions.assertTrue(type.equals(MediaTypes.WADL_TYPE) || type.equals(MediaType.TEXT_HTML_TYPE)
                 || type.equals(MediaType.TEXT_PLAIN));
 
     }
@@ -206,7 +206,7 @@ public class OptionsTest {
         ApplicationHandler application = new ApplicationHandler(new ResourceConfig(WadlResource.class, ResponseTextFilter.class));
         final ContainerResponse response = testOptions(MediaType.TEXT_PLAIN_TYPE, application, "/resource");
         final String entity = (String) response.getEntity();
-        Assert.assertTrue(entity.contains("GET"));
+        Assertions.assertTrue(entity.contains("GET"));
     }
 
     @Test
@@ -214,7 +214,7 @@ public class OptionsTest {
         ApplicationHandler application = new ApplicationHandler(new ResourceConfig(WadlResource.class, ResponseHtmlFilter.class));
         final MediaType requestType = MediaType.TEXT_HTML_TYPE;
         final ContainerResponse response = testOptions(requestType, application, "/resource");
-        Assert.assertTrue(response.getAllowedMethods().contains("GET"));
+        Assertions.assertTrue(response.getAllowedMethods().contains("GET"));
     }
 
     @Test
@@ -229,7 +229,7 @@ public class OptionsTest {
         @Override
         public void filter(ContainerRequestContext requestContext, ContainerResponseContext responseContext) throws IOException {
             final MediaType type = responseContext.getMediaType();
-            Assert.assertEquals(MediaType.TEXT_PLAIN_TYPE, type);
+            Assertions.assertEquals(MediaType.TEXT_PLAIN_TYPE, type);
 
         }
     }
@@ -239,7 +239,7 @@ public class OptionsTest {
         @Override
         public void filter(ContainerRequestContext requestContext, ContainerResponseContext responseContext) throws IOException {
             final MediaType type = responseContext.getMediaType();
-            Assert.assertEquals(MediaType.TEXT_HTML_TYPE, type);
+            Assertions.assertEquals(MediaType.TEXT_HTML_TYPE, type);
 
         }
     }
@@ -249,7 +249,7 @@ public class OptionsTest {
         @Override
         public void filter(ContainerRequestContext requestContext, ContainerResponseContext responseContext) throws IOException {
             final MediaType type = responseContext.getMediaType();
-            Assert.assertEquals(MediaTypes.WADL_TYPE, type);
+            Assertions.assertEquals(MediaTypes.WADL_TYPE, type);
             responseContext.getEntity().getClass().equals(Application.class);
 
         }
@@ -276,7 +276,7 @@ public class OptionsTest {
         ApplicationHandler application = new ApplicationHandler(new ResourceConfig(ResourceWithoutGetMethod.class));
         final ContainerResponse response = testOptions(MediaType.TEXT_PLAIN_TYPE, application, "/no-get");
 
-        Assert.assertFalse(((String) response.getEntity()).contains("HEAD"));
+        Assertions.assertFalse(((String) response.getEntity()).contains("HEAD"));
     }
 
     @Test
@@ -288,11 +288,11 @@ public class OptionsTest {
         final ContainerRequest request = RequestContextBuilder.from("/no-get", "OPTIONS").accept(MediaType.MEDIA_TYPE_WILDCARD)
                 .build();
         final ContainerResponse response = application.apply(request).get();
-        Assert.assertEquals(200, response.getStatus());
+        Assertions.assertEquals(200, response.getStatus());
 
         final List<String> strings = response.getStringHeaders().get(HttpHeaders.ALLOW);
         for (String allow : strings) {
-            Assert.assertFalse(allow.contains("HEAD"));
+            Assertions.assertFalse(allow.contains("HEAD"));
         }
     }
 
@@ -301,9 +301,9 @@ public class OptionsTest {
         final ContainerRequest request = RequestContextBuilder.from(path, "OPTIONS").accept(requestType)
                 .build();
         final ContainerResponse response = application.apply(request).get();
-        Assert.assertEquals(200, response.getStatus());
+        Assertions.assertEquals(200, response.getStatus());
         final MediaType type = response.getMediaType();
-        Assert.assertEquals(requestType, type);
+        Assertions.assertEquals(requestType, type);
         return response;
     }
 
@@ -312,6 +312,6 @@ public class OptionsTest {
         ApplicationHandler application = new ApplicationHandler(new ResourceConfig(ResourceWithoutGetMethod.class));
         final MediaType requestType = MediaType.TEXT_PLAIN_TYPE;
         final ContainerResponse response = testOptions(requestType, application, "/no-get/sub");
-        Assert.assertFalse(((String) response.getEntity()).contains("HEAD"));
+        Assertions.assertFalse(((String) response.getEntity()).contains("HEAD"));
     }
 }

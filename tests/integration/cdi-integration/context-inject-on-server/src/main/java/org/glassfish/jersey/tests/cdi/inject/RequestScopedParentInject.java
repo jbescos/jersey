@@ -16,9 +16,9 @@
 
 package org.glassfish.jersey.tests.cdi.inject;
 
-import javax.inject.Inject;
-import javax.ws.rs.container.ContainerRequestContext;
-import javax.ws.rs.core.Context;
+import jakarta.inject.Inject;
+import jakarta.ws.rs.container.ContainerRequestContext;
+import jakarta.ws.rs.core.Context;
 
 public abstract class RequestScopedParentInject extends ParentInject {
     @Context
@@ -29,7 +29,7 @@ public abstract class RequestScopedParentInject extends ParentInject {
 
     //  CDI Scoped only
 //    @Inject
-//    protected javax.enterprise.inject.spi.BeanManager beanManager;
+//    protected jakarta.enterprise.inject.spi.BeanManager beanManager;
 
     @Override
     public boolean checkContexted(StringBuilder stringBuilder) {

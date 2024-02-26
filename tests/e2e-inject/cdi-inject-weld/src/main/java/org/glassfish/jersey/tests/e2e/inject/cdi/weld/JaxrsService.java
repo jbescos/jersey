@@ -16,10 +16,10 @@
 
 package org.glassfish.jersey.tests.e2e.inject.cdi.weld;
 
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.UriInfo;
+import jakarta.ws.rs.core.Context;
+import jakarta.ws.rs.core.UriInfo;
 
-import javax.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.ApplicationScoped;
 
 /**
  * Holder for JAX-RS information to inject them into interceptor. JAX-RS does not work in interceptor.

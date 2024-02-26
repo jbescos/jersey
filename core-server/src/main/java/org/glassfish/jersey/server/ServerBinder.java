@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010, 2019 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2010, 2021 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -16,10 +16,11 @@
 
 package org.glassfish.jersey.server;
 
-import javax.ws.rs.ext.MessageBodyWriter;
-import javax.ws.rs.ext.WriterInterceptor;
+import jakarta.ws.rs.ext.ExceptionMapper;
+import jakarta.ws.rs.ext.MessageBodyWriter;
+import jakarta.ws.rs.ext.WriterInterceptor;
 
-import javax.inject.Singleton;
+import jakarta.inject.Singleton;
 
 import org.glassfish.jersey.internal.inject.AbstractBinder;
 import org.glassfish.jersey.server.internal.JsonWithPaddingInterceptor;
@@ -44,5 +45,8 @@ class ServerBinder extends AbstractBinder {
 
         // JSONP
         bind(JsonWithPaddingInterceptor.class).to(WriterInterceptor.class).in(Singleton.class);
+
+        //Default exception mapper
+        bind(DefaultExceptionMapper.class).to(ExceptionMapper.class).in(Singleton.class);
     }
 }

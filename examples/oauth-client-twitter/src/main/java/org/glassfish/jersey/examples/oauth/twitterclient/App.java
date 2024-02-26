@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2010, 2023 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Distribution License v. 1.0, which is available at
@@ -11,19 +11,21 @@
 package org.glassfish.jersey.examples.oauth.twitterclient;
 
 import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Properties;
 
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.core.Feature;
-import javax.ws.rs.core.GenericType;
-import javax.ws.rs.core.Response;
+import jakarta.ws.rs.client.Client;
+import jakarta.ws.rs.client.ClientBuilder;
+import jakarta.ws.rs.core.Feature;
+import jakarta.ws.rs.core.GenericType;
+import jakarta.ws.rs.core.Response;
 
 import org.glassfish.jersey.client.oauth1.AccessToken;
 import org.glassfish.jersey.client.oauth1.ConsumerCredentials;
@@ -141,9 +143,9 @@ public class App {
     }
 
     private static void loadSettings() {
-        FileInputStream st = null;
+        InputStream st = null;
         try {
-            st = new FileInputStream(PROPERTIES_FILE_NAME);
+            st = Files.newInputStream(Paths.get(PROPERTIES_FILE_NAME));
             PROPERTIES.load(st);
         } catch (final IOException e) {
             // ignore
@@ -174,9 +176,9 @@ public class App {
     }
 
     private static void storeSettings() {
-        FileOutputStream st = null;
+        OutputStream st = null;
         try {
-            st = new FileOutputStream(PROPERTIES_FILE_NAME);
+            st = Files.newOutputStream(Paths.get(PROPERTIES_FILE_NAME));
             PROPERTIES.store(st, null);
         } catch (final IOException e) {
             // ignore

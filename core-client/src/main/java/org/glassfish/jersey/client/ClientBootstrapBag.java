@@ -22,7 +22,7 @@ import org.glassfish.jersey.client.inject.ParameterUpdaterProvider;
 import org.glassfish.jersey.internal.util.collection.LazyValue;
 import org.glassfish.jersey.spi.ComponentProvider;
 
-import javax.ws.rs.core.GenericType;
+import jakarta.ws.rs.core.GenericType;
 import java.util.Collection;
 
 /**

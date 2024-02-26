@@ -16,9 +16,9 @@
 
 package org.glassfish.jersey.inject.weld.managed;
 
-import javax.annotation.Priority;
-import javax.enterprise.context.spi.CreationalContext;
-import javax.ws.rs.RuntimeType;
+import jakarta.annotation.Priority;
+import jakarta.enterprise.context.spi.CreationalContext;
+import jakarta.ws.rs.RuntimeType;
 
 import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.inject.weld.internal.injector.JerseyClientCreationalContext;

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015, 2019 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2015, 2022 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -30,9 +30,9 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.core.Application;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.core.Application;
 
 import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.jdk.connector.JdkConnectorProperties;
@@ -40,8 +40,8 @@ import org.glassfish.jersey.jdk.connector.JdkConnectorProvider;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.test.JerseyTest;
 
-import org.junit.AfterClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.Test;
 import static org.glassfish.jersey.jdk.connector.internal.HttpConnection.State.CLOSED;
 import static org.glassfish.jersey.jdk.connector.internal.HttpConnection.State.CONNECTING;
 import static org.glassfish.jersey.jdk.connector.internal.HttpConnection.State.CONNECT_TIMEOUT;
@@ -53,8 +53,8 @@ import static org.glassfish.jersey.jdk.connector.internal.HttpConnection.State.R
 import static org.glassfish.jersey.jdk.connector.internal.HttpConnection.State.RECEIVING_HEADER;
 import static org.glassfish.jersey.jdk.connector.internal.HttpConnection.State.RESPONSE_TIMEOUT;
 import static org.glassfish.jersey.jdk.connector.internal.HttpConnection.State.SENDING_REQUEST;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * @author Petr Janouch
@@ -64,7 +64,7 @@ public class HttpConnectionTest extends JerseyTest {
     private static final ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
     private static final Throwable testError = new Throwable();
 
-    @AfterClass
+    @AfterAll
     public static void cleanUp() {
         scheduler.shutdownNow();
     }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2012, 2023 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -21,19 +21,20 @@ import java.io.InputStream;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 
-import javax.ws.rs.ConstrainedTo;
-import javax.ws.rs.RuntimeType;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.MultivaluedMap;
-import javax.ws.rs.ext.MessageBodyReader;
-import javax.ws.rs.ext.Providers;
+import jakarta.ws.rs.ConstrainedTo;
+import jakarta.ws.rs.RuntimeType;
+import jakarta.ws.rs.core.Context;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.MultivaluedMap;
+import jakarta.ws.rs.ext.MessageBodyReader;
+import jakarta.ws.rs.ext.Providers;
 
-import javax.inject.Inject;
-import javax.inject.Provider;
-import javax.inject.Singleton;
+import jakarta.inject.Inject;
+import jakarta.inject.Provider;
+import jakarta.inject.Singleton;
 
 import org.glassfish.jersey.media.multipart.MultiPart;
+import org.glassfish.jersey.message.MessageBodyWorkers;
 import org.glassfish.jersey.server.CloseableService;
 
 import org.jvnet.mimepull.MIMEParsingException;
@@ -53,8 +54,9 @@ public class MultiPartReaderServerSide extends MultiPartReaderClientSide {
 
     @Inject
     public MultiPartReaderServerSide(@Context final Providers providers,
-                                     final Provider<CloseableService> closeableServiceProvider) {
-        super(providers);
+                                     @Context final Provider<CloseableService> closeableServiceProvider,
+                                     @Context final Provider<MessageBodyWorkers> messageBodyWorkers) {
+        super(providers, messageBodyWorkers);
         this.closeableServiceProvider = closeableServiceProvider;
     }
 

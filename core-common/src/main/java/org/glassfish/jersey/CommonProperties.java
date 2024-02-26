@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013, 2021 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2013, 2023 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -19,7 +19,7 @@ package org.glassfish.jersey;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.ws.rs.RuntimeType;
+import jakarta.ws.rs.RuntimeType;
 
 import org.glassfish.jersey.internal.util.PropertiesClass;
 import org.glassfish.jersey.internal.util.PropertiesHelper;
@@ -132,7 +132,7 @@ public final class CommonProperties {
      * If {@code true} then disable META-INF/services lookup globally on client/server.
      * <p>
      * By default Jersey looks up SPI implementations described by META-INF/services/* files.
-     * Then you can register appropriate provider classes by {@link javax.ws.rs.core.Application}.
+     * Then you can register appropriate provider classes by {@link jakarta.ws.rs.core.Application}.
      * </p>
      * <p>
      * The default value is {@code false}.
@@ -193,7 +193,7 @@ public final class CommonProperties {
 
     /**
      * An integer value that defines the buffer size used to buffer the outbound message entity in order to
-     * determine its size and set the value of HTTP <tt>{@value javax.ws.rs.core.HttpHeaders#CONTENT_LENGTH}</tt> header.
+     * determine its size and set the value of HTTP <tt>{@value jakarta.ws.rs.core.HttpHeaders#CONTENT_LENGTH}</tt> header.
      * <p>
      * If the entity size exceeds the configured buffer size, the buffering would be cancelled and the entity size
      * would not be determined. Value less or equal to zero disable the buffering of the entity at all.
@@ -230,7 +230,7 @@ public final class CommonProperties {
      * Disable some of the default providers from being loaded. The following providers extend application footprint
      * by XML dependencies, which is too heavy for native image, or by AWT which may possibly be not available by JDK 11 desktop:
      * <ul>
-     *     <li>javax.activation.DataSource</li>
+     *     <li>jakarta.activation.DataSource</li>
      *     <li>java.awt.image.RenderedImage</li>
      *     <li>javax.xml.transform.Source</li>
      *     <li>javax.xml.transform.dom.DOMSource</li>
@@ -256,6 +256,71 @@ public final class CommonProperties {
     public static final String JAXRS_SERVICE_LOADING_ENABLE = "jakarta.ws.rs.loadServices";
 
     /**
+     * Comma separated list of jackson modules which are only enabled (only those modules will be used)
+     * for json-jackson processing
+     *
+     * @since 2.36
+     */
+    public static final String JSON_JACKSON_ENABLED_MODULES = "jersey.config.json.jackson.enabled.modules";
+
+    /**
+     * Client-specific version of {@link CommonProperties#JSON_JACKSON_ENABLED_MODULES}.
+     *
+     * If present, it overrides the generic one for the client environment.
+     * @since 2.36
+     */
+    public static final String JSON_JACKSON_ENABLED_MODULES_CLIENT = "jersey.config.client.json.jackson.enabled.modules";
+
+    /**
+     * Server-specific version of {@link CommonProperties#JSON_JACKSON_ENABLED_MODULES}.
+     *
+     * If present, it overrides the generic one for the server environment.
+     * @since 2.36
+     */
+    public static final String JSON_JACKSON_ENABLED_MODULES_SERVER = "jersey.config.server.json.jackson.enabled.modules";
+
+    /**
+     * Comma separated list of jackson modules which shall be excluded from json-jackson processing.
+     * the JaxbAnnotationModule is always excluded (cannot be configured).
+     *
+     * @since 2.36
+     */
+
+    public static final String JSON_JACKSON_DISABLED_MODULES = "jersey.config.json.jackson.disabled.modules";
+
+    /**
+     * Client-specific version of {@link CommonProperties#JSON_JACKSON_DISABLED_MODULES}.
+     *
+     * If present, it overrides the generic one for the client environment.
+     * @since 2.36
+     */
+    public static final String JSON_JACKSON_DISABLED_MODULES_CLIENT = "jersey.config.client.json.jackson.disabled.modules";
+
+    /**
+     * Server-specific version of {@link CommonProperties#JSON_JACKSON_DISABLED_MODULES}.
+     *
+     * If present, it overrides the generic one for the client environment.
+     * @since 2.36
+     */
+    public static final String JSON_JACKSON_DISABLED_MODULES_SERVER = "jersey.config.server.json.jackson.disabled.modules";
+
+    /**
+     * <p>
+     *  Force the {@link jakarta.ws.rs.ext.ParamConverter} to throw {@link IllegalArgumentException} as mandated in javadoc.
+     *  Must be convertible to {@link Boolean} value.
+     * </p>
+     * <p>
+     *  Internally the {@code Exception} is caught by Jersey and usually converted to {@code null}.
+     *  Therefore, the default value is set to {@code false} to speed-up the conversion.
+     * </p>
+     * <p>
+     *  The name of the configuration property is <tt>{@value}</tt>.
+     * </p>
+     * @since 2.40
+     */
+    public static final String PARAM_CONVERTERS_THROW_IAE = "jersey.config.paramconverters.throw.iae";
+
+    /**
      * Prevent instantiation.
      */
     private CommonProperties() {
@@ -274,7 +339,7 @@ public final class CommonProperties {
      *
      * @since 2.8
      */
-    public static Object getValue(final Map<String, ?> properties, final String propertyName, final Class<?> type) {
+    public static <T> T getValue(final Map<String, ?> properties, final String propertyName, final Class<T> type) {
         return PropertiesHelper.getValue(properties, propertyName, type, CommonProperties.LEGACY_FALLBACK_MAP);
     }
 

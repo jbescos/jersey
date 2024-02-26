@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017, 2020 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2017, 2021 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -44,6 +44,8 @@ public class JerseyPublisher<T> implements Flow.Publisher<T> {
     private SubmittableFlowPublisher<T> submissionPublisher = SubmissionPublisherFactory.createSubmissionPublisher();
 
     private final PublisherStrategy strategy;
+
+    private boolean cascadingClose;
 
     /**
      * Creates a new JerseyPublisher using the {@link ForkJoinPool#commonPool()} for async delivery to subscribers
@@ -315,6 +317,17 @@ public class JerseyPublisher<T> implements Flow.Publisher<T> {
      * completed.
      */
     public void close() {
+        close(true);
+    }
+
+    /**
+     * Same as {@link #close()} but with control as to whether registered subscribers should be
+     * closed or not.
+     *
+     * @param cascading Boolean controlling whether to close subscribers or not.
+     */
+    public void close(boolean cascading) {
+        cascadingClose = cascading;
         submissionPublisher.close();
     }
 
@@ -364,7 +377,7 @@ public class JerseyPublisher<T> implements Flow.Publisher<T> {
         return submissionPublisher.getMaxBufferCapacity();
     }
 
-    public static class SubscriberWrapper<T> implements Flow.Subscriber<T> {
+    public class SubscriberWrapper<T> implements Flow.Subscriber<T> {
         private Flow.Subscriber<? super T> subscriber;
         private Flow.Subscription subscription = null;
 
@@ -400,7 +413,10 @@ public class JerseyPublisher<T> implements Flow.Publisher<T> {
 
         @Override
         public void onComplete() {
-            subscriber.onComplete();
+            // Propagate only when cascadingClose is true
+            if (cascadingClose) {
+                subscriber.onComplete();
+            }
         }
 
         public Flow.Subscriber<? super T> getWrappedSubscriber() {

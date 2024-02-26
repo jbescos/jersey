@@ -22,10 +22,10 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Supplier;
 
-import javax.enterprise.context.Dependent;
-import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.inject.spi.InjectionTarget;
-import javax.ws.rs.RuntimeType;
+import jakarta.enterprise.context.Dependent;
+import jakarta.enterprise.context.spi.CreationalContext;
+import jakarta.enterprise.inject.spi.InjectionTarget;
+import jakarta.ws.rs.RuntimeType;
 
 import org.glassfish.jersey.inject.weld.internal.injector.JerseyInjectionTarget;
 import org.glassfish.jersey.inject.weld.internal.type.ParameterizedTypeImpl;
@@ -33,10 +33,10 @@ import org.glassfish.jersey.internal.inject.DisposableSupplier;
 import org.glassfish.jersey.internal.inject.SupplierClassBinding;
 
 /**
- * Creates an implementation of {@link javax.enterprise.inject.spi.Bean} interface using Jersey's {@link SupplierClassBinding}.
- * Binding provides the information about the bean also called {@link javax.enterprise.inject.spi.BeanAttributes} information and
+ * Creates an implementation of {@link jakarta.enterprise.inject.spi.Bean} interface using Jersey's {@link SupplierClassBinding}.
+ * Binding provides the information about the bean also called {@link jakarta.enterprise.inject.spi.BeanAttributes} information and
  * {@link JerseyInjectionTarget} provides the contextual part of the bean because implements
- * {@link javax.enterprise.context.spi.Contextual} with Jersey injection extension (is able to inject into JAX-RS/Jersey specified
+ * {@link jakarta.enterprise.context.spi.Contextual} with Jersey injection extension (is able to inject into JAX-RS/Jersey specified
  * annotation).
  * <p>
  * Bean's implementation provides possibility to register {@link Supplier} and {@link DisposableSupplier}.
@@ -71,9 +71,9 @@ class SupplierClassBean<T> extends JerseyBean<Supplier<T>> {
     private InjectionTarget<Supplier<T>> injectionTarget;
 
     /**
-     * Creates a new Jersey-specific {@link javax.enterprise.inject.spi.Bean} instance.
+     * Creates a new Jersey-specific {@link jakarta.enterprise.inject.spi.Bean} instance.
      *
-     * @param binding {@link javax.enterprise.inject.spi.BeanAttributes} part of the bean.
+     * @param binding {@link jakarta.enterprise.inject.spi.BeanAttributes} part of the bean.
      */
     SupplierClassBean(RuntimeType runtimeType, SupplierClassBinding<T> binding) {
         super(runtimeType, binding);
@@ -121,7 +121,7 @@ class SupplierClassBean<T> extends JerseyBean<Supplier<T>> {
     /**
      * Lazy set of an injection target because to create fully functional injection target needs already created bean.
      *
-     * @param injectionTarget {@link javax.enterprise.context.spi.Contextual} information belonging to this bean.
+     * @param injectionTarget {@link jakarta.enterprise.context.spi.Contextual} information belonging to this bean.
      */
     void setInjectionTarget(InjectionTarget<Supplier<T>> injectionTarget) {
         this.injectionTarget = injectionTarget;

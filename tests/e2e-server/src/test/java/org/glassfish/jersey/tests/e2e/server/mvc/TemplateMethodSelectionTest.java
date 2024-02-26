@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2013, 2022 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -19,14 +19,14 @@ package org.glassfish.jersey.tests.e2e.server.mvc;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.Application;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.core.Application;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
 
-import javax.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlRootElement;
 
 import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.logging.LoggingFeature;
@@ -38,12 +38,12 @@ import org.glassfish.jersey.server.mvc.Viewable;
 import org.glassfish.jersey.test.JerseyTest;
 import org.glassfish.jersey.tests.e2e.server.mvc.provider.TestViewProcessor;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import static org.hamcrest.CoreMatchers.anyOf;
 import static org.hamcrest.CoreMatchers.containsString;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Tests that {@link Template} annotated methods are selected by the routing algorithms as if they
@@ -180,7 +180,7 @@ public class TemplateMethodSelectionTest extends JerseyTest {
     /**
      * This test makes request for text/html which is preferred. The resource defines the method
      * {@link org.glassfish.jersey.tests.e2e.server.mvc.TemplateMethodSelectionTest.TemplateAnnotatedResourceMethod#getAsHTML()}
-     * which returns {@link Map} for which there is not {@link javax.ws.rs.ext.MessageBodyWriter}. The absence of the
+     * which returns {@link Map} for which there is not {@link jakarta.ws.rs.ext.MessageBodyWriter}. The absence of the
      * writer would cause that the method would not have been selected but as the {@link Template} annotation
      * is on the method, the {@link org.glassfish.jersey.server.internal.routing.MethodSelectingRouter} considers
      * it as if this would have been {@link Viewable} instead of the {@link Map}.
@@ -252,7 +252,7 @@ public class TemplateMethodSelectionTest extends JerseyTest {
     }
 
     /**
-     * This test verifies that there is really no {@link javax.ws.rs.ext.MessageBodyWriter}
+     * This test verifies that there is really no {@link jakarta.ws.rs.ext.MessageBodyWriter}
      * for {@code Map<String,String>}}. text/html is requested but application/json is chosen there is no
      * MBW for {@code Map}.
      */

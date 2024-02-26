@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2017, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -21,7 +21,7 @@ import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.function.Supplier;
 
-import javax.ws.rs.core.GenericType;
+import jakarta.ws.rs.core.GenericType;
 
 import org.glassfish.jersey.internal.util.ReflectionHelper;
 
@@ -119,7 +119,7 @@ public final class Bindings {
 
     /**
      * Start building a new instance-based service binding. The binding is naturally
-     * considered to be a {@link javax.inject.Singleton singleton-scoped}.
+     * considered to be a {@link jakarta.inject.Singleton singleton-scoped}.
      * <p>
      * Does NOT service the service type itself as a contract type.
      *
@@ -133,7 +133,7 @@ public final class Bindings {
 
     /**
      * Start building a new instance-based service binding. The binding is naturally
-     * considered to be a {@link javax.inject.Singleton singleton-scoped}.
+     * considered to be a {@link jakarta.inject.Singleton singleton-scoped}.
      * <p>
      * Binds the generic service type itself as a contract type.
      *
@@ -184,7 +184,7 @@ public final class Bindings {
 
     /**
      * Start building a new injection resolver binding. The injection resolver is naturally
-     * considered to be a {@link javax.inject.Singleton singleton-scoped}.
+     * considered to be a {@link jakarta.inject.Singleton singleton-scoped}.
      * <p>
      * There is no need to provide any additional information. Other method on {@link Binding}
      * will be ignored.

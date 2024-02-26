@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2012, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -25,17 +25,17 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.MultivaluedMap;
-import javax.ws.rs.core.UriInfo;
-import javax.ws.rs.ext.InterceptorContext;
-import javax.ws.rs.ext.WriterInterceptor;
-import javax.ws.rs.ext.WriterInterceptorContext;
+import jakarta.ws.rs.WebApplicationException;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.MultivaluedMap;
+import jakarta.ws.rs.core.UriInfo;
+import jakarta.ws.rs.ext.InterceptorContext;
+import jakarta.ws.rs.ext.WriterInterceptor;
+import jakarta.ws.rs.ext.WriterInterceptorContext;
 
-import javax.annotation.Priority;
-import javax.inject.Inject;
-import javax.inject.Provider;
+import jakarta.annotation.Priority;
+import jakarta.inject.Inject;
+import jakarta.inject.Provider;
 
 import org.glassfish.jersey.JerseyPriorities;
 import org.glassfish.jersey.message.MessageUtils;
@@ -132,7 +132,7 @@ public class JsonWithPaddingInterceptor implements WriterInterceptor {
      *
      * @param context an {@link InterceptorContext interceptor context} to obtain the annotation from.
      * @return {@link JSONP} annotation or {@code null} if the resource method is not annotated with this annotation.
-     * @see javax.ws.rs.ext.InterceptorContext#getAnnotations()
+     * @see jakarta.ws.rs.ext.InterceptorContext#getAnnotations()
      */
     private JSONP getJsonpAnnotation(final InterceptorContext context) {
         final Annotation[] annotations = context.getAnnotations();

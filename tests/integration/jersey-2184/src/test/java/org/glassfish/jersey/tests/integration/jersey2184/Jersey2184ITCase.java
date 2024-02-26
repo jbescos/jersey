@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013, 2019 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2013, 2022 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -18,8 +18,8 @@ package org.glassfish.jersey.tests.integration.jersey2184;
 
 import java.net.URI;
 
-import javax.ws.rs.core.Application;
-import javax.ws.rs.core.UriBuilder;
+import jakarta.ws.rs.core.Application;
+import jakarta.ws.rs.core.UriBuilder;
 
 import org.glassfish.jersey.inject.hk2.Hk2InjectionManagerFactory;
 import org.glassfish.jersey.test.JerseyTest;
@@ -28,10 +28,10 @@ import org.glassfish.jersey.test.external.ExternalTestContainerFactory;
 import org.glassfish.jersey.test.spi.TestContainerException;
 import org.glassfish.jersey.test.spi.TestContainerFactory;
 
-import org.junit.Assume;
-import org.junit.Before;
-import org.junit.Test;
-import static org.junit.Assert.assertEquals;
+import org.junit.jupiter.api.Assumptions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * Tests the JERSEY-2184 fix (the ability to inject ServletContext into application subclass constructor).
@@ -40,9 +40,9 @@ import static org.junit.Assert.assertEquals;
  */
 public class Jersey2184ITCase extends JerseyTest {
 
-    @Before
+    @BeforeEach
     public void setup() {
-        Assume.assumeTrue(Hk2InjectionManagerFactory.isImmediateStrategy());
+        Assumptions.assumeTrue(Hk2InjectionManagerFactory.isImmediateStrategy());
     }
 
     @Override
@@ -62,7 +62,7 @@ public class Jersey2184ITCase extends JerseyTest {
     }
 
     /**
-     * Tests if {@link javax.servlet.ServletContext} has been correctly injected into {@link App} constructor parameter;
+     * Tests if {@link jakarta.servlet.ServletContext} has been correctly injected into {@link App} constructor parameter;
      * The resource under this URL is being loaded dynamically based on a context parameter in the web.xml,
      * so if injection fails, the resource will not be available.
      */

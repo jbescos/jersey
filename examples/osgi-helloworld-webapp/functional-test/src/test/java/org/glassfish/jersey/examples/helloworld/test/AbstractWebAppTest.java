@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010, 2022 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2010, 2023 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Distribution License v. 1.0, which is available at
@@ -11,9 +11,10 @@
 package org.glassfish.jersey.examples.helloworld.test;
 
 import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
 import java.net.URI;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.security.AccessController;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -28,12 +29,12 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Logger;
 
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.core.UriBuilder;
+import jakarta.ws.rs.client.Client;
+import jakarta.ws.rs.client.ClientBuilder;
+import jakarta.ws.rs.client.WebTarget;
+import jakarta.ws.rs.core.UriBuilder;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 import org.glassfish.jersey.internal.util.JdkVersion;
 import org.glassfish.jersey.internal.util.PropertiesHelper;
@@ -137,7 +138,7 @@ public abstract class AbstractWebAppTest {
                 //                 mavenBundle("org.ops4j.pax.logging", "pax-logging-api", "1.4"),
                 //                 mavenBundle("org.ops4j.pax.logging", "pax-logging-service", "1.4"),
 
-                // javax.annotation must go first!
+                // jakarta.annotation must go first!
                 mavenBundle().groupId("jakarta.annotation").artifactId("jakarta.annotation-api").versionAsInProject(),
                 // pax exam dependencies
                 // mavenBundle("org.ops4j.pax.url", "pax-url-mvn"),
@@ -227,7 +228,7 @@ public abstract class AbstractWebAppTest {
 
         try {
 
-            final BufferedReader reader = new BufferedReader(new FileReader(felixPolicy));
+            final BufferedReader reader = Files.newBufferedReader(Paths.get(felixPolicy));
             String line;
             final Set<String> cpiNames = new HashSet<String>();
 

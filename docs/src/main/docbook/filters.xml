@@ -72,10 +72,10 @@
                 <example>
                     <title>Container response filter</title>
                     <programlisting language="java" linenumbering="numbered">import java.io.IOException;
-import javax.ws.rs.container.ContainerRequestContext;
-import javax.ws.rs.container.ContainerResponseContext;
-import javax.ws.rs.container.ContainerResponseFilter;
-import javax.ws.rs.core.Response;
+import jakarta.ws.rs.container.ContainerRequestContext;
+import jakarta.ws.rs.container.ContainerResponseContext;
+import jakarta.ws.rs.container.ContainerResponseFilter;
+import jakarta.ws.rs.core.Response;
 
 public class PoweredByResponseFilter implements ContainerResponseFilter {
 
@@ -111,10 +111,10 @@ public class PoweredByResponseFilter implements ContainerResponseFilter {
             <example>
                 <title>Container request filter</title>
                 <programlisting language="java" linenumbering="numbered">import java.io.IOException;
-import javax.ws.rs.container.ContainerRequestContext;
-import javax.ws.rs.container.ContainerRequestFilter;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.SecurityContext;
+import jakarta.ws.rs.container.ContainerRequestContext;
+import jakarta.ws.rs.container.ContainerRequestFilter;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.SecurityContext;
 
 public class AuthorizationRequestFilter implements ContainerRequestFilter {
 
@@ -178,9 +178,9 @@ public class AuthorizationRequestFilter implements ContainerRequestFilter {
                 <example>
                     <title>Pre-matching request filter</title>
                     <programlisting language="java" linenumbering="numbered">...
-import javax.ws.rs.container.ContainerRequestContext;
-import javax.ws.rs.container.ContainerRequestFilter;
-import javax.ws.rs.container.PreMatching;
+import jakarta.ws.rs.container.ContainerRequestContext;
+import jakarta.ws.rs.container.ContainerRequestFilter;
+import jakarta.ws.rs.container.PreMatching;
 ...
 
 @PreMatching
@@ -320,7 +320,8 @@ public class PreMatchingFilter implements ContainerRequestFilter {
             The interceptors wrap the streams and they itself work as wrappers. This means that each interceptor is a wrapper
             of another interceptor and it is responsibility of each interceptor implementation to call the wrapped interceptor.
             This is achieved by calling the <literal>proceed()</literal> method on the &lit.jaxrs.WriterInterceptorContext;.
-            This method will call the next registered interceptor in the chain, so effectivelly this will call all remaining registered interceptors. Calling <literal>proceed()</literal> from the last
+            This method will call the next registered interceptor in the chain, so effectively this will call all remaining
+            registered interceptors. Calling <literal>proceed()</literal> from the last
             interceptor in the chain will call the appropriate message body reader. Therefore every interceptor must call the
             <literal>proceed()</literal> method otherwise the entity would not be written. The wrapping principle is reflected
             also in the method name, aroundWriteTo, which says that the method is wrapping the writing of the entity.
@@ -389,7 +390,8 @@ public class PreMatchingFilter implements ContainerRequestFilter {
                 <listitem>Client request invoked: The POST request with attached entity is built on the client and invoked.</listitem>
                 <listitem>ClientRequestFilters: client request filters are executed on the client and they
                     manipulate the request headers.</listitem>
-                <listitem>Client &lit.jaxrs.WriterInterceptor;: As the request contains an entity, writer interceptor registered on the client is executed before
+                <listitem>Client &lit.jaxrs.WriterInterceptor;: As the request contains an entity, writer interceptor registered
+                    on the client is executed before
                     a MessageBodyWriter is executed. It wraps the entity output stream with the GZipOutputStream.</listitem>
                 <listitem>Client MessageBodyWriter: message body writer is executed on the client which serializes the entity
                     into the new GZipOutput stream. This stream zips the data and sends it to the "wire".</listitem>
@@ -420,7 +422,7 @@ public class PreMatchingFilter implements ContainerRequestFilter {
                 </listitem>
                 <listitem>Client receives the response: the response contains compressed entity data.</listitem>
                 <listitem>Client ClientResponseFilters: client response filters are executed and they manipulate the response headers.</listitem>
-                <listitem>Client response is returned: the javax.ws.rs.core.Response is returned from the request invocation.</listitem>
+                <listitem>Client response is returned: the jakarta.ws.rs.core.Response is returned from the request invocation.</listitem>
                 <listitem>Client code calls response.readEntity(): read entity is executed on the client to extract the entity from the response.</listitem>
                 <listitem>Client &lit.jaxrs.ReaderInterceptor;: the client reader interceptor is executed when readEntity(Class) is called. The interceptor
                         wraps the entity input stream with GZIPInputStream. This will decompress the data from the original input stream.
@@ -463,10 +465,10 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.zip.GZIPInputStream;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.NameBinding;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.NameBinding;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.Produces;
 ...
 
 
@@ -553,8 +555,8 @@ public class GZIPWriterInterceptor implements WriterInterceptor {
             <example>
                 <title>Dynamic binding example</title>
                 <programlisting language="java" linenumbering="numbered">...
-import javax.ws.rs.core.FeatureContext;
-import javax.ws.rs.container.DynamicFeature;
+import jakarta.ws.rs.core.FeatureContext;
+import jakarta.ws.rs.container.DynamicFeature;
 ...
 
 @Path("helloworld")
@@ -623,7 +625,7 @@ public class CompressionDynamicBinding implements DynamicFeature {
 
         <para>In case you register more filters and interceptors you might want to define an exact order in which
             they should be invoked. The order can be controlled by the <literal>@Priority</literal> annotation defined
-            by the <literal>javax.annotation.Priority</literal> class. The annotation accepts an integer parameter of priority.
+            by the <literal>jakarta.annotation.Priority</literal> class. The annotation accepts an integer parameter of priority.
             Providers used in request processing (&lit.jaxrs.container.ContainerRequestFilter;,
             &lit.jaxrs.client.ClientRequestFilter;) as well as entity interceptors (&lit.jaxrs.ReaderInterceptor;,
             &lit.jaxrs.WriterInterceptor;) are sorted based on the priority in an ascending manner. So, a request filter with
@@ -648,8 +650,8 @@ public class CompressionDynamicBinding implements DynamicFeature {
             <example>
                 <title>Priorities example</title>
                 <programlisting language="java" linenumbering="numbered">...
-import javax.annotation.Priority;
-import javax.ws.rs.Priorities;
+import jakarta.annotation.Priority;
+import jakarta.ws.rs.Priorities;
 ...
 
 @Priority(Priorities.HEADER_DECORATOR)

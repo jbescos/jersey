@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2021, 2022 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -27,16 +27,16 @@ import java.util.Collections;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.Cookie;
-import javax.ws.rs.core.GenericEntity;
-import javax.ws.rs.core.GenericType;
-import javax.ws.rs.core.HttpHeaders;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.MultivaluedHashMap;
-import javax.ws.rs.core.MultivaluedMap;
-import javax.ws.rs.core.SecurityContext;
-import javax.ws.rs.ext.WriterInterceptor;
+import jakarta.ws.rs.WebApplicationException;
+import jakarta.ws.rs.core.Cookie;
+import jakarta.ws.rs.core.GenericEntity;
+import jakarta.ws.rs.core.GenericType;
+import jakarta.ws.rs.core.HttpHeaders;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.MultivaluedHashMap;
+import jakarta.ws.rs.core.MultivaluedMap;
+import jakarta.ws.rs.core.SecurityContext;
+import jakarta.ws.rs.ext.WriterInterceptor;
 
 import org.glassfish.jersey.internal.MapPropertiesDelegate;
 import org.glassfish.jersey.internal.PropertiesDelegate;
@@ -80,31 +80,33 @@ public class RequestContextBuilder {
         public void setWorkers(final MessageBodyWorkers workers) {
             super.setWorkers(workers);
             final byte[] entityBytes;
-            if (entity != null) {
-                final MultivaluedMap<String, Object> myMap = new MultivaluedHashMap<String, Object>(getHeaders());
-                final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                OutputStream stream = null;
-                try {
-                    stream = workers.writeTo(entity, entity.getClass(), entityType.getType(),
-                            new Annotation[0], getMediaType(),
-                            myMap,
-                            propertiesDelegate, baos, Collections.<WriterInterceptor>emptyList());
-                } catch (final IOException | WebApplicationException ex) {
-                    Logger.getLogger(TestContainerRequest.class.getName()).log(Level.SEVERE, null, ex);
-                } finally {
-                    if (stream != null) {
-                        try {
-                            stream.close();
-                        } catch (final IOException e) {
-                            // ignore
+            if (workers != null) {
+                if (entity != null) {
+                    final MultivaluedMap<String, Object> myMap = new MultivaluedHashMap<String, Object>(getHeaders());
+                    final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                    OutputStream stream = null;
+                    try {
+                        stream = workers.writeTo(entity, entity.getClass(), entityType.getType(),
+                                new Annotation[0], getMediaType(),
+                                myMap,
+                                propertiesDelegate, baos, Collections.<WriterInterceptor>emptyList());
+                    } catch (final IOException | WebApplicationException ex) {
+                        Logger.getLogger(TestContainerRequest.class.getName()).log(Level.SEVERE, null, ex);
+                    } finally {
+                        if (stream != null) {
+                            try {
+                                stream.close();
+                            } catch (final IOException e) {
+                                // ignore
+                            }
                         }
                     }
+                    entityBytes = baos.toByteArray();
+                } else {
+                    entityBytes = new byte[0];
                 }
-                entityBytes = baos.toByteArray();
-            } else {
-                entityBytes = new byte[0];
+                setEntityStream(new ByteArrayInputStream(entityBytes));
             }
-            setEntityStream(new ByteArrayInputStream(entityBytes));
         }
     }
 

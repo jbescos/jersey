@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2013, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -17,13 +17,13 @@
 /**
  * Support for Entity Data Filtering in Jersey.
  * <p/>
- * To use Entity Data Filtering one of the provided {@link javax.ws.rs.core.Feature features} has to be registered in an
+ * To use Entity Data Filtering one of the provided {@link jakarta.ws.rs.core.Feature features} has to be registered in an
  * application:
  * <ul>
  *     <li>{@link org.glassfish.jersey.message.filtering.EntityFilteringFeature} - adds support for entity-filtering
  *     annotations based on {@link org.glassfish.jersey.message.filtering.EntityFiltering} meta-annotation.</li>
  *     <li>{@link org.glassfish.jersey.message.filtering.SecurityEntityFilteringFeature} - add support for entity-filtering using
- *     Java Security annotations (<code>javax.annotation.security</code>).</li>
+ *     Java Security annotations (<code>jakarta.annotation.security</code>).</li>
  * </ul>
  * <p/>
  * To define own entity-filtering annotations, refer to the {@link org.glassfish.jersey.message.filtering.EntityFiltering}

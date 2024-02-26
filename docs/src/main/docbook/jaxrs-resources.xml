@@ -35,7 +35,7 @@
     </para>
 
     <para>The JAX-RS &jax-rs.version; specification draft can be found online <link
-            xlink:href="http://jcp.org/en/jsr/summary?id=339">here</link>.
+            xlink:href="https://jakarta.ee/specifications/restful-ws/3.0/jakarta-restful-ws-spec-3.0.pdf">here</link>.
     </para>
 
     <section>
@@ -53,16 +53,16 @@
             resource class using JAX-RS annotations. The example code shown here is
             from one of the samples that ships with Jersey, the zip file of which can
             be found in the maven repository
-            <link xlink:href="http://central.maven.org/maven2/org/glassfish/jersey/examples/helloworld//&version;/">here</link>.
+            <link xlink:href="https://repo1.maven.org/maven2/org/glassfish/jersey/examples/helloworld/&version;/">here</link>.
         </para>
         <para>
             <example>
                 <title>Simple hello world root resource class</title>
                 <programlisting language="java" linenumbering="numbered">package org.glassfish.jersey.examples.helloworld;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.Produces;
 
 @Path("helloworld")
 public class HelloWorldResource {
@@ -87,15 +87,20 @@ public class HelloWorldResource {
 
             <para>
                 <emphasis>URI path templates</emphasis>
-                are URIs with variables embedded within the URI syntax. These variables are substituted at runtime in order for a resource to respond to a request based on the substituted URI. Variables are denoted by curly braces. For example, look at the following &jaxrs.Path; annotation:
+                are URIs with variables embedded within the URI syntax. These variables are substituted at runtime in order
+                for a resource to respond to a request based on the substituted URI. Variables are denoted by curly braces.
+                For example, look at the following &jaxrs.Path; annotation:
 
                 <programlisting language="java" linenumbering="unnumbered">@Path("/users/{username}")</programlisting>
 
-                In this type of example, a user will be prompted to enter their name, and then a Jersey web service configured to respond to requests to this URI path template will respond. For example, if the user entered their username as "Galileo", the web service will respond to the following URL:
+                In this type of example, a user will be prompted to enter their name, and then a Jersey web service configured
+                to respond to requests to this URI path template will respond. For example, if the user entered their username
+                as "Galileo", the web service will respond to the following URL:
                 <literal>http://example.com/users/Galileo</literal>
             </para>
 
-            <para>To obtain the value of the username variable the &jaxrs.PathParam; may be used on method parameter of a request method, for example:
+            <para>To obtain the value of the username variable the &jaxrs.PathParam; may be used on method parameter of a
+                request method, for example:
                 <example>
                     <title>Specifying URI path parameter</title>
                     <programlisting language="java" linenumbering="numbered">@Path("/users/{username}")
@@ -113,14 +118,14 @@ public class UserResource {
                 particular regular expression, which overrides the default regular
                 expression, "[^/]+", for example:
                 <programlisting language="java">@Path("users/{username: [a-zA-Z][a-zA-Z_0-9]*}")</programlisting>
-                In this type of example the username variable will only match user names that begin with one upper or
-                lower case letter and zero or more alpha numeric characters and the underscore character. If a user name
-                does not match that a 404 (Not Found) response will occur.
+                In this type of example the username variable will only match user names that begin with one upper or lower
+                case letter and zero or more alpha numeric characters and the underscore character. If a user name does not
+                match that a 404 (Not Found) response will occur.
             </para>
 
-            <para>A &jaxrs.Path; value may or may not begin with a '/', it makes no difference. Likewise, by default,
-                a &jaxrs.Path; value may or may not end in a '/', it makes no difference, and thus request URLs that
-                end or do not end in a '/' will both be matched.
+            <para>A &jaxrs.Path; value may or may not begin with a '/', it makes no difference. Likewise, by default, a
+                &jaxrs.Path; value may or may not end in a '/', it makes no difference, and thus request URLs that end or
+                do not end in a '/' will both be matched.
             </para>
         </section>
 
@@ -168,7 +173,7 @@ public Response putContainer() {
                 response entity (if set). A response returned for the OPTIONS method depends on the requested media type
                 defined in the 'Accept' header. The OPTIONS method can return a response with a set of supported
                 resource methods in the 'Allow' header or return
-                a <link xlink:href="http://wadl.java.net/">WADL</link> document.
+                a <link xlink:href="https://javaee.github.io/wadl/">WADL</link> document.
                 See <link linkend="wadl">wadl section</link> for more information.
             </para>
         </section>
@@ -390,8 +395,8 @@ public Response smooth(
                 </para>
             </listitem>
             <listitem>
-                <para>Have a registered implementation of <literal>javax.ws.rs.ext.ParamConverterProvider</literal> JAX-RS
-                    extension SPI that returns a <literal>javax.ws.rs.ext.ParamConverter</literal> instance capable of
+                <para>Have a registered implementation of <literal>jakarta.ws.rs.ext.ParamConverterProvider</literal> JAX-RS
+                    extension SPI that returns a <literal>jakarta.ws.rs.ext.ParamConverter</literal> instance capable of
                     a "from string" conversion for the type.
                      or
                 </para>
@@ -473,6 +478,11 @@ public String get(@Context HttpHeaders hh) {
     Map&lt;String, Cookie&gt; pathParams = hh.getCookies();
 }</programlisting>
             </example>
+        </para>
+
+        <para>
+            For quicker getting of values for a known header name there is a shortcut for <literal>hh.getRequestHeaders().get(name)</literal>
+            which is <literal>hh.getRequestHeader(name)</literal>.
         </para>
 
         <para>In general &jaxrs.core.Context; can be used to obtain contextual Java types related to the request or response.
@@ -727,7 +737,7 @@ public class ItemResource {
         <para>
             <example>
                 <title>Sub-resource locators created from classes</title>
-                <programlisting language="java" linenumbering="numbered">import javax.inject.Singleton;
+                <programlisting language="java" linenumbering="numbered">import jakarta.inject.Singleton;
 
 @Path("/item")
 public class ItemResource {
@@ -748,7 +758,7 @@ public class ItemContentSingletonResource {
 
         <para>JAX-RS resources are managed in per-request scope by default which means that
             new resource is created for each request.
-            In this example the <literal>javax.inject.Singleton</literal> annotation says
+            In this example the <literal>jakarta.inject.Singleton</literal> annotation says
             that the resource will be managed as singleton and not in request scope.
             The sub-resource locator method returns a class which means that the runtime
             will managed the resource instance and its life-cycle. If the method would return instance instead,
@@ -840,7 +850,7 @@ public class ItemResource {
                             the resource instance is created every time it is needed for the processing even it handles
                             the same request.</entry></row>
                     <row><entry>Singleton</entry><entry>@Singleton</entry>
-                        <entry>javax.inject.Singleton</entry>
+                        <entry>jakarta.inject.Singleton</entry>
                         <entry>In this scope there is only one instance per jax-rs application. Singleton resource can be either
                             annotated with @Singleton and its class can be registered using the instance of
                             &jaxrs.core.Application;. You can also create singletons by registering singleton instances
@@ -1077,11 +1087,11 @@ public static class SubResource {
         </para>
 
         <para>When deploying a JAX-RS application using servlet then
-            <link xlink:href="http://docs.oracle.com/javaee/5/api/javax/servlet/ServletConfig.html">ServletConfig</link>,
-            <link xlink:href="http://docs.oracle.com/javaee/5/api/javax/servlet/ServletContext.html">ServletContext</link>,
-            <link xlink:href="http://docs.oracle.com/javaee/5/api/javax/servlet/http/HttpServletRequest.html">HttpServletRequest</link>
+            <link xlink:href="https://jakarta.ee/specifications/servlet/5.0/apidocs/jakarta/servlet/ServletConfig.html">ServletConfig</link>,
+            <link xlink:href="https://jakarta.ee/specifications/servlet/5.0/apidocs/jakarta/servlet/ServletContext.html">ServletContext</link>,
+            <link xlink:href="https://jakarta.ee/specifications/servlet/5.0/apidocs/jakarta/servlet/http/HttpServletRequest.html">HttpServletRequest</link>
             and
-            <link xlink:href="http://docs.oracle.com/javaee/5/api/javax/servlet/http/HttpServletResponse.html">HttpServletResponse</link>
+            <link xlink:href="https://jakarta.ee/specifications/servlet/5.0/apidocs/jakarta/servlet/http/HttpServletResponse.html">HttpServletResponse</link>
             are available using &jaxrs.core.Context;.
         </para>
     </section>

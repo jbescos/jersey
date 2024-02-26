@@ -23,12 +23,12 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Logger;
 
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.core.UriBuilder;
+import jakarta.ws.rs.client.Client;
+import jakarta.ws.rs.client.ClientBuilder;
+import jakarta.ws.rs.client.WebTarget;
+import jakarta.ws.rs.core.UriBuilder;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 import org.glassfish.jersey.internal.util.JdkVersion;
 import org.glassfish.jersey.internal.util.PropertiesHelper;
@@ -67,6 +67,8 @@ public abstract class AbstractHttpServiceTest {
     private static final String CONTEXT = "/jersey-http-service";
     private static final URI baseUri = UriBuilder.fromUri("http://localhost").port(port).path(CONTEXT).build();
     private static final String BundleLocationProperty = "jersey.bundle.location";
+    private static final String JAXRS_RUNTIME_DELEGATE_PROPERTY = "jakarta.ws.rs.ext.RuntimeDelegate";
+    private static final String JAXRS_CLIENT_BUILDER = "jakarta.ws.rs.client.ClientBuilder";
 
     private static final Logger LOGGER = Logger.getLogger(AbstractHttpServiceTest.class.getName());
 
@@ -86,6 +88,8 @@ public abstract class AbstractHttpServiceTest {
                 systemProperty(BundleLocationProperty).value(bundleLocation),
                 systemProperty("jersey.config.test.container.port").value(String.valueOf(port)),
                 systemProperty("org.osgi.framework.system.packages.extra").value("jakarta.annotation"),
+                systemProperty(JAXRS_RUNTIME_DELEGATE_PROPERTY).value("org.glassfish.jersey.internal.RuntimeDelegateImpl"),
+                systemProperty(JAXRS_CLIENT_BUILDER).value("org.glassfish.jersey.client.JerseyClientBuilder"),
 
                 JdkVersion.getJdkVersion().getMajor() > 16
                     ? vmOption("--add-opens=java.base/java.net=ALL-UNNAMED")
@@ -98,7 +102,7 @@ public abstract class AbstractHttpServiceTest {
                 // mavenBundle("org.ops4j.pax.logging", "pax-logging-api", "1.4"),
                 // mavenBundle("org.ops4j.pax.logging", "pax-logging-service", "1.4"),
 
-                // javax.annotation has to go first!
+                // jakarta.annotation has to go first!
                 mavenBundle().groupId("jakarta.annotation").artifactId("jakarta.annotation-api").versionAsInProject(),
 
                 mavenBundle("org.ops4j.pax.url", "pax-url-mvn").versionAsInProject(),
@@ -131,6 +135,9 @@ public abstract class AbstractHttpServiceTest {
                 mavenBundle().groupId("org.glassfish.jersey.containers").artifactId("jersey-container-servlet-core")
                 .versionAsInProject(),
                 mavenBundle().groupId("org.glassfish.jersey.inject").artifactId("jersey-hk2").versionAsInProject(),
+
+                // validation
+                mavenBundle().groupId("jakarta.validation").artifactId("jakarta.validation-api").versionAsInProject(),
 
                 // JAX-RS API
                 mavenBundle().groupId("jakarta.ws.rs").artifactId("jakarta.ws.rs-api").versionAsInProject()

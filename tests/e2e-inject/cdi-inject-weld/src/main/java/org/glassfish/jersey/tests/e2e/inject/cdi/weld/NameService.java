@@ -16,7 +16,7 @@
 
 package org.glassfish.jersey.tests.e2e.inject.cdi.weld;
 
-import javax.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.ApplicationScoped;
 
 /**
  * Service returning the name.

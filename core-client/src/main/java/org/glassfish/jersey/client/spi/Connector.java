@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012, 2019 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2012, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -44,7 +44,7 @@ public interface Connector extends Inflector<ClientRequest, ClientResponse> {
      *
      * @param request Jersey client request to be sent.
      * @return Jersey client response received for the client request.
-     * @throws javax.ws.rs.ProcessingException in case of any invocation failure.
+     * @throws jakarta.ws.rs.ProcessingException in case of any invocation failure.
      */
     @Override
     ClientResponse apply(ClientRequest request);
@@ -69,7 +69,7 @@ public interface Connector extends Inflector<ClientRequest, ClientResponse> {
      * Will be used in User-Agent header.
      *
      * @return name of current connector. Returning {@code null} or empty string means not including
-     * this information in a generated <tt>{@value javax.ws.rs.core.HttpHeaders#USER_AGENT}</tt> header.
+     * this information in a generated <tt>{@value jakarta.ws.rs.core.HttpHeaders#USER_AGENT}</tt> header.
      */
     public String getName();
 

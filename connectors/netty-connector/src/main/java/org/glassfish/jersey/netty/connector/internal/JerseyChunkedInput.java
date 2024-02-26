@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016, 2019 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2016, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -22,7 +22,7 @@ import java.nio.ByteBuffer;
 import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.TimeUnit;
 
-import javax.inject.Provider;
+import jakarta.inject.Provider;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
@@ -35,7 +35,7 @@ import io.netty.handler.stream.ChunkedInput;
 
 /**
  * Netty {@link ChunkedInput} implementation which also serves as an output
- * stream to Jersey {@link javax.ws.rs.container.ContainerResponseContext}.
+ * stream to Jersey {@link jakarta.ws.rs.container.ContainerResponseContext}.
  *
  * @author Pavel Bucek
  */

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2013, 2022 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -18,29 +18,28 @@ package org.glassfish.jersey.client;
 
 import java.io.IOException;
 
-import javax.ws.rs.ConstrainedTo;
-import javax.ws.rs.RuntimeType;
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.client.ClientRequestContext;
-import javax.ws.rs.client.ClientRequestFilter;
-import javax.ws.rs.client.Invocation;
-import javax.ws.rs.container.ContainerRequestContext;
-import javax.ws.rs.container.ContainerRequestFilter;
-import javax.ws.rs.core.FeatureContext;
-import javax.ws.rs.core.Response;
+import jakarta.ws.rs.ConstrainedTo;
+import jakarta.ws.rs.RuntimeType;
+import jakarta.ws.rs.client.Client;
+import jakarta.ws.rs.client.ClientBuilder;
+import jakarta.ws.rs.client.ClientRequestContext;
+import jakarta.ws.rs.client.ClientRequestFilter;
+import jakarta.ws.rs.client.Invocation;
+import jakarta.ws.rs.container.ContainerRequestContext;
+import jakarta.ws.rs.container.ContainerRequestFilter;
+import jakarta.ws.rs.core.FeatureContext;
+import jakarta.ws.rs.core.Response;
 
-import javax.annotation.Priority;
+import jakarta.annotation.Priority;
 
 import org.glassfish.jersey.CommonProperties;
 import org.glassfish.jersey.internal.spi.AutoDiscoverable;
 import org.glassfish.jersey.internal.util.PropertiesHelper;
-
-import org.junit.Ignore;
-import org.junit.Test;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Note: Auto-discoverables from this test "affects" all other tests in suit.
@@ -168,10 +167,10 @@ public class AutoDiscoverableClientTest {
     /**
      * Tests, that {@link org.glassfish.jersey.client.ClientLifecycleListener} registered via
      * {@link org.glassfish.jersey.internal.spi.AutoDiscoverable}
-     * {@link javax.ws.rs.core.Feature} will be notified when {@link javax.ws.rs.client.Client#close()} is invoked.
+     * {@link jakarta.ws.rs.core.Feature} will be notified when {@link jakarta.ws.rs.client.Client#close()} is invoked.
      */
     @Test
-    @Ignore("intermittent failures.")
+    @Disabled("intermittent failures.")
     public void testAutoDiscoverableClosing() {
         final ClientConfig config = new ClientConfig();
         config.property(PROPERTY, true);
@@ -180,12 +179,12 @@ public class AutoDiscoverableClientTest {
         assertFalse(FooLifecycleListener.isClosed());
 
         client.getConfiguration().getRuntime(); // force runtime init
-        assertTrue("FooLifecycleListener was expected to be already initialized.", FooLifecycleListener.isInitialized());
-        assertFalse("FooLifecycleListener was not expected to be closed yet.", FooLifecycleListener.isClosed());
+        assertTrue(FooLifecycleListener.isInitialized(), "FooLifecycleListener was expected to be already initialized.");
+        assertFalse(FooLifecycleListener.isClosed(), "FooLifecycleListener was not expected to be closed yet.");
 
         client.close();
 
-        assertTrue("FooLifecycleListener should have been closed.", FooLifecycleListener.isClosed());
+        assertTrue(FooLifecycleListener.isClosed(), "FooLifecycleListener should have been closed.");
     }
 
     private void _test(final String response, final Boolean globalDisable, final Boolean clientDisable) throws Exception {

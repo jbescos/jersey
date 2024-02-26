@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010, 2019 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2010, 2022 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -21,10 +21,10 @@ import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ThreadFactory;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.Path;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 import org.glassfish.jersey.internal.util.Producer;
 import org.glassfish.jersey.server.ApplicationHandler;
@@ -34,8 +34,8 @@ import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.server.BackgroundScheduler;
 import org.glassfish.jersey.spi.ScheduledThreadPoolExecutorProvider;
 
-import org.junit.Test;
-import static org.junit.Assert.assertEquals;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * Test basic application behavior.
@@ -111,6 +111,6 @@ public class BackgroundSchedulerProviderTest {
         final ContainerResponse response = ah.apply(RequestContextBuilder.from("/executors-test", "GET").build()).get();
 
         assertEquals(200, response.getStatus());
-        assertEquals("Some executor test assertions failed.", 11, response.getEntity());
+        assertEquals(11, response.getEntity(), "Some executor test assertions failed.");
     }
 }

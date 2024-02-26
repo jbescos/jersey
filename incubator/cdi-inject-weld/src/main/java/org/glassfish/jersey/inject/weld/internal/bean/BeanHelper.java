@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2021, 2022 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -23,15 +23,15 @@ import java.util.Collection;
 import java.util.List;
 import java.util.function.Supplier;
 
-import javax.enterprise.inject.spi.AfterBeanDiscovery;
-import javax.enterprise.inject.spi.AnnotatedType;
-import javax.enterprise.inject.spi.Bean;
-import javax.enterprise.inject.spi.BeanManager;
-import javax.enterprise.inject.spi.InjectionTarget;
-import javax.enterprise.inject.spi.InjectionTargetFactory;
-import javax.ws.rs.HttpMethod;
-import javax.ws.rs.Path;
-import javax.ws.rs.RuntimeType;
+import jakarta.enterprise.inject.spi.AfterBeanDiscovery;
+import jakarta.enterprise.inject.spi.AnnotatedType;
+import jakarta.enterprise.inject.spi.Bean;
+import jakarta.enterprise.inject.spi.BeanManager;
+import jakarta.enterprise.inject.spi.InjectionTarget;
+import jakarta.enterprise.inject.spi.InjectionTargetFactory;
+import jakarta.ws.rs.HttpMethod;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.RuntimeType;
 
 import org.glassfish.jersey.inject.weld.internal.data.BindingBeanPair;
 import org.glassfish.jersey.inject.weld.internal.inject.InitializableInstanceBinding;
@@ -77,7 +77,7 @@ public abstract class BeanHelper {
     /**
      * Registers an instance as {@link JerseyBean} into {@link BeanManager}.
      *
-     * @param binding   object containing {@link javax.enterprise.inject.spi.BeanAttributes} information.
+     * @param binding   object containing {@link jakarta.enterprise.inject.spi.BeanAttributes} information.
      * @param abd       {@link AfterBeanDiscovery} event.
      * @param resolvers all registered injection resolvers.
      * @param <T>       type of the instance which is registered.
@@ -97,7 +97,7 @@ public abstract class BeanHelper {
     /**
      * Registers a class as {@link JerseyBean} into {@link BeanManager}.
      *
-     * @param binding     object containing {@link javax.enterprise.inject.spi.BeanAttributes} information.
+     * @param binding     object containing {@link jakarta.enterprise.inject.spi.BeanAttributes} information.
      * @param abd         {@link AfterBeanDiscovery} event.
      * @param resolvers   all registered injection resolvers.
      * @param beanManager currently used bean manager.
@@ -119,7 +119,7 @@ public abstract class BeanHelper {
     /**
      * Registers an instance supplier and its provided value as {@link JerseyBean}s into {@link BeanManager}.
      *
-     * @param binding object containing {@link javax.enterprise.inject.spi.BeanAttributes} information.
+     * @param binding object containing {@link jakarta.enterprise.inject.spi.BeanAttributes} information.
      * @param abd     {@link AfterBeanDiscovery} event.
      * @param <T>     type of the instance which is registered.
      */
@@ -145,7 +145,7 @@ public abstract class BeanHelper {
     /**
      * Registers a class supplier and its provided value as {@link JerseyBean}s into {@link BeanManager}.
      *
-     * @param binding     object containing {@link javax.enterprise.inject.spi.BeanAttributes} information.
+     * @param binding     object containing {@link jakarta.enterprise.inject.spi.BeanAttributes} information.
      * @param abd         {@link AfterBeanDiscovery} event.
      * @param resolvers   all registered injection resolvers.
      * @param beanManager currently used bean manager.
@@ -157,7 +157,8 @@ public abstract class BeanHelper {
 
         Class<Supplier<T>> supplierClass = (Class<Supplier<T>>) binding.getSupplierClass();
         AnnotatedType<Supplier<T>> annotatedType = beanManager.createAnnotatedType(supplierClass);
-        InjectionTarget<Supplier<T>> injectionTarget = beanManager.createInjectionTarget(annotatedType);
+        final InjectionTargetFactory<Supplier<T>> injectionTargetFactory = beanManager.getInjectionTargetFactory(annotatedType);
+        final InjectionTarget<Supplier<T>> injectionTarget = injectionTargetFactory.createInjectionTarget(null);
 
         SupplierClassBean<T> supplierBean = new SupplierClassBean<>(runtimeType, binding);
         InjectionTarget<Supplier<T>> jit = getJerseyInjectionTarget(supplierClass, injectionTarget, supplierBean, resolvers);
@@ -218,7 +219,8 @@ public abstract class BeanHelper {
 
         final Class<Supplier<T>> bindingClass = (Class<Supplier<T>>) binding.getSupplierClass();
         final AnnotatedType<Supplier<T>> annotatedType = beanManager.createAnnotatedType(bindingClass);
-        final InjectionTarget<Supplier<T>> injectionTarget = beanManager.createInjectionTarget(annotatedType);
+        final InjectionTargetFactory<Supplier<T>> injectionTargetFactory = beanManager.getInjectionTargetFactory(annotatedType);
+        final InjectionTarget<Supplier<T>> injectionTarget = injectionTargetFactory.createInjectionTarget(null);
 
         final CachedConstructorAnalyzer<Supplier<T>> analyzer =
                 new CachedConstructorAnalyzer<>(bindingClass, InjectionUtils.getInjectAnnotations(resolvers));
@@ -239,7 +241,8 @@ public abstract class BeanHelper {
 
         final Class<T> bindingClass = binding.getImplementationType();
         final AnnotatedType<T> annotatedType = beanManager.createAnnotatedType(bindingClass);
-        final InjectionTarget<T> injectionTarget = beanManager.createInjectionTarget(annotatedType);
+        final InjectionTargetFactory<T> injectionTargetFactory = beanManager.getInjectionTargetFactory(annotatedType);
+        final InjectionTarget<T> injectionTarget = injectionTargetFactory.createInjectionTarget(null);
 
         final CachedConstructorAnalyzer<T> analyzer =
                 new CachedConstructorAnalyzer<>(bindingClass, InjectionUtils.getInjectAnnotations(resolvers));

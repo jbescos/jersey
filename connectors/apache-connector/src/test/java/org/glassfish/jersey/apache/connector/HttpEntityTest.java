@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2020, 2022 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -22,15 +22,15 @@ import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.logging.LoggingFeature;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.test.JerseyTest;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.client.Entity;
-import javax.ws.rs.core.Application;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
+import jakarta.ws.rs.POST;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.client.Entity;
+import jakarta.ws.rs.core.Application;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
 import java.io.ByteArrayInputStream;
 import java.util.logging.Logger;
 
@@ -65,8 +65,8 @@ public class HttpEntityTest extends JerseyTest {
         InputStreamEntity entity = new InputStreamEntity(bais);
 
         try (Response response = target().request().post(Entity.entity(entity, MediaType.APPLICATION_OCTET_STREAM))) {
-            Assert.assertEquals(200, response.getStatus());
-            Assert.assertEquals(ECHO_MESSAGE, response.readEntity(String.class));
+            Assertions.assertEquals(200, response.getStatus());
+            Assertions.assertEquals(ECHO_MESSAGE, response.readEntity(String.class));
         }
     }
 
@@ -75,8 +75,8 @@ public class HttpEntityTest extends JerseyTest {
         ByteArrayEntity entity = new ByteArrayEntity(ECHO_MESSAGE.getBytes());
 
         try (Response response = target().request().post(Entity.entity(entity, MediaType.APPLICATION_OCTET_STREAM))) {
-            Assert.assertEquals(200, response.getStatus());
-            Assert.assertEquals(ECHO_MESSAGE, response.readEntity(String.class));
+            Assertions.assertEquals(200, response.getStatus());
+            Assertions.assertEquals(ECHO_MESSAGE, response.readEntity(String.class));
         }
     }
 }

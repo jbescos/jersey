@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 
-    Copyright (c) 2010, 2021 Oracle and/or its affiliates. All rights reserved.
+    Copyright (c) 2010, 2023 Oracle and/or its affiliates. All rights reserved.
 
     This program and the accompanying materials are made available under the
     terms of the Eclipse Distribution License v. 1.0, which is available at
@@ -18,7 +18,7 @@
     <parent>
         <groupId>org.glassfish.jersey.examples</groupId>
         <artifactId>project</artifactId>
-        <version>2.36-SNAPSHOT</version>
+        <version>3.1.99-SNAPSHOT</version>
     </parent>
 
     <artifactId>https-clientserver-grizzly</artifactId>
@@ -54,10 +54,16 @@
             <artifactId>jakarta.xml.bind-api</artifactId>
         </dependency>
         <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>com.sun.xml.bind</groupId>
+            <artifactId>jaxb-osgi</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+
     </dependencies>
 
     <build>
@@ -74,23 +80,6 @@
 
     <profiles>
         <profile>
-            <id>jdk11+</id>
-            <activation>
-                <jdk>[11,)</jdk>
-            </activation>
-            <properties>
-                <!-- https://bugs.openjdk.java.net/browse/JDK-8211426 -->
-                <surefire.security.argline>-Djdk.tls.server.protocols=TLSv1.2</surefire.security.argline>
-            </properties>
-            <dependencies>
-                <dependency>
-                    <groupId>com.sun.xml.bind</groupId>
-                    <artifactId>jaxb-osgi</artifactId>
-                    <scope>runtime</scope>
-                </dependency>
-            </dependencies>
-        </profile>
-        <profile>
             <id>pre-release</id>
             <build>
                 <plugins>
@@ -102,5 +91,10 @@
             </build>
         </profile>
     </profiles>
+
+    <properties>
+        <!-- https://bugs.openjdk.java.net/browse/JDK-8211426 -->
+        <surefire.security.argline>-Djdk.tls.server.protocols=TLSv1.2</surefire.security.argline>
+    </properties>
 
 </project>

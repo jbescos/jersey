@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012, 2019 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2012, 2022 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -24,14 +24,14 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.Callable;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.Application;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.core.Application;
 
-import javax.inject.Inject;
-import javax.inject.Qualifier;
-import javax.inject.Singleton;
+import jakarta.inject.Inject;
+import jakarta.inject.Qualifier;
+import jakarta.inject.Singleton;
 
 import org.glassfish.jersey.inject.hk2.Hk2InjectionManagerFactory;
 import org.glassfish.jersey.inject.hk2.Hk2RequestScope;
@@ -49,11 +49,11 @@ import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.test.DeploymentContext;
 import org.glassfish.jersey.test.JerseyTest;
 
-import org.junit.Assume;
-import org.junit.Before;
-import org.junit.Test;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotSame;
+import org.junit.jupiter.api.Assumptions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
 
 /**
  * @author Pavel Bucek
@@ -147,14 +147,14 @@ public class CustomInjectablesApplicationTest extends JerseyTest {
         }
     }
 
-    @Before
+    @BeforeEach
     public void setup() {
-        Assume.assumeTrue(Hk2InjectionManagerFactory.isImmediateStrategy());
+        Assumptions.assumeTrue(Hk2InjectionManagerFactory.isImmediateStrategy());
     }
 
     @Override
     protected DeploymentContext configureDeployment() {
-        // If strategy is not IMMEDIATE then test will fail even before @Before setup method invocation.
+        // If strategy is not IMMEDIATE then test will fail even before @BeforeEach setup method invocation.
         // It has no other reason then just run the tests in IMMEDIATE strategy.
         if (Hk2InjectionManagerFactory.isImmediateStrategy()) {
             return DeploymentContext.newInstance(MyApplication.class);
@@ -165,7 +165,7 @@ public class CustomInjectablesApplicationTest extends JerseyTest {
 
     @Test
     public void testPerRequest() throws Exception {
-        final javax.ws.rs.client.WebTarget perrequest = target().path("perrequest");
+        final jakarta.ws.rs.client.WebTarget perrequest = target().path("perrequest");
 
         assertEquals("1", perrequest.request().get(String.class));
         assertEquals("1", perrequest.request().get(String.class));
@@ -174,7 +174,7 @@ public class CustomInjectablesApplicationTest extends JerseyTest {
 
     @Test
     public void testSingleton() throws Exception {
-        final javax.ws.rs.client.WebTarget perrequest = target().path("singleton");
+        final jakarta.ws.rs.client.WebTarget perrequest = target().path("singleton");
 
         assertEquals("1", perrequest.request().get(String.class));
         assertEquals("2", perrequest.request().get(String.class));
@@ -183,7 +183,7 @@ public class CustomInjectablesApplicationTest extends JerseyTest {
 
     @Test
     public void testCustomQualifier() throws Exception {
-        final javax.ws.rs.client.WebTarget perrequestCustomAnnotation = target().path("perrequestCustomQualifier");
+        final jakarta.ws.rs.client.WebTarget perrequestCustomAnnotation = target().path("perrequestCustomQualifier");
 
         assertEquals("1", perrequestCustomAnnotation.request().get(String.class));
         assertEquals("1", perrequestCustomAnnotation.request().get(String.class));

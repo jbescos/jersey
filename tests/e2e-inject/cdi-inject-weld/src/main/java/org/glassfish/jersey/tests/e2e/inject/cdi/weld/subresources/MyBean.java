@@ -16,8 +16,8 @@
 
 package org.glassfish.jersey.tests.e2e.inject.cdi.weld.subresources;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 import org.glassfish.jersey.tests.e2e.inject.cdi.weld.Hello;
 import org.glassfish.jersey.tests.e2e.inject.cdi.weld.NameService;
 import org.glassfish.jersey.tests.e2e.inject.cdi.weld.Secured;

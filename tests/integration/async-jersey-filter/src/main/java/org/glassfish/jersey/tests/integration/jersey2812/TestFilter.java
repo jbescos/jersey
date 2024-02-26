@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015, 2019 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2015, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -21,16 +21,16 @@ import java.util.Date;
 import java.util.concurrent.CountDownLatch;
 import java.util.logging.Logger;
 
-import javax.servlet.Filter;
-import javax.servlet.FilterChain;
-import javax.servlet.FilterConfig;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
+import jakarta.servlet.Filter;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.FilterConfig;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.ServletResponse;
 
 /**
  * This servlet filter class provides a means to detect whether Jersey (in servlet filter based setup) properly freed the
- * server-side thread processing the http request to an async RESTful resource where {@link javax.ws.rs.container.AsyncResponse}
+ * server-side thread processing the http request to an async RESTful resource where {@link jakarta.ws.rs.container.AsyncResponse}
  * wasn't resumed.
  * <p/>
  * Reported as JERSEY-2812.

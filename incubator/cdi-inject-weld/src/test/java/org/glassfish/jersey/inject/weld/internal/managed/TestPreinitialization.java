@@ -16,9 +16,9 @@
 
 package org.glassfish.jersey.inject.weld.internal.managed;
 
-import javax.enterprise.context.Dependent;
-import javax.inject.Singleton;
-import javax.ws.rs.RuntimeType;
+import jakarta.enterprise.context.Dependent;
+import jakarta.inject.Singleton;
+import jakarta.ws.rs.RuntimeType;
 
 import org.glassfish.jersey.inject.weld.spi.BootstrapPreinitialization;
 import org.glassfish.jersey.internal.inject.AbstractBinder;
@@ -74,23 +74,23 @@ public class TestPreinitialization implements BootstrapPreinitialization {
 
             //testThreadScopedInRequestScope
             binder.bindAsContract(ThreadScopeTest.RequestScopedInterface.class)
-                    .in(javax.enterprise.context.RequestScoped.class);
+                    .in(jakarta.enterprise.context.RequestScoped.class);
 //                    bindFactory(new SupplierGreeting())
 //                            .to(Greeting.class)
 //                            .in(PerThread.class);
 
             //testThreadScopedInRequestScopeImplementation
             binder.bindAsContract(ThreadScopeTest.RequestScopedCzech.class)
-                    .in(javax.enterprise.context.RequestScoped.class);
+                    .in(jakarta.enterprise.context.RequestScoped.class);
             binder.bindFactory(new ThreadScopeTest.SupplierGreeting())
                     .to(ThreadScopeTest.CzechGreeting.class)
                     .in(PerThread.class);
 
             //testThreadScopedInRequestTwoTypes
             binder.bindAsContract(ThreadScopeTest.RequestScopedCzech2.class)
-                    .in(javax.enterprise.context.RequestScoped.class);
+                    .in(jakarta.enterprise.context.RequestScoped.class);
             binder.bindAsContract(ThreadScopeTest.RequestScopedEnglish2.class)
-                    .in(javax.enterprise.context.RequestScoped.class);
+                    .in(jakarta.enterprise.context.RequestScoped.class);
             binder.bindFactory(new ThreadScopeTest.SupplierGreeting2(ThreadScopeTest.CzechGreeting2.GREETING))
                     .to(ThreadScopeTest.CzechGreeting2.class)
                     .in(PerThread.class);

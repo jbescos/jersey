@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2013, 2023 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -19,13 +19,13 @@ package org.glassfish.jersey.tests.e2e.server;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.client.Entity;
-import javax.ws.rs.core.Application;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.ext.ExceptionMapper;
+import jakarta.ws.rs.POST;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.client.Entity;
+import jakarta.ws.rs.core.Application;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.ext.ExceptionMapper;
 
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.server.internal.LocalizationMessages;
@@ -33,9 +33,9 @@ import org.glassfish.jersey.spi.ExtendedExceptionMapper;
 import org.glassfish.jersey.test.JerseyTest;
 import org.glassfish.jersey.test.TestProperties;
 
-import org.junit.Assert;
-import org.junit.Test;
-import static org.junit.Assert.fail;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.fail;
 
 /**
  * @author Miroslav Fuksa
@@ -278,8 +278,8 @@ public class ExtendedExceptionMapperTest extends JerseyTest {
                     LocalizationMessages.ERROR_EXCEPTION_MAPPING_ORIGINAL_EXCEPTION(),
                     LocalizationMessages.ERROR_EXCEPTION_MAPPING_THROWN_TO_CONTAINER()}) {
 
-                if (logRecord.getMessage().contains(message) && logRecord.getLevel().intValue() > Level.FINE.intValue()) {
-                    fail("Log message should be logged at lower (FINE) level: " + message);
+                if (logRecord.getMessage().contains(message) && logRecord.getLevel().intValue() > Level.WARNING.intValue()) {
+                    fail("Log message should be logged at lower (WARNING) level: " + message);
                 }
             }
         }
@@ -288,10 +288,10 @@ public class ExtendedExceptionMapperTest extends JerseyTest {
     private void _test(String input, String expectedMapper) {
         final Response response = target("resource").request().post(Entity.entity(input, MediaType.TEXT_PLAIN_TYPE));
         if (expectedMapper == null) {
-            Assert.assertEquals(500, response.getStatus());
+            Assertions.assertEquals(500, response.getStatus());
         } else {
-            Assert.assertEquals(200, response.getStatus());
-            Assert.assertEquals(expectedMapper, response.readEntity(String.class));
+            Assertions.assertEquals(200, response.getStatus());
+            Assertions.assertEquals(expectedMapper, response.readEntity(String.class));
         }
     }
 

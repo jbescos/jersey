@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2010, 2023 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -26,6 +26,7 @@ import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -36,25 +37,27 @@ import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.ws.rs.BadRequestException;
-import javax.ws.rs.InternalServerErrorException;
-import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.MultivaluedMap;
-import javax.ws.rs.core.NoContentException;
-import javax.ws.rs.ext.Providers;
+import jakarta.ws.rs.BadRequestException;
+import jakarta.ws.rs.InternalServerErrorException;
+import jakarta.ws.rs.WebApplicationException;
+import jakarta.ws.rs.core.Configuration;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.MultivaluedMap;
+import jakarta.ws.rs.core.NoContentException;
+import jakarta.ws.rs.ext.Providers;
 
-import javax.xml.bind.JAXBElement;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-import javax.xml.bind.UnmarshalException;
-import javax.xml.bind.Unmarshaller;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlType;
+import jakarta.xml.bind.JAXBElement;
+import jakarta.xml.bind.JAXBException;
+import jakarta.xml.bind.Marshaller;
+import jakarta.xml.bind.UnmarshalException;
+import jakarta.xml.bind.Unmarshaller;
+import jakarta.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlType;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 import org.glassfish.jersey.message.internal.EntityInputStream;
+import org.glassfish.jersey.message.internal.ReaderWriter;
 
 /**
  * An abstract provider for {@code T[]}, {@code Collection&lt;T&gt;},
@@ -120,12 +123,12 @@ public abstract class AbstractCollectionJaxbProvider extends AbstractJaxbProvide
         }
     };
 
-    public AbstractCollectionJaxbProvider(Providers ps) {
-        super(ps);
+    public AbstractCollectionJaxbProvider(Providers ps, Configuration config) {
+        super(ps, config);
     }
 
-    public AbstractCollectionJaxbProvider(Providers ps, MediaType mt) {
-        super(ps, mt);
+    public AbstractCollectionJaxbProvider(Providers ps, MediaType mt, Configuration config) {
+        super(ps, mt, config);
     }
 
     @Override
@@ -237,12 +240,12 @@ public abstract class AbstractCollectionJaxbProvider extends AbstractJaxbProvide
                     ? Arrays.asList((Object[]) t)
                     : (Collection) t;
             final Class elementType = getElementClass(type, genericType);
-            final Charset charset = getCharset(mediaType);
+            final Charset charset = ReaderWriter.getCharset(mediaType);
             final String charsetName = charset.name();
 
             final Marshaller m = getMarshaller(elementType, mediaType);
             m.setProperty(Marshaller.JAXB_FRAGMENT, true);
-            if (charset != UTF8) {
+            if (charset != StandardCharsets.UTF_8) {
                 m.setProperty(Marshaller.JAXB_ENCODING, charsetName);
             }
             setHeader(m, annotations);
@@ -261,7 +264,7 @@ public abstract class AbstractCollectionJaxbProvider extends AbstractJaxbProvide
      * @param c            the charset
      * @param m            the marshaller
      * @param entityStream the output stream to marshall the collection
-     * @throws javax.xml.bind.JAXBException in case the marshalling of element collection fails.
+     * @throws jakarta.xml.bind.JAXBException in case the marshalling of element collection fails.
      * @throws IOException                  in case of any other I/O error while marshalling the collection of JAXB objects.
      */
     public abstract void writeCollection(Class<?> elementType, Collection<?> t,
@@ -425,8 +428,8 @@ public abstract class AbstractCollectionJaxbProvider extends AbstractJaxbProvide
     /**
      * Get the element name for a given Java type.
      * <p>
-     * In case the element is annotated with a {@link javax.xml.bind.annotation.XmlRootElement} annotation
-     * and the {@link javax.xml.bind.annotation.XmlRootElement#name() specified element name} is not default,
+     * In case the element is annotated with a {@link jakarta.xml.bind.annotation.XmlRootElement} annotation
+     * and the {@link jakarta.xml.bind.annotation.XmlRootElement#name() specified element name} is not default,
      * the method returns the specified element name in the annotation. Otherwise, the method returns the name of
      * the element class instead.
      * </p>

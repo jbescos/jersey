@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010, 2019 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2010, 2021 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -22,11 +22,12 @@ import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
 
-import javax.ws.rs.core.Configuration;
+import jakarta.ws.rs.core.Configuration;
 
 import org.glassfish.jersey.internal.util.collection.Value;
 import org.glassfish.jersey.internal.util.collection.Values;
 import org.glassfish.jersey.message.MessageBodyWorkers;
+import org.glassfish.jersey.server.ServerProperties;
 import org.glassfish.jersey.server.internal.JerseyResourceContext;
 import org.glassfish.jersey.server.internal.ProcessingProviders;
 import org.glassfish.jersey.server.internal.process.Endpoint;
@@ -55,6 +56,7 @@ final class RuntimeModelBuilder {
 
     // SubResourceLocator Model Builder.
     private final Value<RuntimeLocatorModelBuilder> locatorBuilder;
+    private final boolean isWildcardMethodSelectingRouter;
 
     /**
      * Create a new instance of the runtime model builder.
@@ -83,6 +85,8 @@ final class RuntimeModelBuilder {
         this.locatorBuilder = Values.lazy((Value<RuntimeLocatorModelBuilder>)
                 () -> new RuntimeLocatorModelBuilder(config, messageBodyWorkers, valueSuppliers, resourceContext,
                         RuntimeModelBuilder.this, modelProcessors, createServiceFunction));
+        this.isWildcardMethodSelectingRouter = ServerProperties.getValue(config.getProperties(),
+                ServerProperties.EMPTY_REQUEST_MEDIA_TYPE_MATCHES_ANY_CONSUMES, true);
     }
 
     private Router createMethodRouter(final ResourceMethod resourceMethod) {
@@ -149,7 +153,9 @@ final class RuntimeModelBuilder {
             // resource methods
             if (!resource.getResourceMethods().isEmpty()) {
                 final List<MethodRouting> methodRoutings = createResourceMethodRouters(resource, subResourceMode);
-                final Router methodSelectingRouter = new MethodSelectingRouter(messageBodyWorkers, methodRoutings);
+                final Router methodSelectingRouter = isWildcardMethodSelectingRouter
+                        ? new WildcardMethodSelectingRouter(messageBodyWorkers, methodRoutings)
+                        : new OctetStreamMethodSelectingRouter(messageBodyWorkers, methodRoutings);
                 if (subResourceMode) {
                     currentRouterBuilder = startNextRoute(currentRouterBuilder, PathPattern.END_OF_PATH_PATTERN)
                             .to(resourcePushingRouter)
@@ -178,7 +184,9 @@ final class RuntimeModelBuilder {
                         srRoutedBuilder = startNextRoute(srRoutedBuilder, childClosedPattern)
                                 .to(uriPushingRouter)
                                 .to(childResourcePushingRouter)
-                                .to(new MethodSelectingRouter(messageBodyWorkers, childMethodRoutings));
+                                .to(isWildcardMethodSelectingRouter
+                                        ? new WildcardMethodSelectingRouter(messageBodyWorkers, childMethodRoutings)
+                                        : new OctetStreamMethodSelectingRouter(messageBodyWorkers, childMethodRoutings));
                     }
 
                     // sub resource locator

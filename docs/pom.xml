@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 
-    Copyright (c) 2010, 2021 Oracle and/or its affiliates. All rights reserved.
+    Copyright (c) 2010, 2023 Oracle and/or its affiliates. All rights reserved.
 
     This program and the accompanying materials are made available under the
     terms of the Eclipse Public License v. 2.0, which is available at
@@ -22,7 +22,7 @@
     <parent>
         <groupId>org.glassfish.jersey</groupId>
         <artifactId>project</artifactId>
-        <version>2.36-SNAPSHOT</version>
+        <version>3.1.99-SNAPSHOT</version>
     </parent>
     <artifactId>jersey-documentation</artifactId>
     <packaging>pom</packaging>
@@ -55,11 +55,11 @@
                                 <replace file="${src.dir}/jersey.ent" token="$docs.version" value="${jersey.docs.version}" />
                                 <replace file="${src.dir}/jersey.ent" token="$guava-version" value="${guava.version}" />
                                 <replace file="${src.dir}/jersey.ent" token="$jackson-version" value="${jackson.version}" />
-                                <replace file="${src.dir}/jersey.ent" token="$javax-el-impl-version" value="${javax.el.impl.version}" />
-                                <replace file="${src.dir}/jersey.ent" token="$javax-el-version" value="${javax.el.version}" />
+                                <replace file="${src.dir}/jersey.ent" token="$jakarta.el-impl-version" value="${jakarta.el.impl.version}" />
+                                <replace file="${src.dir}/jersey.ent" token="$jakarta.el-version" value="${jakarta.el.version}" />
                                 <replace file="${src.dir}/jersey.ent" token="$jax-rs-api-jar-version" value="${jaxrs.impl.version}" />
                                 <replace file="${src.dir}/jersey.ent" token="$jax-rs-version" value="${jaxrs.version}" />
-                                <replace file="${src.dir}/jersey.ent" token="$jaxb-api-jar-version" value="${jaxb.api.version}" />
+                                <replace file="${src.dir}/jersey.ent" token="$jaxb-api-jar-version" value="${jakarta.jaxb.api.version}" />
                                 <replace file="${src.dir}/jersey.ent" token="$repository" value="${javanet.repository.id}" />
                                 <replace file="${src.dir}/jersey.ent" token="$src.branch" value="${jersey.src.branch}" />
                                 <replace file="${src.dir}/jersey.ent" token="$version" value="${jersey.version}" />
@@ -77,7 +77,7 @@
             <plugin>
                 <groupId>com.agilejava.docbkx</groupId>
                 <artifactId>docbkx-maven-plugin</artifactId>
-                <version>2.0.15</version>
+                <version>2.0.17</version>
                 <dependencies>
                     <dependency>
                         <groupId>net.sf.docbook</groupId>
@@ -154,7 +154,7 @@
                         <id>make-assembly</id>
                         <phase>package</phase>
                         <goals>
-                            <goal>attached</goal>
+                            <goal>single</goal>
                         </goals>
                     </execution>
                 </executions>
@@ -193,7 +193,7 @@
         <javanet.repository.id>snapshots</javanet.repository.id>
         <jersey.docs.version>snapshot</jersey.docs.version>
         <jersey.apidocs.version>snapshot</jersey.apidocs.version>
-        <jersey.src.branch>master</jersey.src.branch>
+        <jersey.src.branch>3.x</jersey.src.branch>
         <jaxrs.version>${jaxrs.api.spec.version}</jaxrs.version>
         <jaxrs.impl.version>${jaxrs.api.impl.version}</jaxrs.impl.version>
     </properties>

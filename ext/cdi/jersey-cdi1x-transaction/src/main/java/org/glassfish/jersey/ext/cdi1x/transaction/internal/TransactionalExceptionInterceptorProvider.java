@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014, 2019 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2014, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -27,17 +27,17 @@ import java.lang.annotation.Target;
 import java.util.List;
 import java.util.Set;
 
-import javax.annotation.Priority;
-import javax.enterprise.event.Observes;
-import javax.enterprise.inject.spi.AfterTypeDiscovery;
-import javax.enterprise.inject.spi.BeanManager;
-import javax.enterprise.inject.spi.BeforeBeanDiscovery;
-import javax.enterprise.inject.spi.Extension;
-import javax.inject.Qualifier;
-import javax.interceptor.Interceptor;
-import javax.transaction.TransactionalException;
-import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.ext.ExceptionMapper;
+import jakarta.annotation.Priority;
+import jakarta.enterprise.event.Observes;
+import jakarta.enterprise.inject.spi.AfterTypeDiscovery;
+import jakarta.enterprise.inject.spi.BeanManager;
+import jakarta.enterprise.inject.spi.BeforeBeanDiscovery;
+import jakarta.enterprise.inject.spi.Extension;
+import jakarta.inject.Qualifier;
+import jakarta.interceptor.Interceptor;
+import jakarta.transaction.TransactionalException;
+import jakarta.ws.rs.WebApplicationException;
+import jakarta.ws.rs.ext.ExceptionMapper;
 
 import org.glassfish.jersey.ext.cdi1x.internal.CdiUtil;
 import org.glassfish.jersey.ext.cdi1x.internal.GenericCdiBeanSupplier;

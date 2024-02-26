@@ -16,10 +16,10 @@
 
 package org.glassfish.jersey.tests.cdi.inject;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.context.RequestScoped;
-import javax.enterprise.inject.Alternative;
-import javax.ws.rs.Path;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.RequestScoped;
+import jakarta.enterprise.inject.Alternative;
+import jakarta.ws.rs.Path;
 import java.util.Collections;
 import java.util.Set;
 

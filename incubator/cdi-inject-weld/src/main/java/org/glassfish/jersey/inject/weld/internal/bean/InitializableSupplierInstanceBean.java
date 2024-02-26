@@ -16,9 +16,9 @@
 
 package org.glassfish.jersey.inject.weld.internal.bean;
 
-import javax.enterprise.context.Dependent;
-import javax.enterprise.context.spi.CreationalContext;
-import javax.ws.rs.RuntimeType;
+import jakarta.enterprise.context.Dependent;
+import jakarta.enterprise.context.spi.CreationalContext;
+import jakarta.ws.rs.RuntimeType;
 
 import org.glassfish.jersey.inject.weld.internal.inject.InitializableSupplierInstanceBinding;
 import org.glassfish.jersey.inject.weld.internal.injector.JerseyClientCreationalContext;
@@ -34,8 +34,8 @@ import java.util.Set;
 import java.util.function.Supplier;
 
 /**
- * Creates an implementation of {@link javax.enterprise.inject.spi.Bean} interface using Jersey's {@link SupplierInstanceBinding}.
- * Binding provides the information about the bean also called {@link javax.enterprise.inject.spi.BeanAttributes} information.
+ * Creates an implementation of {@link jakarta.enterprise.inject.spi.Bean} interface using Jersey's {@link SupplierInstanceBinding}.
+ * Binding provides the information about the bean also called {@link jakarta.enterprise.inject.spi.BeanAttributes} information.
  * The {@code Bean} does not use {@link JerseyInjectionTarget} because serves already
  * created supplier instance, therefore the create operation just return provided instance without any other contextual operation
  * (produce, inject, destroy). Client has to manage the instance alone.
@@ -68,9 +68,9 @@ class InitializableSupplierInstanceBean<T> extends JerseyBean<Supplier<T>> {
     private final Supplier<T> supplier;
 
     /**
-     * Creates a new Jersey-specific {@link javax.enterprise.inject.spi.Bean} instance.
+     * Creates a new Jersey-specific {@link jakarta.enterprise.inject.spi.Bean} instance.
      *
-     * @param binding {@link javax.enterprise.inject.spi.BeanAttributes} part of the bean.
+     * @param binding {@link jakarta.enterprise.inject.spi.BeanAttributes} part of the bean.
      */
     InitializableSupplierInstanceBean(RuntimeType runtimeType, InitializableSupplierInstanceBinding<T> binding) {
         super(runtimeType, binding);

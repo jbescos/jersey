@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2015, 2022 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -16,10 +16,10 @@
 
 package org.glassfish.jersey.tests.e2e.common.internal;
 
-import javax.ws.rs.core.Response;
-import javax.ws.rs.ext.ExceptionMapper;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.ext.ExceptionMapper;
 
-import javax.inject.Singleton;
+import jakarta.inject.Singleton;
 
 import org.glassfish.jersey.internal.ExceptionMapperFactory;
 import org.glassfish.jersey.internal.inject.AbstractBinder;
@@ -27,8 +27,8 @@ import org.glassfish.jersey.internal.inject.InjectionManager;
 import org.glassfish.jersey.internal.inject.Injections;
 import org.glassfish.jersey.spi.ExtendedExceptionMapper;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit test of {@link ExceptionMapperFactory}.
@@ -85,8 +85,8 @@ public class ExceptionMapperFactoryTest {
 
         final ExceptionMapper mapper = mapperFactory.findMapping(new IllegalArgumentException());
 
-        Assert.assertTrue("IllegalArgumentExceptionMapper should be returned",
-                mapper instanceof IllegalArgumentExceptionMapper);
+        Assertions.assertTrue(mapper instanceof IllegalArgumentExceptionMapper,
+                "IllegalArgumentExceptionMapper should be returned");
     }
 
     /**
@@ -116,7 +116,7 @@ public class ExceptionMapperFactoryTest {
 
         final ExceptionMapper<RuntimeException> mapper = mapperFactory.findMapping(new RuntimeException());
 
-        Assert.assertTrue("RuntimeExceptionMapper should be returned", mapper instanceof RuntimeExceptionMapper);
+        Assertions.assertTrue(mapper instanceof RuntimeExceptionMapper, "RuntimeExceptionMapper should be returned");
     }
 
     /**
@@ -147,8 +147,7 @@ public class ExceptionMapperFactoryTest {
 
         final ExceptionMapper mapper = mapperFactory.find(IllegalArgumentException.class);
 
-        Assert.assertTrue("IllegalStateExceptionMapper should be returned",
-                mapper instanceof IllegalStateExceptionMapper);
+        Assertions.assertTrue(mapper instanceof IllegalStateExceptionMapper, "IllegalStateExceptionMapper should be returned");
     }
 
     /**

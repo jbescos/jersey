@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014, 2019 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2014, 2022 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -18,8 +18,8 @@ package org.glassfish.jersey.tests.cdi.resources;
 
 import java.net.URI;
 
-import javax.ws.rs.core.Application;
-import javax.ws.rs.core.UriBuilder;
+import jakarta.ws.rs.core.Application;
+import jakarta.ws.rs.core.UriBuilder;
 
 import org.glassfish.jersey.test.JerseyTest;
 
@@ -33,7 +33,7 @@ import org.glassfish.jersey.test.JerseyTest;
  *
  * @author Jakub Podlesak
  */
-public class CdiTest extends JerseyTest {
+public abstract class CdiTest extends JerseyTest {
 
     @Override
     protected Application configure() {

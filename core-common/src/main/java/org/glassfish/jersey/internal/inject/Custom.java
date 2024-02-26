@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012, 2019 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2012, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -19,12 +19,12 @@ package org.glassfish.jersey.internal.inject;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
-import javax.inject.Qualifier;
+import jakarta.inject.Qualifier;
 
 /**
  * {@link Qualifier Qualifier annotation} used to annotate HK2 injections and
  * bindings for user custom providers. Providers are classes which implement one
- * of the provider interfaces (for example {@link javax.ws.rs.ext.MessageBodyReader
+ * of the provider interfaces (for example {@link jakarta.ws.rs.ext.MessageBodyReader
  * Message body reader interface}).
  * <p>
  * Custom providers are bound in the HK2 injection manager using {@code &#64;Custom}

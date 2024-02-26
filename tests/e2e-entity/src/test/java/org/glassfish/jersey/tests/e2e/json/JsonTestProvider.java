@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2013, 2022 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -22,16 +22,15 @@ import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 
-import javax.ws.rs.core.Feature;
-import javax.ws.rs.ext.ContextResolver;
-import javax.ws.rs.ext.Provider;
+import jakarta.ws.rs.core.Feature;
+import jakarta.ws.rs.ext.ContextResolver;
+import jakarta.ws.rs.ext.Provider;
 
-import javax.json.bind.Jsonb;
-import javax.json.bind.JsonbBuilder;
-import javax.json.bind.JsonbConfig;
+import jakarta.json.bind.Jsonb;
+import jakarta.json.bind.JsonbBuilder;
+import jakarta.json.bind.JsonbConfig;
 
 import org.glassfish.jersey.jackson.JacksonFeature;
-import org.glassfish.jersey.jackson1.Jackson1Feature;
 import org.glassfish.jersey.jettison.JettisonConfig;
 import org.glassfish.jersey.jettison.JettisonFeature;
 import org.glassfish.jersey.jsonb.JsonBindingFeature;
@@ -47,7 +46,6 @@ public abstract class JsonTestProvider {
 
     public static final Collection<JsonTestProvider> JAXB_PROVIDERS = new LinkedHashSet<JsonTestProvider>() {{
         add(new JacksonJsonTestProvider());
-        add(new Jackson1JsonTestProvider());
         add(new JettisonMappedJsonTestProvider());
         add(new JettisonBadgerfishJsonTestProvider());
         add(new MoxyJsonTestProvider());
@@ -57,7 +55,6 @@ public abstract class JsonTestProvider {
     //  TODO add MoxyJsonTestProvider once MOXy supports POJO
     public static final Collection<JsonTestProvider> POJO_PROVIDERS = new LinkedHashSet<JsonTestProvider>() {{
         add(new JacksonJsonTestProvider());
-        add(new Jackson1JsonTestProvider());
     }};
 
     private Feature feature;
@@ -137,11 +134,7 @@ public abstract class JsonTestProvider {
 
     }
 
-    public static class Jackson1JsonTestProvider extends JsonTestProvider {
-        public Jackson1JsonTestProvider() {
-            setFeature(new Jackson1Feature());
-        }
-    }
+
 
     public static class JsonbTestProvider extends JsonTestProvider {
         public JsonbTestProvider() {

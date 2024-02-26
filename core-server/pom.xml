@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 
-    Copyright (c) 2010, 2022 Oracle and/or its affiliates. All rights reserved.
+    Copyright (c) 2010, 2023 Oracle and/or its affiliates. All rights reserved.
 
     This program and the accompanying materials are made available under the
     terms of the Eclipse Public License v. 2.0, which is available at
@@ -23,7 +23,7 @@
     <parent>
         <groupId>org.glassfish.jersey</groupId>
         <artifactId>project</artifactId>
-        <version>2.36-SNAPSHOT</version>
+        <version>3.1.99-SNAPSHOT</version>
     </parent>
 
     <groupId>org.glassfish.jersey.core</groupId>
@@ -94,16 +94,16 @@
                             com.sun.research.ws.wadl.*;version=${project.version}
                         </Export-Package>
                         <Import-Package>
-                            ${javax.annotation.osgi.version},
-                            javax.xml.bind;version="!";resolution:=optional,
-                            javax.xml.bind.annotation;version="!";resolution:=optional,
-                            javax.xml.bind.annotation.adapters;version="!";resolution:=optional,
+                            ${jakarta.annotation.osgi.version},
+                            jakarta.xml.bind;version="!";resolution:=optional,
+                            jakarta.xml.bind.annotation;version="!";resolution:=optional,
+                            jakarta.xml.bind.annotation.adapters;version="!";resolution:=optional,
                             javax.xml.namespace;resolution:=optional,
                             javax.xml.parsers;resolution:=optional,
                             javax.xml.transform;resolution:=optional,
                             javax.xml.transform.sax;resolution:=optional,
                             javax.xml.transform.stream;resolution:=optional,
-                            javax.validation.*;resolution:=optional;version="${range;[==,3);${javax.validation.api.version}}",
+                            jakarta.validation.*;resolution:=optional;version="[3,4)",
                             *
                         </Import-Package>
                     </instructions>
@@ -122,7 +122,7 @@
                     <dependency>
                         <groupId>jakarta.xml.bind</groupId>
                         <artifactId>jakarta.xml.bind-api</artifactId>
-                        <version>${jaxb.api.version}</version>
+                        <version>${jakarta.jaxb.api.version}</version>
                     </dependency>
                     <dependency>
                         <groupId>com.sun.xml.bind</groupId>
@@ -187,13 +187,19 @@
         </dependency>
 
         <dependency>
-            <groupId>org.glassfish.hk2.external</groupId>
-            <artifactId>jakarta.inject</artifactId>
+            <groupId>jakarta.inject</groupId>
+            <artifactId>jakarta.inject-api</artifactId>
         </dependency>
 
         <dependency>
             <groupId>jakarta.validation</groupId>
             <artifactId>jakarta.validation-api</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.sun.xml.bind</groupId>
+            <artifactId>jaxb-osgi</artifactId>
+            <scope>test</scope>
         </dependency>
 
         <dependency>
@@ -214,13 +220,13 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.hamcrest</groupId>
-            <artifactId>hamcrest-library</artifactId>
+            <artifactId>hamcrest</artifactId>
             <scope>test</scope>
         </dependency>
 
@@ -237,22 +243,15 @@
             <version>${project.version}</version>
             <scope>test</scope>
         </dependency>
+
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <profiles>
-        <profile>
-            <id>jdk11+</id>
-            <activation>
-                <jdk>[11,)</jdk>
-            </activation>
-            <dependencies>
-                <dependency>
-                    <groupId>com.sun.xml.bind</groupId>
-                    <artifactId>jaxb-osgi</artifactId>
-                    <scope>test</scope>
-                </dependency>
-            </dependencies>
-        </profile>
         <profile>
             <id>securityOff</id>
             <properties>

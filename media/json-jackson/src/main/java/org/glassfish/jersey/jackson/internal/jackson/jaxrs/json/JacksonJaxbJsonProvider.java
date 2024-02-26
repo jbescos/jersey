@@ -1,9 +1,9 @@
 package org.glassfish.jersey.jackson.internal.jackson.jaxrs.json;
 
-import javax.ws.rs.Consumes;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.ext.Provider;
+import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.ext.Provider;
 
 import org.glassfish.jersey.jackson.internal.jackson.jaxrs.cfg.Annotations;
 
@@ -62,5 +62,11 @@ public class JacksonJaxbJsonProvider extends JacksonJsonProvider {
     public JacksonJaxbJsonProvider(ObjectMapper mapper, Annotations[] annotationsToUse)
     {
         super(mapper, annotationsToUse);
+    }
+
+    // Do not erase - Jersey required constructor
+    protected JacksonJaxbJsonProvider(JsonMapperConfigurator configurator)
+    {
+        super(configurator);
     }
 }

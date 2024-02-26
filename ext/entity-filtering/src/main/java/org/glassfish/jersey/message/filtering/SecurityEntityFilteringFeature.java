@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2013, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -16,22 +16,22 @@
 
 package org.glassfish.jersey.message.filtering;
 
-import javax.ws.rs.RuntimeType;
-import javax.ws.rs.core.Configuration;
-import javax.ws.rs.core.Feature;
-import javax.ws.rs.core.FeatureContext;
+import jakarta.ws.rs.RuntimeType;
+import jakarta.ws.rs.core.Configuration;
+import jakarta.ws.rs.core.Feature;
+import jakarta.ws.rs.core.FeatureContext;
 
 import org.glassfish.jersey.server.filter.RolesAllowedDynamicFeature;
 
 /**
- * {@link Feature} used to add support for Java Security annotations (<code>javax.annotation.security</code>) for Entity Data
+ * {@link Feature} used to add support for Java Security annotations (<code>jakarta.annotation.security</code>) for Entity Data
  * Filtering feature.
  * <p>
  * Supported annotations are:
  * <ul>
- * <li>{@link javax.annotation.security.PermitAll}</li>
- * <li>{@link javax.annotation.security.RolesAllowed}</li>
- * <li>{@link javax.annotation.security.DenyAll}</li>
+ * <li>{@link jakarta.annotation.security.PermitAll}</li>
+ * <li>{@link jakarta.annotation.security.RolesAllowed}</li>
+ * <li>{@link jakarta.annotation.security.DenyAll}</li>
  * </ul>
  * </p>
  * <p>

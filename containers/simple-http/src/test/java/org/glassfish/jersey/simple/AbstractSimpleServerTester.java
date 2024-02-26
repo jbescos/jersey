@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2010, 2023 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -21,13 +21,14 @@ import java.security.AccessController;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.ws.rs.core.UriBuilder;
+import jakarta.ws.rs.RuntimeType;
+import jakarta.ws.rs.core.UriBuilder;
 
 import org.glassfish.jersey.internal.util.PropertiesHelper;
 import org.glassfish.jersey.logging.LoggingFeature;
 import org.glassfish.jersey.server.ResourceConfig;
 
-import org.junit.After;
+import org.junit.jupiter.api.AfterEach;
 
 /**
  * Abstract Simple HTTP Server unit tester.
@@ -39,7 +40,7 @@ import org.junit.After;
 public abstract class AbstractSimpleServerTester {
 
     public static final String CONTEXT = "";
-    private final int DEFAULT_PORT = 9998;
+    private final int DEFAULT_PORT = 0; // rather SimpleFramework server choose than 9998
 
     private static final Logger LOGGER = Logger.getLogger(AbstractSimpleServerTester.class.getName());
 
@@ -49,21 +50,25 @@ public abstract class AbstractSimpleServerTester {
      * @return The HTTP port of the URI
      */
     protected final int getPort() {
+        if (server != null) {
+            return server.getPort();
+        }
+
         final String value = AccessController
                 .doPrivileged(PropertiesHelper.getSystemProperty("jersey.config.test.container.port"));
         if (value != null) {
 
             try {
                 final int i = Integer.parseInt(value);
-                if (i <= 0) {
-                    throw new NumberFormatException("Value not positive.");
+                if (i < 0) {
+                    throw new NumberFormatException("Value is negative.");
                 }
                 return i;
             } catch (NumberFormatException e) {
                 LOGGER.log(
                         Level.CONFIG,
                         "Value of 'jersey.config.test.container.port'"
-                        + " property is not a valid positive integer [" + value + "]."
+                        + " property is not a valid non-negative integer [" + value + "]."
                         + " Reverting to default [" + DEFAULT_PORT + "].",
                         e);
             }
@@ -72,10 +77,20 @@ public abstract class AbstractSimpleServerTester {
         return DEFAULT_PORT;
     }
 
+    private final int getPort(RuntimeType runtimeType) {
+        switch (runtimeType) {
+            case SERVER:
+                return getPort();
+            case CLIENT:
+                return server.getPort();
+            default:
+                throw new IllegalStateException("Unexpected runtime type");
+        }
+    }
     private volatile SimpleServer server;
 
     public UriBuilder getUri() {
-        return UriBuilder.fromUri("http://localhost").port(getPort()).path(CONTEXT);
+        return UriBuilder.fromUri("http://localhost").port(getPort(RuntimeType.CLIENT)).path(CONTEXT);
     }
 
     public void startServer(Class... resources) {
@@ -83,32 +98,32 @@ public abstract class AbstractSimpleServerTester {
         config.register(LoggingFeature.class);
         final URI baseUri = getBaseUri();
         server = SimpleContainerFactory.create(baseUri, config);
-        LOGGER.log(Level.INFO, "Simple-http server started on base uri: " + baseUri);
+        LOGGER.log(Level.INFO, "Simple-http server started on base uri: " + getBaseUri());
     }
 
     public void startServerNoLoggingFilter(Class... resources) {
         ResourceConfig config = new ResourceConfig(resources);
         final URI baseUri = getBaseUri();
         server = SimpleContainerFactory.create(baseUri, config);
-        LOGGER.log(Level.INFO, "Simple-http server started on base uri: " + baseUri);
+        LOGGER.log(Level.INFO, "Simple-http server started on base uri: " + getBaseUri());
     }
 
     public void startServer(ResourceConfig config) {
         final URI baseUri = getBaseUri();
         config.register(LoggingFeature.class);
         server = SimpleContainerFactory.create(baseUri, config);
-        LOGGER.log(Level.INFO, "Simple-http server started on base uri: " + baseUri);
+        LOGGER.log(Level.INFO, "Simple-http server started on base uri: " + getBaseUri());
     }
 
     public void startServer(ResourceConfig config, int count, int select) {
         final URI baseUri = getBaseUri();
         config.register(LoggingFeature.class);
         server = SimpleContainerFactory.create(baseUri, config, count, select);
-        LOGGER.log(Level.INFO, "Simple-http server started on base uri: " + baseUri);
+        LOGGER.log(Level.INFO, "Simple-http server started on base uri: " + getBaseUri());
     }
 
     public URI getBaseUri() {
-        return UriBuilder.fromUri("http://localhost/").port(getPort()).build();
+        return UriBuilder.fromUri("http://localhost/").port(getPort(RuntimeType.SERVER)).build();
     }
 
     public void setDebug(boolean enable) {
@@ -127,7 +142,7 @@ public abstract class AbstractSimpleServerTester {
         }
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
         if (server != null) {
             stopServer();

@@ -1,4 +1,5 @@
 /*
+ * Copyright (c) 2019, 2021 Oracle and/or its affiliates. All rights reserved.
  * Copyright (c) 2019 Christian Kaltepoth. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
@@ -15,9 +16,9 @@
  */
 package org.glassfish.jersey.tests.integration.jersey4099;
 
-import javax.annotation.Priority;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.ext.ExceptionMapper;
+import jakarta.annotation.Priority;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.ext.ExceptionMapper;
 
 /**
  * Mapper with higher priority should lose against the other one

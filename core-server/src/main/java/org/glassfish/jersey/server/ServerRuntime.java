@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012, 2021 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2012, 2024 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -37,22 +37,22 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.ws.rs.HttpMethod;
-import javax.ws.rs.InternalServerErrorException;
-import javax.ws.rs.NotFoundException;
-import javax.ws.rs.ServiceUnavailableException;
-import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.container.AsyncResponse;
-import javax.ws.rs.container.CompletionCallback;
-import javax.ws.rs.container.ConnectionCallback;
-import javax.ws.rs.container.TimeoutHandler;
-import javax.ws.rs.core.Configuration;
-import javax.ws.rs.core.HttpHeaders;
-import javax.ws.rs.core.MultivaluedMap;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.ext.ExceptionMapper;
+import jakarta.ws.rs.HttpMethod;
+import jakarta.ws.rs.InternalServerErrorException;
+import jakarta.ws.rs.NotFoundException;
+import jakarta.ws.rs.ServiceUnavailableException;
+import jakarta.ws.rs.WebApplicationException;
+import jakarta.ws.rs.container.AsyncResponse;
+import jakarta.ws.rs.container.CompletionCallback;
+import jakarta.ws.rs.container.ConnectionCallback;
+import jakarta.ws.rs.container.TimeoutHandler;
+import jakarta.ws.rs.core.Configuration;
+import jakarta.ws.rs.core.HttpHeaders;
+import jakarta.ws.rs.core.MultivaluedMap;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.ext.ExceptionMapper;
 
-import javax.inject.Provider;
+import jakarta.inject.Provider;
 
 import org.glassfish.jersey.internal.guava.Preconditions;
 import org.glassfish.jersey.internal.inject.InjectionManager;
@@ -127,6 +127,11 @@ public class ServerRuntime {
     private final boolean disableLocationHeaderRelativeUriResolution;
     /** Resolve relative URIs according to RFC7231 (not JAX-RS 2.0 compliant */
     private final boolean rfc7231LocationHeaderRelativeUriResolution;
+
+    /**
+     * Default exception mapper (@since 3.1.0 according to JAX-RS 3.1 spec)
+     */
+    private static final ExceptionMapper<Throwable> DEFAULT_EXCEPTION_MAPPER = new DefaultExceptionMapper();
 
     static ServerRuntime createServerRuntime(
             InjectionManager injectionManager,
@@ -231,43 +236,50 @@ public class ServerRuntime {
                         requestScopeInstance, externalRequestScope.open(injectionManager));
         context.initAsyncContext(asyncResponderHolder);
 
-        requestScope.runInScope(requestScopeInstance, new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    // set base URI into response builder thread-local variable
-                    // for later resolving of relative location URIs
-                    if (!disableLocationHeaderRelativeUriResolution) {
-                        final URI uriToUse =
-                                rfc7231LocationHeaderRelativeUriResolution ? request.getRequestUri() : request.getBaseUri();
-                        OutboundJaxrsResponse.Builder.setBaseUri(uriToUse);
+        try {
+            requestScope.runInScope(requestScopeInstance, new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        // set base URI into response builder thread-local variable
+                        // for later resolving of relative location URIs
+                        if (!disableLocationHeaderRelativeUriResolution) {
+                            final URI uriToUse =
+                                    rfc7231LocationHeaderRelativeUriResolution ? request.getRequestUri() : request.getBaseUri();
+                            OutboundJaxrsResponse.Builder.setBaseUri(uriToUse);
+                        }
+
+                        final Ref<Endpoint> endpointRef = Refs.emptyRef();
+                        final RequestProcessingContext data = Stages.process(context, requestProcessingRoot, endpointRef);
+
+                        final Endpoint endpoint = endpointRef.get();
+                        if (endpoint == null) {
+                            // not found
+                            throw new NotFoundException();
+                        }
+
+                        final ContainerResponse response = endpoint.apply(data);
+
+                        if (!asyncResponderHolder.isAsync()) {
+                            responder.process(response);
+                        } else {
+                            externalRequestScope.suspend(asyncResponderHolder.externalContext, injectionManager);
+                        }
+                    } catch (final Throwable throwable) {
+                        responder.process(throwable);
+                    } finally {
+                        asyncResponderHolder.release();
+                        // clear base URI from the thread
+                        OutboundJaxrsResponse.Builder.clearBaseUri();
                     }
-
-                    final Ref<Endpoint> endpointRef = Refs.emptyRef();
-                    final RequestProcessingContext data = Stages.process(context, requestProcessingRoot, endpointRef);
-
-                    final Endpoint endpoint = endpointRef.get();
-                    if (endpoint == null) {
-                        // not found
-                        throw new NotFoundException();
-                    }
-
-                    final ContainerResponse response = endpoint.apply(data);
-
-                    if (!asyncResponderHolder.isAsync()) {
-                        responder.process(response);
-                    } else {
-                        externalRequestScope.suspend(asyncResponderHolder.externalContext, injectionManager);
-                    }
-                } catch (final Throwable throwable) {
-                    responder.process(throwable);
-                } finally {
-                    asyncResponderHolder.release();
-                    // clear base URI from the thread
-                    OutboundJaxrsResponse.Builder.clearBaseUri();
                 }
+            });
+        } catch (RuntimeException illegalStateException) {
+            if (!IllegalStateException.class.isInstance(illegalStateException.getCause()) || !injectionManager.isShutdown()) {
+                // consume the IllegalStateException: InjectionManager has been closed.
+                throw illegalStateException;
             }
-        });
+        }
     }
 
     /**
@@ -360,11 +372,11 @@ public class ServerRuntime {
 
         public void process(ContainerResponse response) {
             processingContext.monitoringEventBuilder().setContainerResponse(response);
-            response = processResponse(response);
+            response = processResponse(response, null);
             release(response);
         }
 
-        private ContainerResponse processResponse(ContainerResponse response) {
+        private ContainerResponse processResponse(ContainerResponse response, Throwable unmappedThrowable) {
             final Stage<ContainerResponse> respondingRoot = processingContext.createRespondingRoot();
 
             if (respondingRoot != null) {
@@ -374,7 +386,23 @@ public class ServerRuntime {
 
             // no-exception zone
             // the methods below are guaranteed to not throw any exceptions
-            completionCallbackRunner.onComplete(null);
+            completionCallbackRunner.onComplete(unmappedThrowable);
+            return response;
+        }
+
+        private ContainerResponse preProcessResponse(Response exceptionResponse, ContainerRequest request) {
+            final ContainerResponse response;
+            try {
+                response = convertResponse(exceptionResponse);
+                if (!runtime.disableLocationHeaderRelativeUriResolution) {
+                    ensureAbsolute(response.getLocation(), response.getHeaders(), request,
+                            runtime.rfc7231LocationHeaderRelativeUriResolution);
+                }
+                processingContext.monitoringEventBuilder().setContainerResponse(response)
+                        .setResponseSuccessfullyMapped(true);
+            } finally {
+                processingContext.triggerEvent(RequestEvent.Type.EXCEPTION_MAPPING_FINISHED);
+            }
             return response;
         }
 
@@ -401,22 +429,12 @@ public class ServerRuntime {
             processingContext.triggerEvent(RequestEvent.Type.ON_EXCEPTION);
 
             ContainerResponse response = null;
+            ContainerResponse defaultMapperResponse = null;
             try {
                 final Response exceptionResponse = mapException(throwable);
                 try {
-                    try {
-                        response = convertResponse(exceptionResponse);
-                        if (!runtime.disableLocationHeaderRelativeUriResolution) {
-                            ensureAbsolute(response.getLocation(), response.getHeaders(), request,
-                                    runtime.rfc7231LocationHeaderRelativeUriResolution);
-                        }
-                        processingContext.monitoringEventBuilder().setContainerResponse(response)
-                                .setResponseSuccessfullyMapped(true);
-                    } finally {
-                        processingContext.triggerEvent(RequestEvent.Type.EXCEPTION_MAPPING_FINISHED);
-                    }
-
-                    processResponse(response);
+                    response = preProcessResponse(exceptionResponse, request);
+                    processResponse(response, null);
                 } catch (final Throwable respError) {
                     LOGGER.log(Level.SEVERE, LocalizationMessages.ERROR_PROCESSING_RESPONSE_FROM_ALREADY_MAPPED_EXCEPTION());
                     processingContext.monitoringEventBuilder()
@@ -432,16 +450,21 @@ public class ServerRuntime {
 
                 if (!processResponseError(responseError)) {
                     // Pass the exception to the container.
-                    LOGGER.log(Level.FINE, LocalizationMessages.ERROR_EXCEPTION_MAPPING_THROWN_TO_CONTAINER(), responseError);
+                    LOGGER.log(Level.WARNING, LocalizationMessages.ERROR_EXCEPTION_MAPPING_THROWN_TO_CONTAINER(), responseError);
 
                     try {
                         request.getResponseWriter().failure(responseError);
                     } finally {
-                        completionCallbackRunner.onComplete(responseError);
+                        defaultMapperResponse = processResponseWithDefaultExceptionMapper(responseError, request);
+
+                        // completionCallbackRunner.onComplete(responseError); is called from
+                        // processResponseWithDefaultExceptionMapper
                     }
+
                 }
+
             } finally {
-                release(response);
+                release(response, defaultMapperResponse);
             }
         }
 
@@ -473,7 +496,7 @@ public class ServerRuntime {
 
                     if (processedError != null) {
                         processedResponse =
-                                processResponse(new ContainerResponse(processingContext.request(), processedError));
+                                processResponse(new ContainerResponse(processingContext.request(), processedError), null);
                         processed = true;
                     }
                 } catch (final Throwable throwable) {
@@ -503,6 +526,7 @@ public class ServerRuntime {
 
             do {
                 final Throwable throwable = wrap.getCurrent();
+
                 if (wrap.isInMappable() || throwable instanceof WebApplicationException) {
                     // in case ServerProperties.PROCESSING_RESPONSE_ERRORS_ENABLED is true, allow
                     // wrapped MessageBodyProviderNotFoundException to propagate
@@ -519,7 +543,7 @@ public class ServerRuntime {
                         processingContext.routingContext().setMappedThrowable(throwable);
 
                         waeResponse = webApplicationException.getResponse();
-                        if (waeResponse.hasEntity()) {
+                        if (waeResponse != null && waeResponse.hasEntity()) {
                             LOGGER.log(Level.FINE, LocalizationMessages
                                     .EXCEPTION_MAPPING_WAE_ENTITY(waeResponse.getStatus()), throwable);
                             return waeResponse;
@@ -528,47 +552,9 @@ public class ServerRuntime {
 
                     final long timestamp = tracingLogger.timestamp(ServerTraceEvent.EXCEPTION_MAPPING);
                     final ExceptionMapper mapper = runtime.exceptionMappers.findMapping(throwable);
-                    if (mapper != null) {
-                        processingContext.monitoringEventBuilder().setExceptionMapper(mapper);
-                        processingContext.triggerEvent(RequestEvent.Type.EXCEPTION_MAPPER_FOUND);
-                        try {
-                            final Response mappedResponse = mapper.toResponse(throwable);
-
-                            if (tracingLogger.isLogEnabled(ServerTraceEvent.EXCEPTION_MAPPING)) {
-                                tracingLogger.logDuration(ServerTraceEvent.EXCEPTION_MAPPING,
-                                        timestamp, mapper, throwable, throwable.getLocalizedMessage(),
-                                        mappedResponse != null ? mappedResponse.getStatusInfo() : "-no-response-");
-                            }
-
-                            // set mapped throwable
-                            processingContext.routingContext().setMappedThrowable(throwable);
-
-                            if (mappedResponse != null) {
-                                // response successfully mapped
-                                if (LOGGER.isLoggable(Level.FINER)) {
-                                    final String message = String.format(
-                                            "Exception '%s' has been mapped by '%s' to response '%s' (%s:%s).",
-                                            throwable.getLocalizedMessage(),
-                                            mapper.getClass().getName(),
-                                            mappedResponse.getStatusInfo().getReasonPhrase(),
-                                            mappedResponse.getStatusInfo().getStatusCode(),
-                                            mappedResponse.getStatusInfo().getFamily());
-                                    LOGGER.log(Level.FINER, message);
-                                }
-                                return mappedResponse;
-                            } else {
-                                return Response.noContent().build();
-                            }
-                        } catch (final Throwable mapperThrowable) {
-                            // spec: If the exception mapping provider throws an exception while creating a Response
-                            // then return a server error (status code 500) response to the client.
-                            LOGGER.log(Level.SEVERE, LocalizationMessages.EXCEPTION_MAPPER_THROWS_EXCEPTION(mapper.getClass()),
-                                    mapperThrowable);
-                            LOGGER.log(Level.SEVERE, LocalizationMessages.EXCEPTION_MAPPER_FAILED_FOR_EXCEPTION(), throwable);
-                            return Response.serverError().build();
-                        }
+                    if (mapper != null && !DefaultExceptionMapper.class.isInstance(mapper)) {
+                        return processExceptionWithMapper(mapper, throwable, timestamp);
                     }
-
                     if (waeResponse != null) {
                         LOGGER.log(Level.FINE, LocalizationMessages
                                 .EXCEPTION_MAPPING_WAE_NO_ENTITY(waeResponse.getStatus()), throwable);
@@ -582,7 +568,6 @@ public class ServerRuntime {
                         return Response.status(Response.Status.BAD_REQUEST).build();
                     }
                 }
-
                 if (!wrap.isInMappable() || !wrap.isWrapped()) {
                     // user failures (thrown from Resource methods or provider methods)
 
@@ -596,6 +581,55 @@ public class ServerRuntime {
             } while (wrap.unwrap() != null);
             // jersey failures (not thrown from Resource methods or provider methods) -> rethrow
             throw originalThrowable;
+        }
+
+        private Response processExceptionWithMapper(ExceptionMapper mapper,
+                                                                      Throwable throwable, long timestamp) {
+            processingContext.monitoringEventBuilder().setExceptionMapper(mapper);
+            processingContext.triggerEvent(RequestEvent.Type.EXCEPTION_MAPPER_FOUND);
+            try {
+                final Response mappedResponse = mapper.toResponse(throwable);
+
+                if (isTracingLoggingEnabled(mapper, throwable, tracingLogger)) {
+                    tracingLogger.logDuration(ServerTraceEvent.EXCEPTION_MAPPING,
+                            timestamp, mapper, throwable, throwable.getLocalizedMessage(),
+                            mappedResponse != null ? mappedResponse.getStatusInfo() : "-no-response-");
+                }
+
+                // set mapped throwable
+                processingContext.routingContext().setMappedThrowable(throwable);
+
+                if (mappedResponse != null) {
+                    // response successfully mapped
+                    if (LOGGER.isLoggable(Level.FINER)) {
+                        final String message = String.format(
+                                "Exception '%s' has been mapped by '%s' to response '%s' (%s:%s).",
+                                throwable.getLocalizedMessage(),
+                                mapper.getClass().getName(),
+                                mappedResponse.getStatusInfo().getReasonPhrase(),
+                                mappedResponse.getStatusInfo().getStatusCode(),
+                                mappedResponse.getStatusInfo().getFamily());
+                        LOGGER.log(Level.FINER, message);
+                    }
+                    return mappedResponse;
+                } else {
+                    return Response.noContent().build();
+                }
+            } catch (final Throwable mapperThrowable) {
+                // spec: If the exception mapping provider throws an exception while creating a Response
+                // then return a server error (status code 500) response to the client.
+                LOGGER.log(Level.SEVERE, LocalizationMessages.EXCEPTION_MAPPER_THROWS_EXCEPTION(mapper.getClass()),
+                        mapperThrowable);
+                LOGGER.log(Level.SEVERE, LocalizationMessages.EXCEPTION_MAPPER_FAILED_FOR_EXCEPTION(), throwable);
+                return Response.serverError().build();
+            }
+        }
+
+        private ContainerResponse processResponseWithDefaultExceptionMapper(Throwable exception,
+                                                                            ContainerRequest request) {
+            long timestamp = tracingLogger.timestamp(ServerTraceEvent.EXCEPTION_MAPPING);
+            final Response response = processExceptionWithMapper(DEFAULT_EXCEPTION_MAPPER, exception, timestamp);
+            return processResponse(preProcessResponse(response, request), exception);
         }
 
         private ContainerResponse writeResponse(final ContainerResponse response) {
@@ -729,16 +763,14 @@ public class ServerRuntime {
                     .setResponseWritten(true);
         }
 
-        private void release(final ContainerResponse responseContext) {
+        private void release(final ContainerResponse... responseContexts) {
             try {
                 processingContext.closeableService().close();
 
                 // Commit the container response writer if not in chunked mode
                 // responseContext may be null in case the request processing was cancelled.
-                if (responseContext != null && !responseContext.isChunked()) {
-                    // responseContext.commitStream();
-                    responseContext.close();
-                }
+                Arrays.stream(responseContexts).filter(responseContext -> responseContext != null
+                        && !responseContext.isChunked()).forEach(ContainerResponse::close);
 
             } catch (final Throwable throwable) {
                 LOGGER.log(Level.WARNING, LocalizationMessages.RELEASING_REQUEST_PROCESSING_RESOURCES_FAILED(), throwable);
@@ -746,6 +778,14 @@ public class ServerRuntime {
                 runtime.externalRequestScope.close();
                 processingContext.triggerEvent(RequestEvent.Type.FINISHED);
             }
+        }
+
+        private static boolean isTracingLoggingEnabled(ExceptionMapper mapper, Throwable throwable, TracingLogger tracingLogger) {
+            boolean defaultLoggingState = mapper instanceof DefaultExceptionMapper
+                    && throwable instanceof WebApplicationException;
+            return !defaultLoggingState
+                    && tracingLogger.isLogEnabled(ServerTraceEvent.EXCEPTION_MAPPING);
+
         }
     }
 

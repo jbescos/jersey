@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012, 2019 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2012, 2023 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -19,28 +19,29 @@ package org.glassfish.jersey.client;
 import java.util.Arrays;
 import java.util.Map;
 
-import javax.ws.rs.core.Configuration;
-import javax.ws.rs.core.Feature;
-import javax.ws.rs.core.FeatureContext;
-import javax.ws.rs.ext.ContextResolver;
-import javax.ws.rs.ext.Provider;
+import jakarta.ws.rs.core.Configuration;
+import jakarta.ws.rs.core.Feature;
+import jakarta.ws.rs.core.FeatureContext;
+import jakarta.ws.rs.ext.ContextResolver;
+import jakarta.ws.rs.ext.Provider;
 
 import javax.net.ssl.SSLContext;
 
 import org.glassfish.jersey.internal.util.collection.UnsafeValue;
 
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 /**
  * {@link ClientConfig} unit test.
@@ -52,19 +53,19 @@ public class ClientConfigTest {
     public ClientConfigTest() {
     }
 
-    @BeforeClass
+    @BeforeAll
     public static void setUpClass() throws Exception {
     }
 
-    @AfterClass
+    @AfterAll
     public static void tearDownClass() throws Exception {
     }
 
-    @Before
+    @BeforeEach
     public void setUp() {
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
     }
 
@@ -104,6 +105,13 @@ public class ClientConfigTest {
     }
 
     @Test
+    public void testHasProperty() {
+        ClientConfig instance = new ClientConfig().property("name", "value");
+        assertTrue(instance.hasProperty("name"));
+        assertFalse(instance.hasProperty("other"));
+    }
+
+    @Test
     public void testGetProperty() {
         ClientConfig instance = new ClientConfig().property("name", "value");
         assertEquals("value", instance.getProperty("name"));
@@ -111,7 +119,7 @@ public class ClientConfigTest {
     }
 
     @Provider
-    public class MyProvider implements ContextResolver<String> {
+    public static class MyProvider implements ContextResolver<String> {
 
         @Override
         public String getContext(final Class<?> type) {
@@ -180,16 +188,20 @@ public class ClientConfigTest {
         assertTrue(runtimeConfig.isEnabled(emptyFeature));
     }
 
-    @Test(expected = UnsupportedOperationException.class)
+    @Test
     public void testGetProviderClasses() {
-        ClientConfig instance = new ClientConfig();
-        instance.getClasses().add(ClientConfigTest.class);
+        assertThrows(UnsupportedOperationException.class, () -> {
+            ClientConfig instance = new ClientConfig();
+            instance.getClasses().add(ClientConfigTest.class);
+        });
     }
 
-    @Test(expected = UnsupportedOperationException.class)
+    @Test
     public void testGetProviderInstances() {
-        ClientConfig instance = new ClientConfig();
-        instance.getInstances().add(this);
+        assertThrows(UnsupportedOperationException.class, () -> {
+            ClientConfig instance = new ClientConfig();
+            instance.getInstances().add(this);
+        });
     }
 
     @Test

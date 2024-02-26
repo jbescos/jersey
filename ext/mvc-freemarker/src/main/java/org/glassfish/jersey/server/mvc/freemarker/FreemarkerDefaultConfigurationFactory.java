@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2015, 2021 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -21,7 +21,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.servlet.ServletContext;
+import jakarta.servlet.ServletContext;
 
 import freemarker.cache.ClassTemplateLoader;
 import freemarker.cache.FileTemplateLoader;
@@ -52,7 +52,8 @@ public class FreemarkerDefaultConfigurationFactory implements FreemarkerConfigur
         // Create different loaders.
         final List<TemplateLoader> loaders = new ArrayList<>();
         if (servletContext != null) {
-            loaders.add(new WebappTemplateLoader(servletContext));
+            //todo fix after jakartification
+            //loaders.add(new WebappTemplateLoader(servletContext));
         }
         loaders.add(new ClassTemplateLoader(FreemarkerDefaultConfigurationFactory.class, "/"));
         try {

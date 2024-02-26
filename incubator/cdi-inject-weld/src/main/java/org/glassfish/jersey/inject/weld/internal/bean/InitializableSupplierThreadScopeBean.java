@@ -16,11 +16,11 @@
 
 package org.glassfish.jersey.inject.weld.internal.bean;
 
-import javax.enterprise.context.Dependent;
-import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.inject.spi.Bean;
-import javax.enterprise.inject.spi.PassivationCapable;
-import javax.ws.rs.RuntimeType;
+import jakarta.enterprise.context.Dependent;
+import jakarta.enterprise.context.spi.CreationalContext;
+import jakarta.enterprise.inject.spi.Bean;
+import jakarta.enterprise.inject.spi.PassivationCapable;
+import jakarta.ws.rs.RuntimeType;
 
 import org.glassfish.jersey.inject.weld.internal.inject.InitializableSupplierInstanceBinding;
 import org.glassfish.jersey.inject.weld.internal.injector.JerseyInjectionTarget;
@@ -38,7 +38,7 @@ import java.util.function.Supplier;
 
 /**
  * Creates an implementation of {@link Bean} interface using Jersey's {@link SupplierInstanceBinding}.
- * Binding provides the information about the bean also called {@link javax.enterprise.inject.spi.BeanAttributes} information.
+ * Binding provides the information about the bean also called {@link jakarta.enterprise.inject.spi.BeanAttributes} information.
  * The {@code Bean} does not use {@link JerseyInjectionTarget} because serves already
  * created proxy, therefore the create operation just return provided instance without any other contextual operation
  * (produce, inject, destroy).
@@ -75,7 +75,7 @@ public class InitializableSupplierThreadScopeBean extends JerseyBean<Object> {
     /**
      * Creates a new Jersey-specific {@link Bean} instance.
      *
-     * @param binding {@link javax.enterprise.inject.spi.BeanAttributes} part of the bean.
+     * @param binding {@link jakarta.enterprise.inject.spi.BeanAttributes} part of the bean.
      */
     @SuppressWarnings("unchecked")
     InitializableSupplierThreadScopeBean(RuntimeType runtimeType,

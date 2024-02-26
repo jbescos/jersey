@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012, 2021 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2012, 2023 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -31,23 +31,23 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import javax.ws.rs.RuntimeType;
-import javax.ws.rs.container.ContainerRequestContext;
-import javax.ws.rs.container.ContainerRequestFilter;
-import javax.ws.rs.container.ContainerResponseFilter;
-import javax.ws.rs.core.Configuration;
-import javax.ws.rs.core.Cookie;
-import javax.ws.rs.core.EntityTag;
-import javax.ws.rs.core.HttpHeaders;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.MultivaluedMap;
-import javax.ws.rs.core.Request;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.SecurityContext;
-import javax.ws.rs.core.Variant;
-import javax.ws.rs.ext.ReaderInterceptor;
-import javax.ws.rs.ext.WriterInterceptor;
+import jakarta.ws.rs.RuntimeType;
+import jakarta.ws.rs.container.ContainerRequestContext;
+import jakarta.ws.rs.container.ContainerRequestFilter;
+import jakarta.ws.rs.container.ContainerResponseFilter;
+import jakarta.ws.rs.core.Configuration;
+import jakarta.ws.rs.core.Cookie;
+import jakarta.ws.rs.core.EntityTag;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.MultivaluedMap;
+import jakarta.ws.rs.core.Request;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.SecurityContext;
+import jakarta.ws.rs.core.Variant;
+import jakarta.ws.rs.ext.ReaderInterceptor;
+import jakarta.ws.rs.ext.WriterInterceptor;
 
+import org.glassfish.jersey.http.HttpHeaders;
 import org.glassfish.jersey.internal.PropertiesDelegate;
 import org.glassfish.jersey.internal.guava.Preconditions;
 import org.glassfish.jersey.internal.PropertiesResolver;
@@ -298,6 +298,11 @@ public class ContainerRequest extends InboundMessageContext
     @Override
     public <T> T resolveProperty(final String name, final T defaultValue) {
         return propertiesResolver.get().resolveProperty(name, defaultValue);
+    }
+
+    @Override
+    public boolean hasProperty(final String name) {
+        return propertiesDelegate.hasProperty(name);
     }
 
     @Override
@@ -821,13 +826,13 @@ public class ContainerRequest extends InboundMessageContext
     }
 
     /**
-     * Get the values of a HTTP request header. The returned List is read-only.
-     * This is a shortcut for {@code getRequestHeaders().get(name)}.
+     * Get the values of an HTTP request header if the header exists on the current request. The returned value will be
+     * a read-only List if the specified header exists or {@code null} if it does not. This is a shortcut for
+     * {@code getRequestHeaders().get(name)}.
      *
      * @param name the header name, case insensitive.
-     * @return a read-only list of header values.
-     *
-     * @throws IllegalStateException if called outside the scope of a request.
+     * @return a read-only list of header values if the specified header exists, otherwise {@code null}.
+     * @throws java.lang.IllegalStateException if called outside the scope of a request.
      */
     @Override
     public List<String> getRequestHeader(final String name) {

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010, 2019 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2010, 2022 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -21,15 +21,15 @@ import java.io.InputStream;
 import java.io.Reader;
 import java.net.URL;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBElement;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.PropertyException;
-import javax.xml.bind.Unmarshaller;
-import javax.xml.bind.UnmarshallerHandler;
-import javax.xml.bind.ValidationEventHandler;
-import javax.xml.bind.annotation.adapters.XmlAdapter;
-import javax.xml.bind.attachment.AttachmentUnmarshaller;
+import jakarta.xml.bind.JAXBContext;
+import jakarta.xml.bind.JAXBElement;
+import jakarta.xml.bind.JAXBException;
+import jakarta.xml.bind.PropertyException;
+import jakarta.xml.bind.Unmarshaller;
+import jakarta.xml.bind.UnmarshallerHandler;
+import jakarta.xml.bind.ValidationEventHandler;
+import jakarta.xml.bind.annotation.adapters.XmlAdapter;
+import jakarta.xml.bind.attachment.AttachmentUnmarshaller;
 import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.transform.Source;
@@ -123,16 +123,6 @@ public class JettisonJaxbUnmarshaller extends BaseJsonUnmarshaller implements Un
     }
 
     @Override
-    public void setValidating(boolean validating) throws JAXBException {
-        this.jaxbUnmarshaller.setValidating(validating);
-    }
-
-    @Override
-    public boolean isValidating() throws JAXBException {
-        return this.jaxbUnmarshaller.isValidating();
-    }
-
-    @Override
     public void setEventHandler(ValidationEventHandler validationEventHandler) throws JAXBException {
         this.jaxbUnmarshaller.setEventHandler(validationEventHandler);
     }
@@ -163,17 +153,17 @@ public class JettisonJaxbUnmarshaller extends BaseJsonUnmarshaller implements Un
     }
 
     @Override
-    public void setAdapter(XmlAdapter xmlAdapter) {
+    public <A extends XmlAdapter<?, ?>> void setAdapter(A xmlAdapter) {
         this.jaxbUnmarshaller.setAdapter(xmlAdapter);
     }
 
     @Override
-    public <A extends XmlAdapter> void setAdapter(Class<A> type, A adapter) {
+    public <A extends XmlAdapter<?, ?>> void setAdapter(Class<A> type, A adapter) {
         this.jaxbUnmarshaller.setAdapter(type, adapter);
     }
 
     @Override
-    public <A extends XmlAdapter> A getAdapter(Class<A> type) {
+    public <A extends XmlAdapter<?, ?>> A getAdapter(Class<A> type) {
         return this.jaxbUnmarshaller.getAdapter(type);
     }
 

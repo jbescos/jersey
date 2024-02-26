@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2014, 2022 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -16,24 +16,25 @@
 
 package org.glassfish.jersey.tests.e2e.server.validation;
 
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.Application;
-import javax.ws.rs.core.Response;
+import jakarta.ws.rs.POST;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.core.Application;
+import jakarta.ws.rs.core.Response;
 
-import javax.validation.Valid;
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotNull;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 import org.glassfish.jersey.client.ClientConfig;
-import org.glassfish.jersey.jackson.JacksonFeature;
+// import org.glassfish.jersey.jackson.JacksonFeature;
+import org.glassfish.jersey.jsonb.JsonBindingFeature;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.test.JerseyTest;
 
-import org.hibernate.validator.constraints.NotBlank;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
@@ -154,18 +155,20 @@ public class EntityInheritanceValidationTest extends JerseyTest {
     @Override
     protected Application configure() {
         return new ResourceConfig(Resource.class)
-                .register(JacksonFeature.class);
+                // .register(JacksonFeature.class);
+                .register(JsonBindingFeature.class);
     }
 
     @Override
     protected void configureClient(final ClientConfig config) {
-        config.register(JacksonFeature.class);
+        // config.register(JacksonFeature.class);
+        config.register(JsonBindingFeature.class);
     }
 
     @Test
     public void testEntityInheritance() throws Exception {
         final Entity entity = new Entity("foo", 13);
-        final Response response = target().request().post(javax.ws.rs.client.Entity.json(entity));
+        final Response response = target().request().post(jakarta.ws.rs.client.Entity.json(entity));
 
         assertThat(response.getStatus(), is(200));
         assertThat(response.readEntity(Entity.class), is(entity));
@@ -173,14 +176,14 @@ public class EntityInheritanceValidationTest extends JerseyTest {
 
     @Test
     public void testEntityInheritanceBlankText() throws Exception {
-        final Response response = target().request().post(javax.ws.rs.client.Entity.json(new Entity("", 13)));
+        final Response response = target().request().post(jakarta.ws.rs.client.Entity.json(new Entity("", 13)));
 
         assertThat(response.getStatus(), is(400));
     }
 
     @Test
     public void testEntityInheritanceInvalidNumber() throws Exception {
-        final Response response = target().request().post(javax.ws.rs.client.Entity.json(new Entity("foo", 23)));
+        final Response response = target().request().post(jakarta.ws.rs.client.Entity.json(new Entity("foo", 23)));
 
         assertThat(response.getStatus(), is(400));
     }

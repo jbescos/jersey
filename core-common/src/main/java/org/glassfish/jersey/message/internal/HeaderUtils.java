@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010, 2021 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2010, 2022 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -27,12 +27,12 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
-import javax.ws.rs.core.AbstractMultivaluedMap;
-import javax.ws.rs.core.Configuration;
-import javax.ws.rs.core.MultivaluedMap;
-import javax.ws.rs.core.NewCookie;
-import javax.ws.rs.ext.RuntimeDelegate;
-import javax.ws.rs.ext.RuntimeDelegate.HeaderDelegate;
+import jakarta.ws.rs.core.AbstractMultivaluedMap;
+import jakarta.ws.rs.core.Configuration;
+import jakarta.ws.rs.core.MultivaluedMap;
+import jakarta.ws.rs.core.NewCookie;
+import jakarta.ws.rs.ext.RuntimeDelegate;
+import jakarta.ws.rs.ext.RuntimeDelegate.HeaderDelegate;
 
 import org.glassfish.jersey.internal.RuntimeDelegateDecorator;
 import org.glassfish.jersey.internal.LocalizationMessages;
@@ -102,7 +102,7 @@ public final class HeaderUtils {
      *         if the supplied header value is {@code null}.
      */
     @SuppressWarnings("unchecked")
-    private static String asString(final Object headerValue, RuntimeDelegate rd) {
+    public static String asString(final Object headerValue, RuntimeDelegate rd) {
         if (headerValue == null) {
             return null;
         }
@@ -149,7 +149,7 @@ public final class HeaderUtils {
      *                     will be called for before element conversion.
      * @return String view of header values.
      */
-    private static List<String> asStringList(final List<Object> headerValues, final RuntimeDelegate rd) {
+    public static List<String> asStringList(final List<Object> headerValues, final RuntimeDelegate rd) {
         if (headerValues == null || headerValues.isEmpty()) {
             return Collections.emptyList();
         }
@@ -191,7 +191,24 @@ public final class HeaderUtils {
             return null;
         }
 
-        final RuntimeDelegate rd = RuntimeDelegateDecorator.configured(configuration);
+        return asStringHeaders(headers, RuntimeDelegateDecorator.configured(configuration));
+    }
+
+    /**
+     * Returns string view of passed headers. Any modifications to the headers are visible to the view, the view also
+     * supports removal of elements. Does not support other modifications.
+     *
+     * @param headers headers.
+     * @param rd     {@link RuntimeDelegate} instance or {@code null} (in that case {@link RuntimeDelegate#getInstance()}
+     *               will be called for before conversion of elements).
+     * @return String view of headers or {@code null} if {code headers} input parameter is {@code null}.
+     */
+    public static MultivaluedMap<String, String> asStringHeaders(
+            final MultivaluedMap<String, Object> headers, RuntimeDelegate rd) {
+        if (headers == null) {
+            return null;
+        }
+
         return new AbstractMultivaluedMap<String, String>(
                 Views.mapView(headers, input -> HeaderUtils.asStringList(input, rd))
         ) {
@@ -229,8 +246,8 @@ public final class HeaderUtils {
      * {@code ','}).
      *
      * Each single header value is converted to String using a
-     * {@link javax.ws.rs.ext.RuntimeDelegate.HeaderDelegate} if one is available
-     * via {@link javax.ws.rs.ext.RuntimeDelegate#createHeaderDelegate(java.lang.Class)}
+     * {@link jakarta.ws.rs.ext.RuntimeDelegate.HeaderDelegate} if one is available
+     * via {@link jakarta.ws.rs.ext.RuntimeDelegate#createHeaderDelegate(java.lang.Class)}
      * for the header value class or using its {@code toString()} method if a header
      * delegate is not available.
      *
@@ -260,8 +277,8 @@ public final class HeaderUtils {
     /**
      * Compares two snapshots of headers from jersey {@code ClientRequest} and logs {@code WARNING} in case of difference.
      *
-     * Current container implementations does not support header modification in {@link javax.ws.rs.ext.WriterInterceptor}
-     * and {@link javax.ws.rs.ext.MessageBodyWriter}. The method checks there are some newly added headers
+     * Current container implementations does not support header modification in {@link jakarta.ws.rs.ext.WriterInterceptor}
+     * and {@link jakarta.ws.rs.ext.MessageBodyWriter}. The method checks there are some newly added headers
      * (probably by WI or MBW) and logs {@code WARNING} message about it.
      *
      * @param headersSnapshot first immutable snapshot of headers
@@ -377,8 +394,8 @@ public final class HeaderUtils {
     /**
      * Compares two snapshots of headers from jersey {@code ClientRequest} and logs {@code WARNING} in case of difference.
      *
-     * Current container implementations does not support header modification in {@link javax.ws.rs.ext.WriterInterceptor}
-     * and {@link javax.ws.rs.ext.MessageBodyWriter}. The method checks there are some newly added headers
+     * Current container implementations does not support header modification in {@link jakarta.ws.rs.ext.WriterInterceptor}
+     * and {@link jakarta.ws.rs.ext.MessageBodyWriter}. The method checks there are some newly added headers
      * (probably by WI or MBW) and logs {@code WARNING} message about it.
      *
      * @param headersSnapshot first immutable snapshot of headers

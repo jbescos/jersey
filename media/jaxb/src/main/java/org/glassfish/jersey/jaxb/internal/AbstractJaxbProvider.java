@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010, 2019 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2010, 2023 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -24,17 +24,16 @@ import java.util.WeakHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.ws.rs.core.Configuration;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.ext.ContextResolver;
-import javax.ws.rs.ext.Providers;
+import jakarta.ws.rs.core.Configuration;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.ext.ContextResolver;
+import jakarta.ws.rs.ext.Providers;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-import javax.xml.bind.PropertyException;
-import javax.xml.bind.Unmarshaller;
+import jakarta.xml.bind.JAXBContext;
+import jakarta.xml.bind.JAXBException;
+import jakarta.xml.bind.Marshaller;
+import jakarta.xml.bind.PropertyException;
+import jakarta.xml.bind.Unmarshaller;
 import javax.xml.parsers.SAXParserFactory;
 import javax.xml.transform.sax.SAXSource;
 
@@ -71,8 +70,8 @@ public abstract class AbstractJaxbProvider<T> extends AbstractMessageReaderWrite
      *
      * @param providers JAX-RS providers.
      */
-    public AbstractJaxbProvider(final Providers providers) {
-        this(providers, null);
+    public AbstractJaxbProvider(final Providers providers, final Configuration config) {
+        this(providers, null, config);
     }
 
     /**
@@ -81,7 +80,7 @@ public abstract class AbstractJaxbProvider<T> extends AbstractMessageReaderWrite
      * @param providers         JAX-RS providers.
      * @param resolverMediaType JAXB component context resolver media type to be used.
      */
-    public AbstractJaxbProvider(final Providers providers, final MediaType resolverMediaType) {
+    public AbstractJaxbProvider(final Providers providers, final MediaType resolverMediaType, final Configuration config) {
         this.jaxrsProviders = providers;
 
         fixedResolverMediaType = resolverMediaType != null;
@@ -112,10 +111,10 @@ public abstract class AbstractJaxbProvider<T> extends AbstractMessageReaderWrite
             this.mtUnmarshaller = null;
             this.mtMarshaller = null;
         }
+        setConfiguration(config);
     }
 
     // TODO This provider should be registered and configured via a feature.
-    @Context
     public void setConfiguration(final Configuration config) {
         formattedOutput = Values.lazy(new Value<Boolean>() {
 
@@ -328,11 +327,11 @@ public abstract class AbstractJaxbProvider<T> extends AbstractMessageReaderWrite
             if (a instanceof XmlHeader) {
                 try {
                     // standalone jaxb ri
-                    marshaller.setProperty("com.sun.xml.bind.xmlHeaders", ((XmlHeader) a).value());
+                    marshaller.setProperty("org.glassfish.jaxb.xmlHeaders", ((XmlHeader) a).value());
                 } catch (PropertyException e) {
                     try {
-                        // jaxb ri from jdk
-                        marshaller.setProperty("com.sun.xml.internal.bind.xmlHeaders", ((XmlHeader) a).value());
+                        // older name
+                        marshaller.setProperty("com.sun.xml.bind.xmlHeaders", ((XmlHeader) a).value());
                     } catch (PropertyException ex) {
                         // other jaxb implementation
                         Logger.getLogger(AbstractJaxbProvider.class.getName()).log(

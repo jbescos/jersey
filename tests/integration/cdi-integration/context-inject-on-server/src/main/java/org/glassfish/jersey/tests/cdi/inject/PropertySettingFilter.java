@@ -18,10 +18,10 @@ package org.glassfish.jersey.tests.cdi.inject;
 
 import org.glassfish.jersey.internal.PropertiesDelegate;
 
-import javax.ws.rs.container.ContainerRequestContext;
-import javax.ws.rs.container.ContainerRequestFilter;
-import javax.ws.rs.container.PreMatching;
-import javax.ws.rs.core.Context;
+import jakarta.ws.rs.container.ContainerRequestContext;
+import jakarta.ws.rs.container.ContainerRequestFilter;
+import jakarta.ws.rs.container.PreMatching;
+import jakarta.ws.rs.core.Context;
 import java.io.IOException;
 
 @PreMatching

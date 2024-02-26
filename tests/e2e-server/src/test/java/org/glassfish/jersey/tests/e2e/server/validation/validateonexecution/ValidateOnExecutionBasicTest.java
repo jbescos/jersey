@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2013, 2023 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -16,35 +16,43 @@
 
 package org.glassfish.jersey.tests.e2e.server.validation.validateonexecution;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.client.Entity;
-import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.core.Application;
-import javax.ws.rs.core.Response;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.POST;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.client.Entity;
+import jakarta.ws.rs.client.WebTarget;
+import jakarta.ws.rs.core.Application;
+import jakarta.ws.rs.core.Response;
 
-import javax.inject.Singleton;
-import javax.validation.Valid;
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotNull;
-import javax.validation.executable.ExecutableType;
-import javax.validation.executable.ValidateOnExecution;
+import jakarta.inject.Singleton;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.executable.ExecutableType;
+import jakarta.validation.executable.ValidateOnExecution;
 
+import jakarta.ws.rs.ext.ContextResolver;
+import jakarta.xml.bind.JAXBContext;
+import jakarta.xml.bind.JAXBException;
+import org.eclipse.persistence.jaxb.BeanValidationMode;
+import org.eclipse.persistence.jaxb.MarshallerProperties;
+import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.server.ServerProperties;
 import org.glassfish.jersey.test.TestProperties;
-import org.glassfish.jersey.test.util.runner.RunSeparately;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+
+import java.util.HashMap;
+import java.util.Map;
+
 import static org.hamcrest.CoreMatchers.equalTo;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 /**
  * @author Michal Gajdos
  */
-// @RunWith(ConcurrentRunner.class)
 public class ValidateOnExecutionBasicTest extends ValidateOnExecutionAbstractTest {
 
     /**
@@ -289,6 +297,28 @@ public class ValidateOnExecutionBasicTest extends ValidateOnExecutionAbstractTes
         }
     }
 
+    /**
+     * Do not validate the bean by Moxy, validate just by Jersey
+     */
+    public static class MoxyNotValidateContextResolver implements ContextResolver<JAXBContext> {
+        @Override
+        public JAXBContext getContext(Class<?> type) {
+            Map<String, Object> properties = new HashMap<>();
+            properties.put(MarshallerProperties.BEAN_VALIDATION_MODE, BeanValidationMode.NONE);
+            try {
+                return JAXBContext.newInstance(new Class[]{type}, properties);
+            } catch (JAXBException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
+    @Override
+    protected void configureClient(ClientConfig config) {
+        config.register(MoxyNotValidateContextResolver.class);
+        super.configureClient(config);
+    }
+
     @Override
     protected Application configure() {
         enable(TestProperties.LOG_TRAFFIC);
@@ -309,7 +339,8 @@ public class ValidateOnExecutionBasicTest extends ValidateOnExecutionAbstractTes
                 ValidateGetterExecutableOnTypeMatch.class,
                 ValidateGetterExecutableOnBeans.class,
                 ValidateGetterResourceMethod.class,
-                ValidateExecutableResource.class)
+                ValidateExecutableResource.class,
+                MoxyNotValidateContextResolver.class)
                 .property(ServerProperties.BV_DISABLE_VALIDATE_ON_EXECUTABLE_OVERRIDE_CHECK, true);
     }
 
@@ -319,7 +350,6 @@ public class ValidateOnExecutionBasicTest extends ValidateOnExecutionAbstractTes
     }
 
     @Test
-    @RunSeparately
     public void testOnTypeValidateResultFailValidateExecutableDefault() throws Exception {
         _testOnType("default", -15, 500);
     }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2021, 2023 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -20,23 +20,23 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.context.RequestScoped;
-import javax.inject.Singleton;
-import javax.ws.rs.core.Application;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.ext.Providers;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.RequestScoped;
+import jakarta.inject.Singleton;
+import jakarta.ws.rs.core.Application;
+import jakarta.ws.rs.core.Context;
+import jakarta.ws.rs.ext.Providers;
 
 import org.glassfish.jersey.internal.JaxrsProviders;
 import org.glassfish.jersey.internal.inject.Injectee;
 import org.glassfish.jersey.internal.inject.InjecteeImpl;
 import org.glassfish.jersey.internal.inject.InjectionResolver;
 
-import org.junit.Test;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Tests Jersey Proxy Resolver.
@@ -96,7 +96,7 @@ public class JerseyProxyResolverTest {
 
     @Test
     public void testProxyCreated() {
-        MyInjectionResolver injectionResolver = new MyInjectionResolver(new JaxrsProviders());
+        MyInjectionResolver injectionResolver = new MyInjectionResolver(new JaxrsProviders(null, null, null));
         InjecteeImpl injectee = new InjecteeImpl();
         injectee.setRequiredType(Providers.class);
         injectee.setParent(FIELDS[0]);
@@ -108,7 +108,7 @@ public class JerseyProxyResolverTest {
 
     @Test
     public void testProxyCached() {
-        MyInjectionResolver injectionResolver = new MyInjectionResolver(new JaxrsProviders());
+        MyInjectionResolver injectionResolver = new MyInjectionResolver(new JaxrsProviders(null, null, null));
         InjecteeImpl injectee1 = new InjecteeImpl();
         injectee1.setRequiredType(Providers.class);
         injectee1.setParent(FIELDS[0]);
@@ -125,7 +125,7 @@ public class JerseyProxyResolverTest {
 
     @Test
     public void testProxyCacheNotMismatched() {
-        MyInjectionResolver injectionResolver1 = new MyInjectionResolver(new JaxrsProviders());
+        MyInjectionResolver injectionResolver1 = new MyInjectionResolver(new JaxrsProviders(null, null, null));
         InjecteeImpl injectee1 = new InjecteeImpl();
         injectee1.setRequiredType(Providers.class);
         injectee1.setParent(FIELDS[0]);

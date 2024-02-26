@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2012, 2024 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -19,8 +19,8 @@ package org.glassfish.jersey.osgi.test.basic;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.ws.rs.core.Feature;
-import javax.ws.rs.core.FeatureContext;
+import jakarta.ws.rs.core.Feature;
+import jakarta.ws.rs.core.FeatureContext;
 
 import org.glassfish.jersey.moxy.json.MoxyJsonConfig;
 import org.glassfish.jersey.osgi.test.util.Helper;
@@ -45,8 +45,8 @@ public class JsonMoxyTest extends AbstractJsonOsgiIntegrationTest {
         options.addAll(Helper.expandedList(
                 // vmOption("-Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=5005"),
 
-                bootDelegationPackage("javax.xml.bind"),
-                bootDelegationPackage("javax.xml.bind.*"),
+                bootDelegationPackage("jakarta.xml.bind"),
+                bootDelegationPackage("jakarta.xml.bind.*"),
                 // validation
                 bootDelegationPackage("javax.xml.parsers"),
                 bootDelegationPackage("javax.xml.parsers.*"),
@@ -57,7 +57,7 @@ public class JsonMoxyTest extends AbstractJsonOsgiIntegrationTest {
                 mavenBundle().groupId("org.eclipse.persistence").artifactId("org.eclipse.persistence.moxy").versionAsInProject(),
                 mavenBundle().groupId("org.eclipse.persistence").artifactId("org.eclipse.persistence.core").versionAsInProject(),
                 mavenBundle().groupId("org.eclipse.persistence").artifactId("org.eclipse.persistence.asm").versionAsInProject(),
-                mavenBundle().groupId("org.glassfish").artifactId("jakarta.json").versionAsInProject(),
+                mavenBundle().groupId("org.eclipse.parsson").artifactId("parsson").versionAsInProject(),
 
                 // validation
                 mavenBundle().groupId("org.hibernate.validator").artifactId("hibernate-validator").versionAsInProject(),

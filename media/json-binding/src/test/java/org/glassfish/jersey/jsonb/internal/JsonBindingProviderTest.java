@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 Markus KARG
+ * Copyright (c) 2020, 2022 Markus KARG
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -16,7 +16,7 @@
 
 package org.glassfish.jersey.jsonb.internal;
 
-import static javax.ws.rs.core.MediaType.APPLICATION_JSON_TYPE;
+import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON_TYPE;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -28,17 +28,18 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.MultivaluedHashMap;
-import javax.ws.rs.core.MultivaluedMap;
-import javax.ws.rs.core.NoContentException;
-import javax.ws.rs.ext.ContextResolver;
-import javax.ws.rs.ext.ExceptionMapper;
-import javax.ws.rs.ext.MessageBodyReader;
-import javax.ws.rs.ext.MessageBodyWriter;
-import javax.ws.rs.ext.Providers;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.MultivaluedHashMap;
+import jakarta.ws.rs.core.MultivaluedMap;
+import jakarta.ws.rs.core.NoContentException;
+import jakarta.ws.rs.ext.ContextResolver;
+import jakarta.ws.rs.ext.ExceptionMapper;
+import jakarta.ws.rs.ext.MessageBodyReader;
+import jakarta.ws.rs.ext.MessageBodyWriter;
+import jakarta.ws.rs.ext.Providers;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * Unit Test for {@link JsonBindingProvider}.
@@ -47,18 +48,20 @@ import org.junit.Test;
  */
 public final class JsonBindingProviderTest {
 
-    @Test(expected = NoContentException.class)
+    @Test
     public final void shouldThrowNoContentException() throws IOException {
-        // given
-        final Providers providers = new EmptyProviders();
-        final MessageBodyReader<Foo> mbr = (MessageBodyReader) new JsonBindingProvider(providers);
+        assertThrows(NoContentException.class, () -> {
+            // given
+            final Providers providers = new EmptyProviders();
+            final MessageBodyReader<Foo> mbr = (MessageBodyReader) new JsonBindingProvider(providers);
 
-        // when
-        mbr.readFrom(Foo.class, Foo.class, new Annotation[0], APPLICATION_JSON_TYPE,
-                new MultivaluedHashMap<>(), new ByteArrayInputStream(new byte[0]));
+            // when
+            mbr.readFrom(Foo.class, Foo.class, new Annotation[0], APPLICATION_JSON_TYPE,
+                    new MultivaluedHashMap<>(), new ByteArrayInputStream(new byte[0]));
 
-        // then
-        // should throw NoContentException
+            // then
+            // should throw NoContentException
+        });
     }
 
     private static final class Foo {

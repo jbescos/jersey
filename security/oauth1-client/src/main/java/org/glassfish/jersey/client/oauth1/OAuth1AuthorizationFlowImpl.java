@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2013, 2021 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -18,16 +18,18 @@ package org.glassfish.jersey.client.oauth1;
 
 import java.util.logging.Logger;
 
-import javax.ws.rs.NotAuthorizedException;
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.client.Invocation;
-import javax.ws.rs.core.Configuration;
-import javax.ws.rs.core.Feature;
-import javax.ws.rs.core.Form;
-import javax.ws.rs.core.MultivaluedMap;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriBuilder;
+import jakarta.ws.rs.NotAuthorizedException;
+import jakarta.ws.rs.client.Client;
+import jakarta.ws.rs.client.ClientBuilder;
+import jakarta.ws.rs.client.Invocation;
+import jakarta.ws.rs.core.Configuration;
+import jakarta.ws.rs.core.Feature;
+import jakarta.ws.rs.core.Form;
+import jakarta.ws.rs.core.HttpHeaders;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.MultivaluedMap;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.UriBuilder;
 
 import org.glassfish.jersey.client.oauth1.internal.LocalizationMessages;
 import org.glassfish.jersey.internal.util.collection.Value;
@@ -170,7 +172,7 @@ class OAuth1AuthorizationFlowImpl implements OAuth1AuthorizationFlow {
 
     public String start() {
         final Response response = addProperties(client.target(requestTokenUri).request())
-                .post(null);
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED_TYPE).post(null);
         if (response.getStatus() != 200) {
             throw new RuntimeException(LocalizationMessages.ERROR_REQUEST_REQUEST_TOKEN(response.getStatus()));
         }
@@ -188,7 +190,8 @@ class OAuth1AuthorizationFlowImpl implements OAuth1AuthorizationFlow {
 
     public AccessToken finish(final String verifier) {
         parameters.setVerifier(verifier);
-        final Response response = addProperties(client.target(accessTokenUri).request()).post(null);
+        final Response response = addProperties(client.target(accessTokenUri).request())
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED_TYPE).post(null);
         // accessToken request failed
         if (response.getStatus() >= 400) {
             throw new RuntimeException(LocalizationMessages.ERROR_REQUEST_ACCESS_TOKEN(response.getStatus()));

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2012, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -20,7 +20,7 @@ import java.util.Comparator;
 
 /**
  * Comparator used to sort types by their priorities defined by theirs binding priority set during the configuration phase
- * ({@link javax.ws.rs.core.Configuration}) in {@link RankedProvider ranked provider}.
+ * ({@link jakarta.ws.rs.core.Configuration}) in {@link RankedProvider ranked provider}.
  *
  * @param <T> Type of the elements to be sorted.
  *

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014, 2019 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2014, 2022 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -22,29 +22,29 @@ import java.lang.annotation.RetentionPolicy;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.NameBinding;
-import javax.ws.rs.Path;
-import javax.ws.rs.Priorities;
-import javax.ws.rs.container.ContainerRequestContext;
-import javax.ws.rs.container.ContainerRequestFilter;
-import javax.ws.rs.container.ContainerResponseContext;
-import javax.ws.rs.container.ContainerResponseFilter;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.HttpHeaders;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.NameBinding;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.Priorities;
+import jakarta.ws.rs.container.ContainerRequestContext;
+import jakarta.ws.rs.container.ContainerRequestFilter;
+import jakarta.ws.rs.container.ContainerResponseContext;
+import jakarta.ws.rs.container.ContainerResponseFilter;
+import jakarta.ws.rs.core.Context;
+import jakarta.ws.rs.core.HttpHeaders;
 
-import javax.annotation.Priority;
+import jakarta.annotation.Priority;
 
 import org.glassfish.jersey.server.ApplicationHandler;
 import org.glassfish.jersey.server.ContainerResponse;
 import org.glassfish.jersey.server.RequestContextBuilder;
 import org.glassfish.jersey.server.ResourceConfig;
 
-import org.junit.Ignore;
-import org.junit.Test;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 /**
  * Tests layering of filters applied on appropriate methods (using named bindings) on resource method, sub-method,
@@ -123,7 +123,7 @@ public class LayeredFiltersTest {
     public static class FilterTwo implements ContainerRequestFilter, ContainerResponseFilter {
         public void filter(ContainerRequestContext requestContext) throws IOException {
             List<String> xTest = requestContext.getHeaders().get("X-TEST");
-            assertNotNull("FilterOne not called", xTest);
+            assertNotNull(xTest, "FilterOne not called");
             assertEquals(1, xTest.size());
             assertEquals("one", xTest.get(0));
 
@@ -140,7 +140,7 @@ public class LayeredFiltersTest {
     }
 
     @Test
-    @Ignore("JERSEY-2414 - not yet implemented")
+    @Disabled("JERSEY-2414 - not yet implemented")
     public void testResourceMethod() throws ExecutionException, InterruptedException {
         final ResourceConfig resourceConfig = new ResourceConfig(ResourceWithSubresourceLocator.class)
                 .register(FilterOne.class).register(FilterTwo.class);
@@ -156,7 +156,7 @@ public class LayeredFiltersTest {
     }
 
     @Test
-    @Ignore("JERSEY-2414 - not yet implemented")
+    @Disabled("JERSEY-2414 - not yet implemented")
     public void testResourceSubresourceMethod() throws ExecutionException, InterruptedException {
         final ResourceConfig resourceConfig = new ResourceConfig(ResourceWithSubresourceLocator.class)
                 .register(FilterOne.class).register(FilterTwo.class);
@@ -202,7 +202,7 @@ public class LayeredFiltersTest {
     }
 
     @Test
-    @Ignore("JERSEY-2414 - not yet implemented")
+    @Disabled("JERSEY-2414 - not yet implemented")
     public void testResourceMethodOnClass() throws ExecutionException, InterruptedException {
         final ResourceConfig resourceConfig = new ResourceConfig(ResourceWithSubresourceLocatorOnClass.class)
                 .register(FilterOne.class).register(FilterTwo.class);
@@ -218,7 +218,7 @@ public class LayeredFiltersTest {
     }
 
     @Test
-    @Ignore("JERSEY-2414 - not yet implemented")
+    @Disabled("JERSEY-2414 - not yet implemented")
     public void testResourceSubresourceMethodOnClass() throws ExecutionException, InterruptedException {
         final ResourceConfig resourceConfig = new ResourceConfig(ResourceWithSubresourceLocatorOnClass.class)
                 .register(FilterOne.class).register(FilterTwo.class);

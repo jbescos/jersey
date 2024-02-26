@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012, 2021 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2012, 2022 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -18,12 +18,14 @@ package org.glassfish.jersey.server;
 
 import java.util.Map;
 
-import javax.ws.rs.RuntimeType;
+import jakarta.ws.rs.RuntimeType;
 
 import org.glassfish.jersey.CommonProperties;
 import org.glassfish.jersey.internal.util.PropertiesClass;
 import org.glassfish.jersey.internal.util.PropertiesHelper;
 import org.glassfish.jersey.internal.util.PropertyAlias;
+import org.glassfish.jersey.server.spi.Container;
+import org.glassfish.jersey.server.spi.WebServer;
 
 
 /**
@@ -42,8 +44,8 @@ public final class ServerProperties {
      * providers.
      *
      * If the property is set, the specified packages will be scanned for
-     * JAX-RS root resources (annotated with {@link javax.ws.rs.Path @Path}) and
-     * providers (annotated with {@link javax.ws.rs.ext.Provider @Provider}).
+     * JAX-RS root resources (annotated with {@link jakarta.ws.rs.Path @Path}) and
+     * providers (annotated with {@link jakarta.ws.rs.ext.Provider @Provider}).
      * <p>
      * The property value MUST be an instance of {@link String} or {@code String[]}
      * array. Each {@code String} instance represents one or more package names
@@ -88,8 +90,8 @@ public final class ServerProperties {
      * providers.
      *
      * If the property is set, the specified class-path will be scanned
-     * for JAX-RS root resources (annotated with {@link javax.ws.rs.Path @Path})
-     * and providers (annotated with {@link javax.ws.rs.ext.Provider @Provider}).
+     * for JAX-RS root resources (annotated with {@link jakarta.ws.rs.Path @Path})
+     * and providers (annotated with {@link jakarta.ws.rs.ext.Provider @Provider}).
      * Each path element MUST be an absolute or relative directory, or a Jar file.
      * The contents of a directory, including Java class files, jars files
      * and sub-directories are scanned (recursively).
@@ -116,8 +118,8 @@ public final class ServerProperties {
      *
      * If the property is set, the specified classes will be instantiated
      * and registered as either application JAX-RS root resources (annotated with
-     * {@link javax.ws.rs.Path @Path}) or providers (annotated with
-     * {@link javax.ws.rs.ext.Provider @Provider}).
+     * {@link jakarta.ws.rs.Path @Path}) or providers (annotated with
+     * {@link jakarta.ws.rs.ext.Provider @Provider}).
      * <p>
      * The property value MUST be an instance of {@link String} or {@code String[]}
      * array. Each {@code String} instance represents one or more class names
@@ -246,7 +248,7 @@ public final class ServerProperties {
      * A Bean Validation (JSR-349) support customization property.
      *
      * If {@code true} the check whether the overriding / implementing methods are annotated with
-     * {@link javax.validation.executable.ValidateOnExecution} as well as one of their predecessor (in hierarchy)
+     * {@link jakarta.validation.executable.ValidateOnExecution} as well as one of their predecessor (in hierarchy)
      * is disabled.
      * <p>
      * By default this checks is automatically enabled, unless the Bean Validation support is disabled explicitly (see
@@ -259,7 +261,7 @@ public final class ServerProperties {
      * The name of the configuration property is <tt>{@value}</tt>.
      * </p>
      *
-     * @see javax.validation.executable.ValidateOnExecution
+     * @see jakarta.validation.executable.ValidateOnExecution
      */
     public static final String BV_DISABLE_VALIDATE_ON_EXECUTABLE_OVERRIDE_CHECK =
             "jersey.config.beanValidation.disable.validateOnExecutableCheck.server";
@@ -269,7 +271,7 @@ public final class ServerProperties {
      *
      * If set to {@code true} and Bean Validation support has not been explicitly disabled (see
      * {@link #BV_FEATURE_DISABLE}), the validation error information will be sent in the entity of the
-     * returned {@link javax.ws.rs.core.Response}.
+     * returned {@link jakarta.ws.rs.core.Response}.
      * <p>
      * The default value is {@code false}. This means that in case of an error response caused by a Bean Validation
      * error, only a status code is sent in the server {@code Response} by default.
@@ -322,7 +324,7 @@ public final class ServerProperties {
 
     /**
      * An integer value that defines the buffer size used to buffer server-side response entity in order to
-     * determine its size and set the value of HTTP <tt>{@value javax.ws.rs.core.HttpHeaders#CONTENT_LENGTH}</tt> header.
+     * determine its size and set the value of HTTP <tt>{@value jakarta.ws.rs.core.HttpHeaders#CONTENT_LENGTH}</tt> header.
      * <p>
      * If the entity size exceeds the configured buffer size, the buffering would be cancelled and the entity size
      * would not be determined. Value less or equal to zero disable the buffering of the entity at all.
@@ -365,7 +367,7 @@ public final class ServerProperties {
      * If {@code true} then disable META-INF/services lookup on server.
      *
      * By default Jersey looks up SPI implementations described by META-INF/services/* files.
-     * Then you can register appropriate provider classes by {@link javax.ws.rs.core.Application}.
+     * Then you can register appropriate provider classes by {@link jakarta.ws.rs.core.Application}.
      * <p>
      * The default value is {@code false}.
      * </p>
@@ -730,7 +732,7 @@ public final class ServerProperties {
      * The {@code CompletionStage} value will be unwrapped and the message body writer will be invoked with the unwrapped type.
      *
      * <p>
-     * The default value is {@code false}.
+     * The default value is {@code true}.
      * </p>
      * <p>
      * The name of the configuration property is <tt>{@value}</tt>.
@@ -740,6 +742,72 @@ public final class ServerProperties {
      */
     public static final String UNWRAP_COMPLETION_STAGE_IN_WRITER_ENABLE =
             "jersey.config.server.unwrap.completion.stage.writer.enable";
+
+    /**
+     * <p>
+     * Jakarta RESTful WebServices provides {@code @Consumes} annotation to accept only HTTP requests with compatible
+     * {@code Content-Type} header. However, when the header is missing a wildcard media type is used to
+     * match the {@code @Consumes} annotation.
+     * </p>
+     * <p><a href="https://datatracker.ietf.org/doc/html/rfc7231#section-3.1.1.5">HTTP/1.1 RFC</a>recommends that missing
+     * {@code Content-Type} header MAY default to {@code application/octet-stream}. This property makes Jersey consider the
+     * missing HTTP {@code Content-Type} header to be {@code application/octet-stream} rather than a wildcard
+     * media type. However, for a resource method without an entity argument, such as for HTTP GET, a wildcard media type
+     * is still considered to accept the HTTP request for the missing HTTP {@code Content-Type} header.
+     * </p>
+     * <p>
+     * Set this property to false, if the empty request media type should not to match applied {@code @Consumes} annotation
+     * on a resource method with an entity argument. The default is {@code true}. The name of the configuration property is
+     * <tt>{@value}</tt>.
+     * </p>
+     * @since 3.1.0
+     */
+    public static final String EMPTY_REQUEST_MEDIA_TYPE_MATCHES_ANY_CONSUMES =
+            "jersey.config.server.empty.request.media.matches.any.consumes";
+
+    /**
+     * Defines whether to allow privileged ports (0-1023) to be used to start the {@link WebServer} implementation
+     * to be chosen from the unused ports when the {@link jakarta.ws.rs.SeBootstrap.Configuration#PORT} is set to {@code -1}
+     * or unset.
+     * <p>
+     * The default ports are {@link Container#DEFAULT_HTTP_PORT} for HTTP and {@link Container#DEFAULT_HTTPS_PORT}
+     * for HTTPS when {@code WEBSERVER_ALLOW_PRIVILEGED_PORTS} is {@code true} or 8080 for HTTP and 8443 for HTTPS when
+     * {@code WEBSERVER_ALLOW_PRIVILEGED_PORTS} is {@code false}.
+     * </p>
+     * <p>
+     * If {@link jakarta.ws.rs.SeBootstrap.Configuration#PORT} is set to {@code 0}, the implementation scans for random unused
+     * port (0-65535) when {@code WEBSERVER_ALLOW_PRIVILEGED_PORTS} is {@code true}, or (1024-65535) when
+     * {@code WEBSERVER_ALLOW_PRIVILEGED_PORTS} is {@code false.}
+     * </p>
+     * <p>
+     * The default this is {@code false}. Use {@code true} to allow a restricted port number. The name of the configuration
+     * property is <tt>{@value}</tt>.
+     * </p>
+     * @since 3.1.0
+     */
+    public static final String WEBSERVER_ALLOW_PRIVILEGED_PORTS =
+            "jersey.config.server.bootstrap.webserver.allow.privileged.ports";
+
+    /**
+     * Whether to automatically startup {@link WebServer} at bootstrap.
+     * <p>
+     * By default, servers are immediately listening to connections after bootstrap,
+     * so no explicit invocation of {@link WebServer#start()} is needed. The name of the configuration
+     * property is <tt>{@value}</tt>.
+     * </p>
+     * @since 3.1.0
+     */
+    public static final String WEBSERVER_AUTO_START = "jersey.config.server.bootstrap.webserver.autostart";
+
+    /**
+     * Defines the implementation of {@link WebServer} to bootstrap.
+     * <p>
+     * By default auto-selects the first server provider found. The name of the configuration
+     * property is <tt>{@value}</tt>.
+     * </p>
+     * @since 3.1.0
+     */
+    public static final String WEBSERVER_CLASS = "jersey.config.server.bootstrap.webserver.class";
 
     /**
      * JVM argument to define the value of

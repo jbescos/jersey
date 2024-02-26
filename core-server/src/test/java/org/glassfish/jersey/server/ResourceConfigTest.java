@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012, 2019 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2012, 2022 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -21,11 +21,11 @@ import java.io.IOException;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.Application;
-import javax.ws.rs.core.Context;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.QueryParam;
+import jakarta.ws.rs.core.Application;
+import jakarta.ws.rs.core.Context;
 
 import org.glassfish.jersey.internal.inject.AbstractBinder;
 import org.glassfish.jersey.internal.util.Tokenizer;
@@ -34,15 +34,15 @@ import org.glassfish.jersey.server.config.innerstatic.InnerStaticClass;
 import org.glassfish.jersey.server.config.toplevel.PublicRootResourceClass;
 import org.glassfish.jersey.server.config.toplevelinnerstatic.PublicRootResourceInnerStaticClass;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import static org.glassfish.jersey.server.JarUtils.createJarFile;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * @author Pavel Bucek
@@ -98,8 +98,7 @@ public class ResourceConfigTest {
 
         final ContainerResponse r = handler.apply(RequestContextBuilder.from("/", "/resource?id=" + rcId, "GET").build()).get();
         assertEquals(200, r.getStatus());
-        assertEquals("Injected application instance not same as used for building the Jersey handler.",
-                "true", r.getEntity());
+        assertEquals("true", r.getEntity(), "Injected application instance not same as used for building the Jersey handler.");
     }
 
     @Test
@@ -348,7 +347,7 @@ public class ResourceConfigTest {
 
     @Test
     public void testResourceFinderStreamsClosed() throws IOException {
-        System.out.println(new ResourceConfig().packages("javax.ws.rs").getClasses());
+        System.out.println(new ResourceConfig().packages("jakarta.ws.rs").getClasses());
     }
 
     private ResourceConfig createConfigWithClassPathProperty(final File jarFile) {

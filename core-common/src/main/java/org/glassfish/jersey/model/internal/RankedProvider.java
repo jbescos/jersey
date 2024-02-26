@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2012, 2023 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -19,10 +19,11 @@ package org.glassfish.jersey.model.internal;
 import java.lang.reflect.Type;
 import java.util.Set;
 
-import javax.ws.rs.Priorities;
+import jakarta.ws.rs.Priorities;
 
-import javax.annotation.Priority;
+import jakarta.annotation.Priority;
 
+import org.glassfish.jersey.JerseyPriorities;
 import org.glassfish.jersey.model.ContractProvider;
 
 /**
@@ -38,8 +39,8 @@ public class RankedProvider<T> {
     private final Set<Type> contractTypes;
 
     /**
-     * Creates a new {@code RankedProvider} instance. The rank of the provider is obtained from the {@link javax.annotation.Priority}
-     * annotation or is set to {@value javax.ws.rs.Priorities#USER} if the annotation is not present.
+     * Creates a new {@code RankedProvider} instance. The rank of the provider is obtained from the {@link jakarta.annotation.Priority}
+     * annotation or is set to {@value jakarta.ws.rs.Priorities#USER} if the annotation is not present.
      *
      * @param provider service provider to create a {@code RankedProvider} instance from.
      */
@@ -84,11 +85,7 @@ public class RankedProvider<T> {
                 clazz = clazz.getSuperclass();
             }
 
-            if (clazz.isAnnotationPresent(Priority.class)) {
-                return clazz.getAnnotation(Priority.class).value();
-            } else {
-                return Priorities.USER;
-            }
+            return JerseyPriorities.getPriorityValue(clazz, Priorities.USER);
         }
     }
 

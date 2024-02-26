@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010, 2019 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2010, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -26,18 +26,18 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.ws.rs.core.Application;
+import jakarta.ws.rs.core.Application;
 
-import javax.servlet.DispatcherType;
-import javax.servlet.Filter;
-import javax.servlet.ServletContextAttributeListener;
-import javax.servlet.ServletContextListener;
-import javax.servlet.ServletRequestAttributeListener;
-import javax.servlet.ServletRequestListener;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpSessionActivationListener;
-import javax.servlet.http.HttpSessionAttributeListener;
-import javax.servlet.http.HttpSessionListener;
+import jakarta.servlet.DispatcherType;
+import jakarta.servlet.Filter;
+import jakarta.servlet.ServletContextAttributeListener;
+import jakarta.servlet.ServletContextListener;
+import jakarta.servlet.ServletRequestAttributeListener;
+import jakarta.servlet.ServletRequestListener;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpSessionActivationListener;
+import jakarta.servlet.http.HttpSessionAttributeListener;
+import jakarta.servlet.http.HttpSessionListener;
 
 import org.glassfish.jersey.server.ServerProperties;
 import org.glassfish.jersey.servlet.ServletContainer;
@@ -107,7 +107,7 @@ public class ServletDeploymentContext extends DeploymentContext {
     /**
      * Create new servlet deployment context builder bound to a Servlet instance.
      * <p>
-     * Note that the servlet instance will be discarded if one of the {@link Builder#servlet(javax.servlet.http.HttpServlet)},
+     * Note that the servlet instance will be discarded if one of the {@link Builder#servlet(jakarta.servlet.http.HttpServlet)},
      * {@link Builder#servletClass(Class)}, {@link Builder#filterClass(Class)} or
      * {@link Builder#filterClass(Class, java.util.Set)} is invoked on the builder.
      * </p>
@@ -124,7 +124,7 @@ public class ServletDeploymentContext extends DeploymentContext {
     /**
      * Create new servlet deployment context builder bound to a Servlet class.
      * <p>
-     * Note that the servlet instance will be discarded if one of the {@link Builder#servlet(javax.servlet.http.HttpServlet)},
+     * Note that the servlet instance will be discarded if one of the {@link Builder#servlet(jakarta.servlet.http.HttpServlet)},
      * {@link Builder#servletClass(Class)}, {@link Builder#filterClass(Class)} or
      * {@link Builder#filterClass(Class, java.util.Set)} is invoked on the builder.
      * </p>

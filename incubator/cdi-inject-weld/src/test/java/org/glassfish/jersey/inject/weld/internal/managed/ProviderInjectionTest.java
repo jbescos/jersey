@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2021, 2022 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -16,30 +16,30 @@
 
 package org.glassfish.jersey.inject.weld.internal.managed;
 
-import javax.enterprise.event.Observes;
-import javax.enterprise.inject.Vetoed;
-import javax.enterprise.inject.se.SeContainerInitializer;
-import javax.enterprise.inject.spi.BeanManager;
-import javax.enterprise.inject.spi.BeforeBeanDiscovery;
-import javax.enterprise.inject.spi.Extension;
-import javax.inject.Inject;
-import javax.inject.Provider;
-import javax.ws.rs.core.Context;
+import jakarta.enterprise.event.Observes;
+import jakarta.enterprise.inject.Vetoed;
+import jakarta.enterprise.inject.se.SeContainerInitializer;
+import jakarta.enterprise.inject.spi.BeanManager;
+import jakarta.enterprise.inject.spi.BeforeBeanDiscovery;
+import jakarta.enterprise.inject.spi.Extension;
+import jakarta.inject.Inject;
+import jakarta.inject.Provider;
+import jakarta.ws.rs.core.Context;
 
 import org.glassfish.jersey.internal.inject.AbstractBinder;
 
 import org.hamcrest.core.StringStartsWith;
-import org.junit.Assert;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import java.util.function.Supplier;
 
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 public class ProviderInjectionTest extends TestParent {
 
-    @BeforeClass
+    @BeforeAll
     public static void setup() {
         SeContainerInitializer containerInitializer = SeContainerInitializer.newInstance();
         containerInitializer.addExtensions(new ProviderInjectionTestExtension());
@@ -55,7 +55,7 @@ public class ProviderInjectionTest extends TestParent {
 //        });
 
         Greeting greeting = injectionManager.getInstance(Greeting.class);
-        Assert.assertNotNull(greeting);
+        Assertions.assertNotNull(greeting);
 
         ProviderInject instance = injectionManager.getInstance(ProviderInject.class);
         assertThat(instance.greeting.get().getGreeting(), StringStartsWith.startsWith(CzechGreeting.GREETING));

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012, 2019 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2012, 2023 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -28,10 +28,10 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.ws.rs.core.MultivaluedMap;
-import javax.ws.rs.core.Response;
+import jakarta.ws.rs.core.MultivaluedMap;
+import jakarta.ws.rs.core.Response;
 
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletResponse;
 
 import org.glassfish.jersey.server.ContainerException;
 import org.glassfish.jersey.server.ContainerResponse;
@@ -125,7 +125,7 @@ public class ResponseWriter implements ContainerResponseWriter {
         // the invocation of sendError as on some Servlet implementations
         // modification of the response headers will have no effect
         // after the invocation of sendError.
-        final MultivaluedMap<String, String> headers = getResponseContext().getStringHeaders();
+        final MultivaluedMap<String, String> headers = responseContext.getStringHeaders();
         for (final Map.Entry<String, List<String>> e : headers.entrySet()) {
             final Iterator<String> it = e.getValue().iterator();
             if (!it.hasNext()) {
@@ -144,7 +144,7 @@ public class ResponseWriter implements ContainerResponseWriter {
 
         final String reasonPhrase = responseContext.getStatusInfo().getReasonPhrase();
         if (reasonPhrase != null) {
-            response.setStatus(responseContext.getStatus(), reasonPhrase);
+            response.setStatus(responseContext.getStatus());
         } else {
             response.setStatus(responseContext.getStatus());
         }
@@ -217,7 +217,7 @@ public class ResponseWriter implements ContainerResponseWriter {
                     if (configSetStatusOverSendError) {
                         response.reset();
                         //noinspection deprecation
-                        response.setStatus(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(), "Request failed.");
+                        response.setStatus(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode());
                     } else {
                         response.sendError(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(), "Request failed.");
                     }
@@ -233,6 +233,7 @@ public class ResponseWriter implements ContainerResponseWriter {
             }
         } finally {
             requestTimeoutHandler.close();
+            responseContext.completeExceptionally(error);
             rethrow(error);
         }
     }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010, 2019 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2010, 2022 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -21,16 +21,16 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.ProcessingException;
-import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.core.Application;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.HttpHeaders;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.ResponseBuilder;
-import javax.ws.rs.core.UriInfo;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.ProcessingException;
+import jakarta.ws.rs.client.WebTarget;
+import jakarta.ws.rs.core.Application;
+import jakarta.ws.rs.core.Context;
+import jakarta.ws.rs.core.HttpHeaders;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.Response.ResponseBuilder;
+import jakarta.ws.rs.core.UriInfo;
 
 import org.glassfish.jersey.client.authentication.HttpAuthenticationFeature;
 import org.glassfish.jersey.server.ResourceConfig;
@@ -38,8 +38,8 @@ import org.glassfish.jersey.test.JerseyTest;
 import org.glassfish.jersey.test.TestProperties;
 import org.glassfish.jersey.uri.UriComponent;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 /**
  *
@@ -117,7 +117,7 @@ public class HttpDigestAuthFilterTest extends JerseyTest {
                         ha2);
 
                 // this generates INTERNAL_SERVER_ERROR if not matching
-                Assert.assertEquals(ncExpected, Integer.parseInt(getDigestAuthHeaderValue(authHeader, "nc=")));
+                Assertions.assertEquals(ncExpected, Integer.parseInt(getDigestAuthHeaderValue(authHeader, "nc=")));
 
                 if (response.equals(getDigestAuthHeaderValue(authHeader, "response="))) {
                     return Response.ok().build();
@@ -238,7 +238,7 @@ public class HttpDigestAuthFilterTest extends JerseyTest {
 
         ncExpected = 1;
         final Response r1 = resource.request().get();
-        Assert.assertEquals(Response.Status.fromStatusCode(r1.getStatus()), Response.Status.OK);
+        Assertions.assertEquals(Response.Status.fromStatusCode(r1.getStatus()), Response.Status.OK);
     }
 
 
@@ -250,15 +250,15 @@ public class HttpDigestAuthFilterTest extends JerseyTest {
 
         ncExpected = 1;
         final Response r1 = resource.request().get();
-        Assert.assertEquals(Response.Status.fromStatusCode(r1.getStatus()), Response.Status.OK);
+        Assertions.assertEquals(Response.Status.fromStatusCode(r1.getStatus()), Response.Status.OK);
 
         ncExpected = 2;
         final Response r2 = resource.request().get();
-        Assert.assertEquals(Response.Status.fromStatusCode(r2.getStatus()), Response.Status.OK);
+        Assertions.assertEquals(Response.Status.fromStatusCode(r2.getStatus()), Response.Status.OK);
 
         ncExpected = 3;
         final Response r3 = resource.request().get();
-        Assert.assertEquals(Response.Status.fromStatusCode(r3.getStatus()), Response.Status.OK);
+        Assertions.assertEquals(Response.Status.fromStatusCode(r3.getStatus()), Response.Status.OK);
 
     }
 
@@ -270,6 +270,6 @@ public class HttpDigestAuthFilterTest extends JerseyTest {
 
         ncExpected = 1;
         final Response r1 = resource.request().get();
-        Assert.assertEquals(Response.Status.fromStatusCode(r1.getStatus()), Response.Status.UNAUTHORIZED);
+        Assertions.assertEquals(Response.Status.fromStatusCode(r1.getStatus()), Response.Status.UNAUTHORIZED);
     }
 }

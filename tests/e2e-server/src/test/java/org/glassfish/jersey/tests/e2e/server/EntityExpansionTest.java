@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2013, 2022 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -18,30 +18,30 @@ package org.glassfish.jersey.tests.e2e.server;
 
 import java.util.logging.Logger;
 
-import javax.ws.rs.BadRequestException;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.client.Entity;
-import javax.ws.rs.core.Application;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.ext.ExceptionMapper;
+import jakarta.ws.rs.BadRequestException;
+import jakarta.ws.rs.POST;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.client.Entity;
+import jakarta.ws.rs.core.Application;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.ext.ExceptionMapper;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlAttribute;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlRootElement;
 import javax.xml.parsers.SAXParserFactory;
 
 import org.glassfish.jersey.internal.util.SaxHelper;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.test.JerseyTest;
 
-import org.junit.Assert;
-import org.junit.Assume;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Assumptions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.xml.sax.SAXParseException;
 
 /**
@@ -137,14 +137,14 @@ public class EntityExpansionTest extends JerseyTest {
         }
     }
 
-    @BeforeClass
+    @BeforeAll
     public static void setXdkFlag() {
         // XDK SAXParser does not support this feature, so the test has to be skipped if XDK detected.
         if (SaxHelper.isXdkParserFactory(SAXParserFactory.newInstance())) {
             LOG.warning("XDK SAXParser detected, FEATURE_SECURE_PROCESSING is not supported. Tests will be skipped.");
             isXdk = true;
         }
-        Assume.assumeTrue(!isXdk);
+        Assumptions.assumeTrue(!isXdk);
     }
 
     @Test
@@ -158,9 +158,9 @@ public class EntityExpansionTest extends JerseyTest {
                 + "<testBean><input>&lol3;</input></testBean>";
 
         final Response response = target().path("resource").request().post(Entity.entity(str, MediaType.APPLICATION_XML));
-        Assert.assertEquals(200, response.getStatus());
+        Assertions.assertEquals(200, response.getStatus());
         final String entity = response.readEntity(String.class);
-        Assert.assertTrue(entity.startsWith("PASSED"));
+        Assertions.assertTrue(entity.startsWith("PASSED"));
     }
 
     @Test
@@ -168,9 +168,9 @@ public class EntityExpansionTest extends JerseyTest {
         String str = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>"
                 + "<testBean str=\"aaa\" str2=\"bbb\" str3=\"ccc\"><input>test</input></testBean>";
         final Response response = target().path("resource").request().post(Entity.entity(str, MediaType.APPLICATION_XML));
-        Assert.assertEquals(200, response.getStatus());
+        Assertions.assertEquals(200, response.getStatus());
         final String entity = response.readEntity(String.class);
-        Assert.assertTrue(entity.startsWith("PASSED"));
+        Assertions.assertTrue(entity.startsWith("PASSED"));
     }
 
 }

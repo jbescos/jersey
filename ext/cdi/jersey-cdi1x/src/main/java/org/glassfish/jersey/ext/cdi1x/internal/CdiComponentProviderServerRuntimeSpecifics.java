@@ -1,5 +1,6 @@
 /*
- * Copyright (c) 2021 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2021, 2022 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2022 Payara Foundation and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -24,16 +25,16 @@ import org.glassfish.jersey.server.model.Parameter;
 import org.glassfish.jersey.server.model.Resource;
 import org.glassfish.jersey.server.spi.internal.ValueParamProvider;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.spi.Annotated;
-import javax.enterprise.inject.spi.AnnotatedCallable;
-import javax.enterprise.inject.spi.AnnotatedConstructor;
-import javax.enterprise.inject.spi.AnnotatedParameter;
-import javax.enterprise.inject.spi.AnnotatedType;
-import javax.enterprise.inject.spi.BeanManager;
-import javax.enterprise.inject.spi.InjectionPoint;
-import javax.inject.Qualifier;
-import javax.ws.rs.core.Context;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.inject.spi.Annotated;
+import jakarta.enterprise.inject.spi.AnnotatedCallable;
+import jakarta.enterprise.inject.spi.AnnotatedConstructor;
+import jakarta.enterprise.inject.spi.AnnotatedParameter;
+import jakarta.enterprise.inject.spi.AnnotatedType;
+import jakarta.enterprise.inject.spi.BeanManager;
+import jakarta.enterprise.inject.spi.InjectionPoint;
+import jakarta.inject.Qualifier;
+import jakarta.ws.rs.core.Context;
 import java.lang.annotation.Annotation;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
@@ -48,6 +49,7 @@ import static java.lang.annotation.ElementType.METHOD;
 import static java.lang.annotation.ElementType.PARAMETER;
 import static java.lang.annotation.ElementType.TYPE;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
+import java.util.Enumeration;
 
 /**
  * Server side runtime CDI ComponentProvider specific implementation.
@@ -90,12 +92,12 @@ class CdiComponentProviderServerRuntimeSpecifics implements CdiComponentProvider
 
         static final Set<Class<? extends Annotation>> JAX_RS_STRING_PARAM_ANNOTATIONS =
                 new HashSet<Class<? extends Annotation>>() {{
-                    add(javax.ws.rs.PathParam.class);
-                    add(javax.ws.rs.QueryParam.class);
-                    add(javax.ws.rs.CookieParam.class);
-                    add(javax.ws.rs.HeaderParam.class);
-                    add(javax.ws.rs.MatrixParam.class);
-                    add(javax.ws.rs.FormParam.class);
+                    add(jakarta.ws.rs.PathParam.class);
+                    add(jakarta.ws.rs.QueryParam.class);
+                    add(jakarta.ws.rs.CookieParam.class);
+                    add(jakarta.ws.rs.HeaderParam.class);
+                    add(jakarta.ws.rs.MatrixParam.class);
+                    add(jakarta.ws.rs.FormParam.class);
                 }};
 
         /**
@@ -131,7 +133,7 @@ class CdiComponentProviderServerRuntimeSpecifics implements CdiComponentProvider
          * @param beanManager    current application bean manager.
          * @return concrete JAX-RS parameter value for given injection point.
          */
-        @javax.enterprise.inject.Produces
+        @jakarta.enterprise.inject.Produces
         @JaxRsParamQualifier
         public String getParameterValue(final InjectionPoint injectionPoint, final BeanManager beanManager) {
             final Parameter parameter = parameterCache.apply(injectionPoint);
@@ -223,6 +225,17 @@ class CdiComponentProviderServerRuntimeSpecifics implements CdiComponentProvider
     @Override
     public boolean isJaxRsResource(Class<?> resource) {
         return jaxRsResourceCache.apply(resource);
+    }
+
+    @Override
+    public void clearJaxRsResource(ClassLoader loader) {
+        Enumeration<Class<?>> keys = jaxRsResourceCache.keys();
+        while (keys.hasMoreElements()) {
+            Class<?> key = keys.nextElement();
+            if (key.getClassLoader() == loader) {
+                jaxRsResourceCache.remove(key);
+            }
+        }
     }
 
     @Override

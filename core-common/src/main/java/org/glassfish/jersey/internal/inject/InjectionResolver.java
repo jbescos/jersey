@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2017, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -24,7 +24,7 @@ import java.lang.annotation.Annotation;
  * {@code &#64;Inject}. Otherwise, this resolver can be used to provide injection points for any annotation.
  * <p>
  * Jersey provides all {@code InjectionResolvers} for JAX-RS annotation and {@code org.glassfish.jersey.server.Uri} apart from
- * {@link javax.ws.rs.core.Context} which must be implemented and registered directly as a part of DI integration because of
+ * {@link jakarta.ws.rs.core.Context} which must be implemented and registered directly as a part of DI integration because of
  * many optimization which cannot be implemented on Jersey side.
  * <p>
  * The {@code InjectionResolvers} are delivered to DI integration using {@link InjectionManager#register(Binder)} and DI provider

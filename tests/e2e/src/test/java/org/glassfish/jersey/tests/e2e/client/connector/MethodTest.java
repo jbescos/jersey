@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2010, 2022 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -16,18 +16,15 @@
 
 package org.glassfish.jersey.tests.e2e.client.connector;
 
-import java.util.Arrays;
-import java.util.List;
-
-import javax.ws.rs.DELETE;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.client.Entity;
-import javax.ws.rs.core.Application;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
+import jakarta.ws.rs.DELETE;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.POST;
+import jakarta.ws.rs.PUT;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.client.Entity;
+import jakarta.ws.rs.core.Application;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
 
 import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.client.spi.ConnectorProvider;
@@ -35,19 +32,21 @@ import org.glassfish.jersey.grizzly.connector.GrizzlyConnectorProvider;
 import org.glassfish.jersey.jdk.connector.JdkConnectorProvider;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.test.JerseyTest;
+import org.junit.jupiter.api.Test;
+import org.junit.platform.suite.api.SelectClasses;
+import org.junit.platform.suite.api.Suite;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * Tests the Http methods.
  *
  * @author Stepan Kopriva
  */
-@RunWith(Parameterized.class)
-public class MethodTest extends JerseyTest {
+@Suite
+@SelectClasses({MethodTest.JdkConnectorProviderMethodTest.class,
+        MethodTest.GrizzlyConnectorProviderMethodTest.class})
+public class MethodTest {
 
     private static final String PATH = "test";
 
@@ -75,48 +74,57 @@ public class MethodTest extends JerseyTest {
         }
     }
 
-    private final ConnectorProvider connectorProvider;
-
-    public MethodTest(ConnectorProvider connectorProvider) {
-        this.connectorProvider = connectorProvider;
+    public static class GrizzlyConnectorProviderMethodTest extends MethodTemplateTest {
+        public GrizzlyConnectorProviderMethodTest() {
+            super(new GrizzlyConnectorProvider());
+        }
     }
 
-    @Parameterized.Parameters
-    public static List<? extends ConnectorProvider> testData() {
-        return Arrays.asList(new GrizzlyConnectorProvider(), new JdkConnectorProvider());
+    public static class JdkConnectorProviderMethodTest extends MethodTemplateTest {
+        public JdkConnectorProviderMethodTest() {
+            super(new JdkConnectorProvider());
+        }
     }
 
-    @Override
-    protected Application configure() {
-        return new ResourceConfig(HttpMethodResource.class);
-    }
+    public abstract static class MethodTemplateTest extends JerseyTest {
+        private final ConnectorProvider connectorProvider;
 
-    @Override
-    protected void configureClient(ClientConfig config) {
-        config.connectorProvider(connectorProvider);
-    }
+        public MethodTemplateTest(ConnectorProvider connectorProvider) {
+            this.connectorProvider = connectorProvider;
+        }
 
-    @Test
-    public void testGet() {
-        Response response = target(PATH).request().get();
-        assertEquals("GET", response.readEntity(String.class));
-    }
+        @Override
+        protected Application configure() {
+            return new ResourceConfig(HttpMethodResource.class);
+        }
 
-    @Test
-    public void testPost() {
-        Response response = target(PATH).request().post(Entity.entity("POST", MediaType.TEXT_PLAIN));
-        assertEquals("POST", response.readEntity(String.class));
-    }
+        @Override
+        protected void configureClient(ClientConfig config) {
+            config.connectorProvider(connectorProvider);
+        }
 
-    @Test
-    public void testPut() {
-        Response response = target(PATH).request().put(Entity.entity("PUT", MediaType.TEXT_PLAIN));
-        assertEquals("PUT", response.readEntity(String.class));
-    }
+        @Test
+        public void testGet() {
+            Response response = target(PATH).request().get();
+            assertEquals("GET", response.readEntity(String.class));
+        }
 
-    @Test
-    public void testDelete() {
-        Response response = target(PATH).request().delete();
-        assertEquals("DELETE", response.readEntity(String.class));
+        @Test
+        public void testPost() {
+            Response response = target(PATH).request().post(Entity.entity("POST", MediaType.TEXT_PLAIN));
+            assertEquals("POST", response.readEntity(String.class));
+        }
+
+        @Test
+        public void testPut() {
+            Response response = target(PATH).request().put(Entity.entity("PUT", MediaType.TEXT_PLAIN));
+            assertEquals("PUT", response.readEntity(String.class));
+        }
+
+        @Test
+        public void testDelete() {
+            Response response = target(PATH).request().delete();
+            assertEquals("DELETE", response.readEntity(String.class));
+        }
     }
 }

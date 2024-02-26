@@ -1,6 +1,6 @@
 /*
- * Copyright (c) 2013, 2021 Oracle and/or its affiliates. All rights reserved.
- * Copyright (c) 2018 Payara Foundation and/or its affiliates. All rights reserved.
+ * Copyright (c) 2013, 2022 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2018, 2022 Payara Foundation and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -39,31 +39,34 @@ import java.util.function.Supplier;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.enterprise.inject.spi.BeanManager;
-import javax.enterprise.inject.spi.BeforeBeanDiscovery;
-import javax.inject.Singleton;
-import javax.ws.rs.core.Application;
+import jakarta.enterprise.inject.Vetoed;
+import jakarta.enterprise.inject.spi.BeanManager;
+import jakarta.enterprise.inject.spi.BeforeBeanDiscovery;
+import jakarta.inject.Singleton;
+import jakarta.ws.rs.core.Application;
 
-import javax.annotation.ManagedBean;
-import javax.enterprise.context.Dependent;
-import javax.enterprise.context.RequestScoped;
-import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.event.Observes;
-import javax.enterprise.inject.Default;
-import javax.enterprise.inject.spi.AfterBeanDiscovery;
-import javax.enterprise.inject.spi.AfterTypeDiscovery;
-import javax.enterprise.inject.spi.Annotated;
-import javax.enterprise.inject.spi.AnnotatedCallable;
-import javax.enterprise.inject.spi.AnnotatedConstructor;
-import javax.enterprise.inject.spi.AnnotatedParameter;
-import javax.enterprise.inject.spi.AnnotatedType;
-import javax.enterprise.inject.spi.Bean;
-import javax.enterprise.inject.spi.Extension;
-import javax.enterprise.inject.spi.InjectionPoint;
-import javax.enterprise.inject.spi.InjectionTarget;
-import javax.enterprise.inject.spi.ProcessAnnotatedType;
-import javax.enterprise.inject.spi.ProcessInjectionTarget;
-import javax.enterprise.util.AnnotationLiteral;
+
+import jakarta.annotation.ManagedBean;
+import jakarta.enterprise.context.Dependent;
+import jakarta.enterprise.context.RequestScoped;
+import jakarta.enterprise.context.spi.CreationalContext;
+import jakarta.enterprise.event.Observes;
+import jakarta.enterprise.inject.Default;
+import jakarta.enterprise.inject.spi.AfterBeanDiscovery;
+import jakarta.enterprise.inject.spi.AfterTypeDiscovery;
+import jakarta.enterprise.inject.spi.Annotated;
+import jakarta.enterprise.inject.spi.AnnotatedCallable;
+import jakarta.enterprise.inject.spi.AnnotatedConstructor;
+import jakarta.enterprise.inject.spi.AnnotatedParameter;
+import jakarta.enterprise.inject.spi.AnnotatedType;
+import jakarta.enterprise.inject.spi.Bean;
+import jakarta.enterprise.inject.spi.BeforeShutdown;
+import jakarta.enterprise.inject.spi.Extension;
+import jakarta.enterprise.inject.spi.InjectionPoint;
+import jakarta.enterprise.inject.spi.InjectionTarget;
+import jakarta.enterprise.inject.spi.ProcessAnnotatedType;
+import jakarta.enterprise.inject.spi.ProcessInjectionTarget;
+import jakarta.enterprise.util.AnnotationLiteral;
 
 import org.glassfish.jersey.ext.cdi1x.internal.spi.InjectionManagerInjectedTarget;
 import org.glassfish.jersey.ext.cdi1x.internal.spi.InjectionManagerStore;
@@ -113,7 +116,7 @@ public class CdiComponentProvider implements ComponentProvider, Extension {
     private final Set<Type> jaxrsInjectableTypes = new HashSet<>();
     private final Set<Type> hk2ProvidedTypes = Collections.synchronizedSet(new HashSet<Type>());
     private final Set<Type> jerseyVetoedTypes = Collections.synchronizedSet(new HashSet<Type>());
-    private final Set<DependencyPredicate> jerseyOrDependencyTypes = Collections.synchronizedSet(new LinkedHashSet<>());
+    private static final Set<DependencyPredicate> jerseyOrDependencyTypes = Collections.synchronizedSet(new LinkedHashSet<>());
     private final ThreadLocal<InjectionManager> threadInjectionManagers = new ThreadLocal<>();
 
     /**
@@ -135,7 +138,7 @@ public class CdiComponentProvider implements ComponentProvider, Extension {
     private final InjectionManagerStore injectionManagerStore;
 
     private volatile InjectionManager injectionManager;
-    protected volatile javax.enterprise.inject.spi.BeanManager beanManager;
+    private volatile jakarta.enterprise.inject.spi.BeanManager beanManager;
 
     private volatile Map<Class<?>, Set<Method>> methodsToSkip = new HashMap<>();
     private volatile Map<Class<?>, Set<Field>> fieldsToSkip = new HashMap<>();
@@ -186,6 +189,10 @@ public class CdiComponentProvider implements ComponentProvider, Extension {
         }
 
         if (beanManager == null) {
+            return false;
+        }
+
+        if (clazz.isAnnotationPresent(Vetoed.class)) {
             return false;
         }
 
@@ -481,7 +488,7 @@ public class CdiComponentProvider implements ComponentProvider, Extension {
 
     private boolean isInjectionProvider(final Type injectedType) {
         return injectedType instanceof ParameterizedType
-                && ((ParameterizedType) injectedType).getRawType() == javax.inject.Provider.class;
+                && ((ParameterizedType) injectedType).getRawType() == jakarta.inject.Provider.class;
     }
 
     private boolean isProviderOfJerseyType(final ParameterizedType provider) {
@@ -545,7 +552,7 @@ public class CdiComponentProvider implements ComponentProvider, Extension {
      *
      * @return HK2 injection manager.
      */
-    /* package */ InjectionManager getEffectiveInjectionManager() {
+    public InjectionManager getEffectiveInjectionManager() {
         return injectionManagerStore.getEffectiveInjectionManager();
     }
 
@@ -662,7 +669,7 @@ public class CdiComponentProvider implements ComponentProvider, Extension {
         @Override
         public void inject(final Object t, final CreationalContext cc) {
             InjectionManager injectingManager = getEffectiveInjectionManager();
-            if (injectingManager == null) {
+            if (injectingManager == null || /* reload */ injectingManager.isShutdown()) {
                 injectingManager = effectiveInjectionManager;
                 threadInjectionManagers.set(injectingManager);
             }
@@ -720,7 +727,7 @@ public class CdiComponentProvider implements ComponentProvider, Extension {
             return Collections.emptySet();
         }
 
-        @Override
+        // @Override - Removed in CDI 4
         public boolean isNullable() {
             return true;
         }
@@ -728,7 +735,7 @@ public class CdiComponentProvider implements ComponentProvider, Extension {
         @Override
         public Object create(final CreationalContext creationalContext) {
             InjectionManager injectionManager = getEffectiveInjectionManager();
-            if (injectionManager == null) {
+            if (injectionManager == null || /* reload */ injectionManager.isShutdown()) {
                 injectionManager = threadInjectionManagers.get();
             }
 
@@ -852,15 +859,20 @@ public class CdiComponentProvider implements ComponentProvider, Extension {
         );
     }
 
+    @SuppressWarnings("unused")
+    private void beforeShutDown(@Observes final BeforeShutdown beforeShutdown, final BeanManager beanManager) {
+        runtimeSpecifics.clearJaxRsResource(Thread.currentThread().getContextClassLoader());
+    }
+
     /**
      * Add a predicate to test HK2 dependency to create a CDI bridge bean to HK2 for it.
      * @param predicate to test whether given class is a HK2 dependency.
      */
-    public void addHK2DepenendencyCheck(Predicate<Class<?>> predicate) {
+    public static void addHK2DepenendencyCheck(Predicate<Class<?>> predicate) {
         jerseyOrDependencyTypes.add(new DependencyPredicate(predicate));
     }
 
-    private final class DependencyPredicate implements Predicate<Class<?>> {
+    private static final class DependencyPredicate implements Predicate<Class<?>> {
         private final Predicate<Class<?>> predicate;
 
         public DependencyPredicate(Predicate<Class<?>> predicate) {
@@ -877,7 +889,7 @@ public class CdiComponentProvider implements ComponentProvider, Extension {
             if (this == o) return true;
             if (o == null || getClass() != o.getClass()) return false;
             DependencyPredicate that = (DependencyPredicate) o;
-            return predicate.getClass().equals(that.predicate);
+            return predicate.getClass().equals(that.predicate.getClass());
         }
 
         @Override

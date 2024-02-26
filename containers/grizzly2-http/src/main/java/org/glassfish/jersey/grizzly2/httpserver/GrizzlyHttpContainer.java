@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010, 2019 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2010, 2022 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -29,12 +29,12 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.ws.rs.core.Application;
-import javax.ws.rs.core.GenericType;
-import javax.ws.rs.core.SecurityContext;
+import jakarta.ws.rs.core.Application;
+import jakarta.ws.rs.core.GenericType;
+import jakarta.ws.rs.core.SecurityContext;
 
-import javax.inject.Inject;
-import javax.inject.Provider;
+import jakarta.inject.Inject;
+import jakarta.inject.Provider;
 
 import org.glassfish.jersey.grizzly2.httpserver.internal.LocalizationMessages;
 import org.glassfish.jersey.internal.inject.AbstractBinder;
@@ -116,7 +116,7 @@ public final class GrizzlyHttpContainer extends HttpHandler implements Container
      * This binder allows to inject underlying Grizzly HTTP request and response instances.
      * Note that since Grizzly {@code Request} class is not proxiable as it does not expose an empty constructor,
      * the injection of Grizzly request instance into singleton JAX-RS and Jersey providers is only supported via
-     * {@link javax.inject.Provider injection provider}.
+     * {@link jakarta.inject.Provider injection provider}.
      */
     static class GrizzlyBinder extends AbstractBinder {
 
@@ -232,7 +232,7 @@ public final class GrizzlyHttpContainer extends HttpHandler implements Container
                                                           final ContainerResponse context)
                 throws ContainerException {
             try {
-                final javax.ws.rs.core.Response.StatusType statusInfo = context.getStatusInfo();
+                final jakarta.ws.rs.core.Response.StatusType statusInfo = context.getStatusInfo();
                 if (statusInfo.getReasonPhrase() == null) {
                     grizzlyResponse.setStatus(statusInfo.getStatusCode());
                 } else {
@@ -307,9 +307,16 @@ public final class GrizzlyHttpContainer extends HttpHandler implements Container
      * @param application JAX-RS / Jersey application to be deployed on Grizzly HTTP container.
      */
     /* package */ GrizzlyHttpContainer(final Application application) {
-        this.appHandler = new ApplicationHandler(application, new GrizzlyBinder());
-        cacheConfigSetStatusOverSendError();
-        cacheConfigEnableLeadingContextPathSlashes();
+        this(new ApplicationHandler(application, new GrizzlyBinder()));
+    }
+
+    /**
+     * Create a new Grizzly HTTP container.
+     *
+     * @param applicationClass JAX-RS / Jersey application to be deployed on Grizzly HTTP container.
+     */
+    /* package */ GrizzlyHttpContainer(final Class<? extends Application> applicationClass) {
+        this(new ApplicationHandler(applicationClass, new GrizzlyBinder()));
     }
 
     /**
@@ -319,7 +326,11 @@ public final class GrizzlyHttpContainer extends HttpHandler implements Container
      * @param parentContext DI provider specific context with application's registered bindings.
      */
     /* package */ GrizzlyHttpContainer(final Application application, final Object parentContext) {
-        this.appHandler = new ApplicationHandler(application, new GrizzlyBinder(), parentContext);
+        this(new ApplicationHandler(application, new GrizzlyBinder(), parentContext));
+    }
+
+    private GrizzlyHttpContainer(ApplicationHandler applicationHandler) {
+        this.appHandler = applicationHandler;
         cacheConfigSetStatusOverSendError();
         cacheConfigEnableLeadingContextPathSlashes();
     }
@@ -370,7 +381,7 @@ public final class GrizzlyHttpContainer extends HttpHandler implements Container
 
     @Override
     public void reload() {
-        reload(appHandler.getConfiguration());
+        reload(new ResourceConfig(appHandler.getConfiguration()));
     }
 
     @Override

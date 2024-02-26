@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2021, 2022 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -33,34 +33,34 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-import javax.annotation.Priority;
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.context.Dependent;
-import javax.enterprise.context.NormalScope;
-import javax.enterprise.context.SessionScoped;
-import javax.enterprise.inject.spi.AnnotatedType;
-import javax.enterprise.inject.spi.BeforeBeanDiscovery;
-import javax.enterprise.inject.spi.ProcessAnnotatedType;
-import javax.enterprise.inject.spi.Unmanaged;
-import javax.enterprise.inject.spi.WithAnnotations;
-import javax.inject.Scope;
-import javax.inject.Singleton;
+import jakarta.annotation.Priority;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.Dependent;
+import jakarta.enterprise.context.NormalScope;
+import jakarta.enterprise.context.SessionScoped;
+import jakarta.enterprise.inject.spi.AnnotatedType;
+import jakarta.enterprise.inject.spi.BeforeBeanDiscovery;
+import jakarta.enterprise.inject.spi.ProcessAnnotatedType;
+import jakarta.enterprise.inject.spi.Unmanaged;
+import jakarta.enterprise.inject.spi.WithAnnotations;
+import jakarta.inject.Scope;
+import jakarta.inject.Singleton;
 
-import javax.enterprise.event.Observes;
-import javax.enterprise.inject.spi.AfterBeanDiscovery;
-import javax.enterprise.inject.spi.BeanManager;
-import javax.enterprise.inject.spi.Extension;
-import javax.enterprise.inject.spi.ProcessInjectionTarget;
+import jakarta.enterprise.event.Observes;
+import jakarta.enterprise.inject.spi.AfterBeanDiscovery;
+import jakarta.enterprise.inject.spi.BeanManager;
+import jakarta.enterprise.inject.spi.Extension;
+import jakarta.enterprise.inject.spi.ProcessInjectionTarget;
 
-import javax.ws.rs.Path;
-import javax.ws.rs.RuntimeType;
-import javax.ws.rs.container.DynamicFeature;
-import javax.ws.rs.core.Feature;
-import javax.ws.rs.core.GenericType;
-import javax.ws.rs.core.MultivaluedHashMap;
-import javax.ws.rs.core.MultivaluedMap;
-import javax.ws.rs.core.Application;
-import javax.ws.rs.ext.Provider;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.RuntimeType;
+import jakarta.ws.rs.container.DynamicFeature;
+import jakarta.ws.rs.core.Feature;
+import jakarta.ws.rs.core.GenericType;
+import jakarta.ws.rs.core.MultivaluedHashMap;
+import jakarta.ws.rs.core.MultivaluedMap;
+import jakarta.ws.rs.core.Application;
+import jakarta.ws.rs.ext.Provider;
 
 import org.glassfish.jersey.inject.weld.internal.data.BindingBeanPair;
 import org.glassfish.jersey.inject.weld.internal.inject.InitializableSupplierInstanceBinding;
@@ -172,8 +172,8 @@ class BinderRegisterExtension implements Extension {
                 }
             }
             if (!hasScope) {
-                annotatedBeans.put(annotatedType.getJavaClass(), javax.enterprise.context.RequestScoped.class);
-                pat.configureAnnotatedType().add(javax.enterprise.context.RequestScoped.Literal.INSTANCE);
+                annotatedBeans.put(annotatedType.getJavaClass(), jakarta.enterprise.context.RequestScoped.class);
+                pat.configureAnnotatedType().add(jakarta.enterprise.context.RequestScoped.Literal.INSTANCE);
             }
         }
 
@@ -183,10 +183,10 @@ class BinderRegisterExtension implements Extension {
     <T> void registerJerseyRequestScopedResources(
             @Observes @WithAnnotations(RequestScoped.class) ProcessAnnotatedType<T> pat) {
         if (pat.getAnnotatedType().isAnnotationPresent(RequestScoped.class)
-                && !pat.getAnnotatedType().isAnnotationPresent(javax.enterprise.context.RequestScoped.class)) {
+                && !pat.getAnnotatedType().isAnnotationPresent(jakarta.enterprise.context.RequestScoped.class)) {
             pat.configureAnnotatedType().remove(a -> RequestScoped.class.isInstance(a))
-                    .add(javax.enterprise.context.RequestScoped.Literal.INSTANCE);
-            annotatedBeans.put(pat.getAnnotatedType().getJavaClass(), javax.enterprise.context.RequestScoped.class);
+                    .add(jakarta.enterprise.context.RequestScoped.Literal.INSTANCE);
+            annotatedBeans.put(pat.getAnnotatedType().getJavaClass(), jakarta.enterprise.context.RequestScoped.class);
         }
     }
 
@@ -196,11 +196,11 @@ class BinderRegisterExtension implements Extension {
     }
 
     void handleRequestScoped(
-            @Observes @WithAnnotations({javax.enterprise.context.RequestScoped.class}) ProcessAnnotatedType<?> pat) {
+            @Observes @WithAnnotations({jakarta.enterprise.context.RequestScoped.class}) ProcessAnnotatedType<?> pat) {
         final Class<?> javaClass = pat.getAnnotatedType().getJavaClass();
         if (isJaxrs(javaClass) && isNotJerseyInternal(javaClass)) {
             pat.configureAnnotatedType().add(CustomAnnotationLiteral.INSTANCE);
-            annotatedBeans.put(javaClass, javax.enterprise.context.RequestScoped.class);
+            annotatedBeans.put(javaClass, jakarta.enterprise.context.RequestScoped.class);
         }
     }
 
@@ -595,6 +595,11 @@ class BinderRegisterExtension implements Extension {
         @Override
         public void shutdown() {
             //noop
+        }
+
+        @Override
+        public boolean isShutdown() {
+            return false;
         }
 
         @Override

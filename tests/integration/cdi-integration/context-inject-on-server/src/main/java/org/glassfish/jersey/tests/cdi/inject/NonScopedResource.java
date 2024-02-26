@@ -16,7 +16,7 @@
 
 package org.glassfish.jersey.tests.cdi.inject;
 
-import javax.ws.rs.Path;
+import jakarta.ws.rs.Path;
 
 
 @Path(InjectionChecker.ROOT + "/nonscope")

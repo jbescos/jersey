@@ -20,9 +20,9 @@ import java.lang.reflect.Array;
 import java.util.List;
 import java.util.function.Function;
 
-import javax.ws.rs.core.MultivaluedHashMap;
-import javax.ws.rs.core.MultivaluedMap;
-import javax.ws.rs.ext.ParamConverter;
+import jakarta.ws.rs.core.MultivaluedHashMap;
+import jakarta.ws.rs.core.MultivaluedMap;
+import jakarta.ws.rs.ext.ParamConverter;
 
 /**
  * Extract parameter value as an array.

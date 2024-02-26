@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016, 2019 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2016, 2022 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -19,7 +19,7 @@ package org.glassfish.jersey.netty.httpserver;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ScheduledExecutorService;
 
-import javax.ws.rs.core.Application;
+import jakarta.ws.rs.core.Application;
 
 import org.glassfish.jersey.server.ApplicationHandler;
 import org.glassfish.jersey.server.ResourceConfig;
@@ -41,6 +41,11 @@ class NettyHttpContainer implements Container {
         this.appHandler.onStartup(this);
     }
 
+    NettyHttpContainer(Class<? extends Application> applicationClass) {
+        this.appHandler = new ApplicationHandler(applicationClass);
+        this.appHandler.onStartup(this);
+    }
+
     @Override
     public ResourceConfig getConfiguration() {
         return appHandler.getConfiguration();
@@ -53,7 +58,7 @@ class NettyHttpContainer implements Container {
 
     @Override
     public void reload() {
-        reload(appHandler.getConfiguration());
+        reload(new ResourceConfig(appHandler.getConfiguration()));
     }
 
     @Override

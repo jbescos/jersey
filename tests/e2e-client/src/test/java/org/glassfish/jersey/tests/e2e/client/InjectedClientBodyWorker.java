@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013, 2019 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2013, 2023 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -22,28 +22,29 @@ import java.io.OutputStream;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 
-import javax.ws.rs.Consumes;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.client.Entity;
-import javax.ws.rs.core.Application;
-import javax.ws.rs.core.Configuration;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.MultivaluedMap;
-import javax.ws.rs.ext.ContextResolver;
-import javax.ws.rs.ext.MessageBodyReader;
-import javax.ws.rs.ext.MessageBodyWriter;
-import javax.ws.rs.ext.Provider;
-import javax.ws.rs.ext.Providers;
+import jakarta.inject.Inject;
+import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.POST;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.WebApplicationException;
+import jakarta.ws.rs.client.Entity;
+import jakarta.ws.rs.core.Application;
+import jakarta.ws.rs.core.Configuration;
+import jakarta.ws.rs.core.Context;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.MultivaluedMap;
+import jakarta.ws.rs.ext.ContextResolver;
+import jakarta.ws.rs.ext.MessageBodyReader;
+import jakarta.ws.rs.ext.MessageBodyWriter;
+import jakarta.ws.rs.ext.Provider;
+import jakarta.ws.rs.ext.Providers;
 
 import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.test.JerseyTest;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -73,9 +74,12 @@ public class InjectedClientBodyWorker extends JerseyTest {
     @Provider
     @Produces(ProviderType)
     public static class ProvidersInjectedWriter implements MessageBodyWriter<String> {
-
-        @Context
         Providers providers;
+
+        @Inject
+        public ProvidersInjectedWriter(@Context Providers providers) {
+            this.providers = providers;
+        }
 
         @Override
         public boolean isWriteable(Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType) {
@@ -105,8 +109,12 @@ public class InjectedClientBodyWorker extends JerseyTest {
     @Consumes(ProviderType)
     public static class ProvidersInjectedReader implements MessageBodyReader<String> {
 
-        @Context
         Providers providers;
+
+        @Inject
+        ProvidersInjectedReader(@Context Providers providers) {
+            this.providers = providers;
+        }
 
         @Override
         public boolean isReadable(Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType) {
@@ -132,8 +140,12 @@ public class InjectedClientBodyWorker extends JerseyTest {
     @Produces(ConfigurationTYPE)
     public static class ConfigurationInjectedWriter implements MessageBodyWriter<String> {
 
-        @Context
         Configuration configuration;
+
+        @Inject
+        public ConfigurationInjectedWriter(@Context Configuration configuration) {
+            this.configuration = configuration;
+        }
 
         @Override
         public boolean isWriteable(Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType) {
@@ -158,9 +170,12 @@ public class InjectedClientBodyWorker extends JerseyTest {
     @Provider
     @Consumes(ConfigurationTYPE)
     public static class ConfigurationInjectedReader implements MessageBodyReader<String> {
-
-        @Context
         Configuration configuration;
+
+        @Inject
+        public ConfigurationInjectedReader(@Context Configuration configuration) {
+            this.configuration = configuration;
+        }
 
         @Override
         public boolean isReadable(Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType) {

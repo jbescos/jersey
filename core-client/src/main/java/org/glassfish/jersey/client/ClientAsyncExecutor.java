@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015, 2019 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2015, 2020 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -23,11 +23,11 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import javax.inject.Qualifier;
+import jakarta.inject.Qualifier;
 
 /**
  * Injection qualifier that can be used to inject an {@link java.util.concurrent.ExecutorService}
- * instance used by Jersey client runtime to execute {@link javax.ws.rs.client.Invocation.Builder#async() asynchronous}
+ * instance used by Jersey client runtime to execute {@link jakarta.ws.rs.client.Invocation.Builder#async() asynchronous}
  * client requests.
  * <p>
  * The asynchronous client request executor service instance injected using this injection qualifier can be customized

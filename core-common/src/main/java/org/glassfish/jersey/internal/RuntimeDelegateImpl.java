@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011, 2019 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2011, 2023 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -16,16 +16,21 @@
 
 package org.glassfish.jersey.internal;
 
-import javax.ws.rs.core.Application;
+import jakarta.ws.rs.SeBootstrap;
+import jakarta.ws.rs.core.Application;
 
+import jakarta.ws.rs.core.EntityPart;
+import jakarta.ws.rs.ext.RuntimeDelegate;
 import org.glassfish.jersey.message.internal.MessagingBinders;
 
+import java.util.Optional;
+import java.util.concurrent.CompletionStage;
+
 /**
- * Default implementation of JAX-RS {@link javax.ws.rs.ext.RuntimeDelegate}.
- * The {@link javax.ws.rs.ext.RuntimeDelegate} class looks for the implementations registered
- * in META-INF/services. If no such implementation is found, this one is picked
- * as the default. Server injection binder should override this (using META-INF/services)
- * to provide an implementation that supports {@link #createEndpoint(javax.ws.rs.core.Application, java.lang.Class)}
+ * Default implementation of JAX-RS {@link jakarta.ws.rs.ext.RuntimeDelegate}.
+ * The {@link jakarta.ws.rs.ext.RuntimeDelegate} class looks for the implementations registered
+ * in META-INF/services. Server injection binder should override this (using META-INF/services)
+ * to provide an implementation that supports {@link #createEndpoint(jakarta.ws.rs.core.Application, java.lang.Class)}
  * method.
  *
  * @author Jakub Podlesak
@@ -41,6 +46,51 @@ public class RuntimeDelegateImpl extends AbstractRuntimeDelegate {
     @Override
     public <T> T createEndpoint(Application application, Class<T> endpointType)
             throws IllegalArgumentException, UnsupportedOperationException {
+
+        final RuntimeDelegate runtimeDelegate = findServerDelegate();
+        if (runtimeDelegate != null) {
+            return runtimeDelegate.createEndpoint(application, endpointType);
+        }
         throw new UnsupportedOperationException(LocalizationMessages.NO_CONTAINER_AVAILABLE());
+    }
+
+    @Override
+    public SeBootstrap.Configuration.Builder createConfigurationBuilder() {
+        final RuntimeDelegate runtimeDelegate = findServerDelegate();
+        if (runtimeDelegate != null) {
+            return runtimeDelegate.createConfigurationBuilder();
+        }
+        throw new UnsupportedOperationException(LocalizationMessages.NO_CONTAINER_AVAILABLE());
+    }
+
+    @Override
+    public CompletionStage<SeBootstrap.Instance> bootstrap(Application application, SeBootstrap.Configuration configuration) {
+        final RuntimeDelegate runtimeDelegate = findServerDelegate();
+        if (runtimeDelegate != null) {
+            return runtimeDelegate.bootstrap(application, configuration);
+        }
+        throw new UnsupportedOperationException(LocalizationMessages.NO_CONTAINER_AVAILABLE());
+    }
+
+    @Override
+    public CompletionStage<SeBootstrap.Instance> bootstrap(Class<? extends Application> applicationClass,
+                                                           SeBootstrap.Configuration configuration) {
+        final RuntimeDelegate runtimeDelegate = findServerDelegate();
+        if (runtimeDelegate != null) {
+            return runtimeDelegate.bootstrap(applicationClass, configuration);
+        }
+        throw new UnsupportedOperationException(LocalizationMessages.NO_CONTAINER_AVAILABLE());
+    }
+
+    // TODO : Do we need multiple RuntimeDelegates?
+    private RuntimeDelegate findServerDelegate() {
+        for (RuntimeDelegate delegate : ServiceFinder.find(RuntimeDelegate.class)) {
+            // try to find runtime delegate from core-server
+            if (delegate.getClass() != RuntimeDelegateImpl.class) {
+                RuntimeDelegate.setInstance(delegate);
+                return delegate;
+            }
+        }
+        return null;
     }
 }

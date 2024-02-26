@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2020, 2022 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -20,26 +20,26 @@ import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.helidon.connector.HelidonConnectorProvider;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.test.JerseyTest;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
-import javax.annotation.PostConstruct;
-import javax.inject.Singleton;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.client.Entity;
-import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.core.Application;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.sse.Sse;
-import javax.ws.rs.sse.SseBroadcaster;
-import javax.ws.rs.sse.SseEventSink;
-import javax.ws.rs.sse.SseEventSource;
+import jakarta.annotation.PostConstruct;
+import jakarta.inject.Singleton;
+import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.POST;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.client.Entity;
+import jakarta.ws.rs.client.WebTarget;
+import jakarta.ws.rs.core.Application;
+import jakarta.ws.rs.core.Context;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.sse.Sse;
+import jakarta.ws.rs.sse.SseBroadcaster;
+import jakarta.ws.rs.sse.SseEventSink;
+import jakarta.ws.rs.sse.SseEventSource;
 import java.io.Closeable;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
@@ -119,8 +119,8 @@ public class SseTest extends JerseyTest {
             latch.await(WAIT_TIME, TimeUnit.MILLISECONDS);
         }
 
-        Assert.assertEquals("AAAAAAAAAA", sb.toString());
-        Assert.assertEquals(0, latch.getCount());
+        Assertions.assertEquals("AAAAAAAAAA", sb.toString());
+        Assertions.assertEquals(0, latch.getCount());
     }
 
     @Test
@@ -137,11 +137,11 @@ public class SseTest extends JerseyTest {
         clientOne.messageLatch.await(WAIT_TIME, TimeUnit.MILLISECONDS);
         clientTwo.messageLatch.await(WAIT_TIME, TimeUnit.MILLISECONDS);
 
-        Assert.assertEquals(0, clientOne.messageLatch.getCount());
-        Assert.assertEquals(0, clientTwo.messageLatch.getCount());
+        Assertions.assertEquals(0, clientOne.messageLatch.getCount());
+        Assertions.assertEquals(0, clientTwo.messageLatch.getCount());
 
-        Assert.assertEquals(BroadcasterResource.WELCOME + PALINDROME + PALINDROME, clientOne.message.toString());
-        Assert.assertEquals(BroadcasterResource.WELCOME + PALINDROME + PALINDROME, clientTwo.message.toString());
+        Assertions.assertEquals(BroadcasterResource.WELCOME + PALINDROME + PALINDROME, clientOne.message.toString());
+        Assertions.assertEquals(BroadcasterResource.WELCOME + PALINDROME + PALINDROME, clientTwo.message.toString());
 
         clientOne.close();
         clientTwo.close();
@@ -168,13 +168,13 @@ public class SseTest extends JerseyTest {
             source.open();
 
             latch.await(WAIT_TIME, TimeUnit.MILLISECONDS);
-            Assert.assertEquals(0, latch.getCount());
+            Assertions.assertEquals(0, latch.getCount());
         }
 
         private void broadcast() {
             try (Response r = target.path("broadcast/broadcast")
                     .request().buildPost(Entity.entity(PALINDROME, MediaType.TEXT_PLAIN)).invoke()) {
-                Assert.assertEquals(204, r.getStatus());
+                Assertions.assertEquals(204, r.getStatus());
             }
         }
 

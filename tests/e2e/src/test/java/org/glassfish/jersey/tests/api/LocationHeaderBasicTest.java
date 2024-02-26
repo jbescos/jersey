@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015, 2019 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2015, 2022 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -19,41 +19,42 @@ package org.glassfish.jersey.tests.api;
 import java.net.URI;
 import java.util.logging.Logger;
 
-import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.client.Entity;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.HttpHeaders;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriBuilder;
-import javax.ws.rs.core.UriInfo;
+import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.POST;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.client.Entity;
+import jakarta.ws.rs.core.Context;
+import jakarta.ws.rs.core.HttpHeaders;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.UriBuilder;
+import jakarta.ws.rs.core.UriInfo;
 
 import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.client.ClientProperties;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.test.JerseyTest;
 import org.glassfish.jersey.test.TestProperties;
-import org.glassfish.jersey.test.util.runner.ConcurrentRunner;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 /**
  * Test if the location relative URI is correctly resolved within basic cases.
  *
  * @author Adam Lindenthal
  */
-@RunWith(ConcurrentRunner.class)
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class LocationHeaderBasicTest extends JerseyTest {
 
     private static final Logger LOGGER = Logger.getLogger(LocationHeaderBasicTest.class.getName());
@@ -231,6 +232,7 @@ public class LocationHeaderBasicTest extends JerseyTest {
      * Basic test; resource methods returns relative uri, test expects uri to be absolute
      */
     @Test
+    @Execution(ExecutionMode.CONCURRENT)
     public void testConvertRelativeUriToAbsolute() {
         checkResource("ResponseTest/location", "location");
         // checkResource("ResponseTest/location");
@@ -241,6 +243,7 @@ public class LocationHeaderBasicTest extends JerseyTest {
      * This test ensures, that the uri conversion works even in case when entity is present.
      */
     @Test
+    @Execution(ExecutionMode.CONCURRENT)
     public void testAbsoluteUriWithEntity() {
         final Response response = checkResource("ResponseTest/locationWithBody", "locationWithBody");
         assertNotNull(response.getEntity());
@@ -252,23 +255,26 @@ public class LocationHeaderBasicTest extends JerseyTest {
      * Ensures, that the null location is processed correctly.
      */
     @Test
+    @Execution(ExecutionMode.CONCURRENT)
     public void testNullLocation() {
         final Response response = target().path("ResponseTest/locationNull").request(MediaType.TEXT_PLAIN).get(Response.class);
         final String location = response.getHeaderString(HttpHeaders.LOCATION);
         LOGGER.info("Location resolved from response > " + location);
-        assertNull("Location header should be absolute URI", location);
+        assertNull(location, "Location header should be absolute URI");
     }
 
     /**
      * Tests if the URI is absolutized in the Response directly after Response.Builder.created() is called
      */
     @Test
+    @Execution(ExecutionMode.CONCURRENT)
     public void testConversionDirectly() {
         final Boolean result = target().path("ResponseTest/locationDirect").request(MediaType.TEXT_PLAIN).get(Boolean.class);
         assertTrue(result);
     }
 
     @Test
+    @Execution(ExecutionMode.CONCURRENT)
     public void testSeeOther() {
         Response response = target().path("ResponseTest/seeOther").request()
                 .post(Entity.entity("TEXT", MediaType.TEXT_PLAIN_TYPE));
@@ -285,6 +291,7 @@ public class LocationHeaderBasicTest extends JerseyTest {
     }
 
     @Test
+    @Execution(ExecutionMode.CONCURRENT)
     public void testTemporaryRedirect() {
         Response response = target().path("ResponseTest/temporaryRedirect").request(MediaType.TEXT_PLAIN).get(Response.class);
         String location = response.getHeaderString(HttpHeaders.LOCATION);

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017, 2019 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2017, 2022 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -21,23 +21,24 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.atomic.AtomicReference;
 
-import javax.ws.rs.NotFoundException;
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.core.GenericType;
-import javax.ws.rs.core.Response;
+import jakarta.ws.rs.NotFoundException;
+import jakarta.ws.rs.client.Client;
+import jakarta.ws.rs.client.ClientBuilder;
+import jakarta.ws.rs.core.GenericType;
+import jakarta.ws.rs.core.Response;
 
 import org.glassfish.jersey.internal.guava.ThreadFactoryBuilder;
 import org.glassfish.jersey.process.JerseyProcessingUncaughtExceptionHandler;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.reactivestreams.Subscriber;
 import org.reactivestreams.Subscription;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.core.Is.is;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * @author Pavel Bucek
@@ -48,7 +49,7 @@ public class RxFlowableTest {
     private Client clientWithExecutor;
     private ExecutorService executor;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         client = ClientBuilder.newClient().register(TerminalClientRequestFilter.class);
         client.register(RxFlowableInvokerProvider.class);
@@ -62,7 +63,7 @@ public class RxFlowableTest {
         clientWithExecutor.register(RxFlowableInvokerProvider.class);
     }
 
-    @After
+    @AfterEach
     public void tearDown() throws Exception {
         executor.shutdown();
 
@@ -90,33 +91,37 @@ public class RxFlowableTest {
         testInvoker(invoker, 404, true);
     }
 
-    @Test(expected = NotFoundException.class)
+    @Test
     public void testNotFoundReadEntityViaClass() throws Throwable {
-        try {
-            client.target("http://jersey.java.net")
-                  .request()
-                  .header("Response-Status", 404)
-                  .rx(RxFlowableInvoker.class)
-                  .get(String.class)
-                  .blockingFirst();
-        } catch (final Exception expected) {
-            throw expected;
-        }
+        assertThrows(NotFoundException.class, () -> {
+            try {
+                client.target("http://jersey.java.net")
+                      .request()
+                      .header("Response-Status", 404)
+                      .rx(RxFlowableInvoker.class)
+                      .get(String.class)
+                      .blockingFirst();
+            } catch (final Exception expected) {
+                throw expected;
+            }
+        });
     }
 
-    @Test(expected = NotFoundException.class)
+    @Test
     public void testNotFoundReadEntityViaGenericType() throws Throwable {
-        try {
-            client.target("http://jersey.java.net")
-                  .request()
-                  .header("Response-Status", 404)
-                  .rx(RxFlowableInvoker.class)
-                  .get(new GenericType<String>() {
-                  })
-                  .blockingFirst();
-        } catch (final Exception expected) {
-            throw expected;
-        }
+        assertThrows(NotFoundException.class, () -> {
+            try {
+                client.target("http://jersey.java.net")
+                      .request()
+                      .header("Response-Status", 404)
+                      .rx(RxFlowableInvoker.class)
+                      .get(new GenericType<String>() {
+                      })
+                      .blockingFirst();
+            } catch (final Exception expected) {
+                throw expected;
+            }
+        });
     }
 
     @Test

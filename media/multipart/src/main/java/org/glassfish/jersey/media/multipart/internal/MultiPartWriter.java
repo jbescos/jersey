@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2012, 2023 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -27,17 +27,19 @@ import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Map;
 
-import javax.ws.rs.Produces;
-import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.HttpHeaders;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.MultivaluedMap;
-import javax.ws.rs.ext.MessageBodyWriter;
-import javax.ws.rs.ext.Provider;
-import javax.ws.rs.ext.Providers;
+import jakarta.inject.Inject;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.WebApplicationException;
+import jakarta.ws.rs.core.Context;
+import jakarta.ws.rs.core.GenericEntity;
+import jakarta.ws.rs.core.HttpHeaders;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.MultivaluedMap;
+import jakarta.ws.rs.ext.MessageBodyWriter;
+import jakarta.ws.rs.ext.Provider;
+import jakarta.ws.rs.ext.Providers;
 
-import javax.inject.Singleton;
+import jakarta.inject.Singleton;
 
 import org.glassfish.jersey.media.multipart.BodyPart;
 import org.glassfish.jersey.media.multipart.BodyPartEntity;
@@ -64,6 +66,7 @@ public class MultiPartWriter implements MessageBodyWriter<MultiPart> {
      */
     private final Providers providers;
 
+    @Inject
     public MultiPartWriter(@Context final Providers providers) {
         this.providers = providers;
     }
@@ -97,7 +100,7 @@ public class MultiPartWriter implements MessageBodyWriter<MultiPart> {
      * @param headers     mutable map of HTTP headers for the entire response.
      * @param stream      output stream to which the entity should be written.
      * @throws java.io.IOException if an I/O error occurs.
-     * @throws javax.ws.rs.WebApplicationException
+     * @throws jakarta.ws.rs.WebApplicationException
      *                             if an HTTP error response
      *                             needs to be produced (only effective if the response is not committed yet).
      */
@@ -195,14 +198,21 @@ public class MultiPartWriter implements MessageBodyWriter<MultiPart> {
                 bodyEntity = ((BodyPartEntity) bodyEntity).getInputStream();
             }
 
+            Type bodyType = bodyClass;
+            if (GenericEntity.class.isInstance(bodyEntity)) {
+                bodyClass = ((GenericEntity<?>) bodyEntity).getRawType();
+                bodyType = ((GenericEntity) bodyEntity).getType();
+                bodyEntity = ((GenericEntity<?>) bodyEntity).getEntity();
+            }
+
             final MessageBodyWriter bodyWriter = providers.getMessageBodyWriter(
                     bodyClass,
-                    bodyClass,
+                    bodyType,
                     EMPTY_ANNOTATIONS,
                     bodyMediaType);
 
             if (bodyWriter == null) {
-                throw new IllegalArgumentException(LocalizationMessages.NO_AVAILABLE_MBW(bodyClass, mediaType));
+                throw new IllegalArgumentException(LocalizationMessages.NO_AVAILABLE_MBW(bodyClass, bodyMediaType));
             }
 
             bodyWriter.writeTo(

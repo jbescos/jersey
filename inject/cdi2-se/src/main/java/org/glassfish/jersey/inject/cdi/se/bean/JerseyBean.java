@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017, 2018 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2017, 2023 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -22,18 +22,18 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.annotation.Priority;
-import javax.enterprise.context.Dependent;
-import javax.enterprise.context.RequestScoped;
-import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.inject.Any;
-import javax.enterprise.inject.Default;
-import javax.enterprise.inject.spi.Bean;
-import javax.enterprise.inject.spi.InjectionPoint;
-import javax.enterprise.inject.spi.PassivationCapable;
-import javax.enterprise.util.AnnotationLiteral;
-import javax.inject.Singleton;
+import jakarta.enterprise.context.Dependent;
+import jakarta.enterprise.context.RequestScoped;
+import jakarta.enterprise.context.spi.CreationalContext;
+import jakarta.enterprise.inject.Any;
+import jakarta.enterprise.inject.Default;
+import jakarta.enterprise.inject.spi.Bean;
+import jakarta.enterprise.inject.spi.InjectionPoint;
+import jakarta.enterprise.inject.spi.PassivationCapable;
+import jakarta.enterprise.util.AnnotationLiteral;
+import jakarta.inject.Singleton;
 
+import org.glassfish.jersey.JerseyPriorities;
 import org.glassfish.jersey.internal.inject.Binding;
 import org.glassfish.jersey.internal.inject.PerLookup;
 import org.glassfish.jersey.internal.inject.PerThread;
@@ -59,7 +59,7 @@ public abstract class JerseyBean<T> implements Bean<T>, PassivationCapable {
     private final Binding<T, ?> binding;
 
     /**
-     * JerseyBean constructor with {@link Binding} which represents {@link javax.enterprise.context.spi.Contextual} part of the
+     * JerseyBean constructor with {@link Binding} which represents {@link jakarta.enterprise.context.spi.Contextual} part of the
      * bean.
      *
      * @param binding information about the bean.
@@ -133,7 +133,7 @@ public abstract class JerseyBean<T> implements Bean<T>, PassivationCapable {
         return false;
     }
 
-    @Override
+    // @Override - Removed in CDI 4
     public boolean isNullable() {
         return false;
     }
@@ -151,16 +151,14 @@ public abstract class JerseyBean<T> implements Bean<T>, PassivationCapable {
         if (binding.getRank() != null) {
             return binding.getRank();
         }
+        int defaultValue = 1;
 
         Class<T> type = binding.getImplementationType();
         if (type != null) {
-            Priority priority = type.getAnnotation(Priority.class);
-            if (priority != null) {
-                return priority.value();
-            }
+            return JerseyPriorities.getPriorityValue(type, defaultValue);
         }
 
-        return 1;
+        return defaultValue;
     }
 
     @Override

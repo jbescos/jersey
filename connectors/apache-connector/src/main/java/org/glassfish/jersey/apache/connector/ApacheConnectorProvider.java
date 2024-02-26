@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013, 2019 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2013, 2022 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -16,9 +16,9 @@
 
 package org.glassfish.jersey.apache.connector;
 
-import javax.ws.rs.client.Client;
-import javax.ws.rs.core.Configurable;
-import javax.ws.rs.core.Configuration;
+import jakarta.ws.rs.client.Client;
+import jakarta.ws.rs.core.Configurable;
+import jakarta.ws.rs.core.Configuration;
 
 import org.glassfish.jersey.client.Initializable;
 import org.glassfish.jersey.client.spi.Connector;
@@ -33,19 +33,23 @@ import org.apache.http.client.HttpClient;
  * <p>
  * The following connector configuration properties are supported:
  * <ul>
+ * <li>{@link ApacheClientProperties#CONNECTION_CLOSING_STRATEGY}</li>
  * <li>{@link ApacheClientProperties#CONNECTION_MANAGER}</li>
- * <li>{@link ApacheClientProperties#REQUEST_CONFIG}</li>
+ * <li>{@link ApacheClientProperties#CONNECTION_MANAGER_SHARED}</li>
+ * <li>{@link ApacheClientProperties#CONNECTION_CLOSING_STRATEGY}</li>
  * <li>{@link ApacheClientProperties#CREDENTIALS_PROVIDER}</li>
  * <li>{@link ApacheClientProperties#DISABLE_COOKIES}</li>
  * <li>{@link ApacheClientProperties#KEEPALIVE_STRATEGY}</li>
+ * <li>{@link ApacheClientProperties#PREEMPTIVE_BASIC_AUTHENTICATION}</li>
  * <li>{@link org.glassfish.jersey.client.ClientProperties#PROXY_URI}</li>
  * <li>{@link org.glassfish.jersey.client.ClientProperties#PROXY_USERNAME}</li>
  * <li>{@link org.glassfish.jersey.client.ClientProperties#PROXY_PASSWORD}</li>
  * <li>{@link org.glassfish.jersey.client.ClientProperties#REQUEST_ENTITY_PROCESSING}
  * - default value is {@link org.glassfish.jersey.client.RequestEntityProcessing#CHUNKED}</li>
- * <li>{@link ApacheClientProperties#PREEMPTIVE_BASIC_AUTHENTICATION}</li>
+ * <li>{@link ApacheClientProperties#REQUEST_CONFIG}</li>
  * <li>{@link ApacheClientProperties#RETRY_HANDLER}</li>
  * <li>{@link ApacheClientProperties#REUSE_STRATEGY}</li>
+ * <li>{@link ApacheClientProperties#USE_SYSTEM_PROPERTIES}</li>
  * </ul>
  * </p>
  * <p>
@@ -73,7 +77,7 @@ import org.apache.http.client.HttpClient;
  * </p>
  * <p>
  * Registration of {@link ApacheHttpClientBuilderConfigurator} instance on the
- * {@link javax.ws.rs.client.Client#register(Object) Client} is supported. A configuration provided by
+ * {@link jakarta.ws.rs.client.Client#register(Object) Client} is supported. A configuration provided by
  * {@link ApacheHttpClientBuilderConfigurator} will override the {@link org.apache.http.impl.client.HttpClientBuilder}
  * configuration set by using the properties.
  * </p>

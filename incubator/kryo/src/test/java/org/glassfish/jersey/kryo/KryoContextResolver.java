@@ -18,7 +18,7 @@ package org.glassfish.jersey.kryo;
 
 import com.esotericsoftware.kryo.Kryo;
 
-import javax.ws.rs.ext.ContextResolver;
+import jakarta.ws.rs.ext.ContextResolver;
 
 public class KryoContextResolver implements ContextResolver<Kryo> {
     @Override
