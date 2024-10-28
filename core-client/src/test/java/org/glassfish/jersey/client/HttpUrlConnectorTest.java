@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013, 2022 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2013, 2024 Oracle and/or its affiliates. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0, which is available at
@@ -24,11 +24,20 @@ import java.net.ProtocolException;
 import java.net.SocketTimeoutException;
 import java.net.URI;
 import java.net.URL;
+import java.net.URLConnection;
+import java.net.URLStreamHandler;
 import java.security.Permission;
 import java.security.Principal;
 import java.security.cert.Certificate;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
@@ -50,6 +59,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Various tests for the default client connector.
@@ -108,6 +118,53 @@ public class HttpUrlConnectorTest {
 
         res.getHeaders().putSingle(HttpHeaders.LINK, Link.fromPath("action").rel("test").build().toString());
         assertEquals(URI.create("http://redirected.org:8080/action"), res.getLink("test").getUri());
+    }
+
+    /*
+     * This test verifies that URLs having same host:port cannot execute #openConnection at the same time.
+     */
+    @Test
+    public void testConcurrentOpenConnection() throws IOException, InterruptedException, ExecutionException {
+        // Used to hang threads while invoking #openConnection
+        CountDownLatch latch1 = new CountDownLatch(1);
+        // Used to verify that Thread 1 and Thread 3 has finished execution to check the value of counter is 2
+        CountDownLatch latch2 = new CountDownLatch(2);
+        AtomicInteger counter = new AtomicInteger(0);
+        URLStreamHandler handler = new URLStreamHandler() {
+            @Override
+            public URLConnection openConnection(URL u) throws IOException {
+                counter.incrementAndGet();
+                latch2.countDown();
+                try {
+                    latch1.await(5, TimeUnit.SECONDS);
+                } catch (InterruptedException e) {}
+                return null;
+            }
+        };
+        URL url1 = new URL("any", "urlA", 8080, "any1", handler);
+        URL url2 = new URL("any", "urlA", 8080, "any2", handler);
+        URL url3 = new URL("any", "urlB", 8080, "any1", handler);
+        HttpUrlConnectorProvider connectorProvider = new HttpUrlConnectorProvider();
+
+        ExecutorService executor = Executors.newFixedThreadPool(3);
+        executor.submit(() -> connectorProvider.connectionFactory.getConnection(url3));
+        executor.submit(() -> connectorProvider.connectionFactory.getConnection(url1));
+        executor.submit(() -> connectorProvider.connectionFactory.getConnection(url2));
+
+        // Wait till Thread 1 and Thread 3 executes counter.incrementAndGet().
+        // Thread 2 is locked waiting for Thread 1 to finish
+        assertTrue(latch2.await(5, TimeUnit.SECONDS));
+
+        // Thread 1 is invoking #openConnection and Thread 2 is waiting for the lock.
+        // Thread 3 is not locked because it is other host:port
+        assertEquals(2, counter.get());
+        // Thread 1 finishes and unlocks Thread 2.
+        latch1.countDown();
+
+        // Wait for all tasks to finish
+        executor.shutdown();
+        executor.awaitTermination(5, TimeUnit.SECONDS);
+        assertEquals(3, counter.get());
     }
 
     private HttpURLConnection wrapRedirectedHttp(final HttpURLConnection connection) {

@@ -120,7 +120,8 @@ public class HttpUrlConnectorProvider implements ConnectorProvider {
 
     private static final Logger LOGGER = Logger.getLogger(HttpUrlConnectorProvider.class.getName());
 
-    private ConnectionFactory connectionFactory;
+    // Visibility for testing
+    ConnectionFactory connectionFactory;
     private int chunkSize;
     private boolean useFixedLengthStreaming;
     private boolean useSetMethodWorkaround;
@@ -298,7 +299,7 @@ public class HttpUrlConnectorProvider implements ConnectorProvider {
 
     private static class DefaultConnectionFactory implements ConnectionFactory {
 
-        private final ConcurrentHashMap<URL, Lock> locks = new ConcurrentHashMap<>();
+        private final ConcurrentHashMap<String, Lock> locks = new ConcurrentHashMap<>();
 
         @Override
         public HttpURLConnection getConnection(final URL url) throws IOException {
@@ -311,11 +312,13 @@ public class HttpUrlConnectorProvider implements ConnectorProvider {
         }
 
         private HttpURLConnection connect(URL url, Proxy proxy) throws IOException {
-            Lock lock = locks.computeIfAbsent(url, u -> new ReentrantLock());
+            String key = url.getHost() + ":" + url.getPort();
+            Lock lock = locks.computeIfAbsent(key, u -> new ReentrantLock());
             lock.lock();
             try {
                 return (proxy == null) ? (HttpURLConnection) url.openConnection() : (HttpURLConnection) url.openConnection(proxy);
             } finally {
+                locks.remove(key);
                 lock.unlock();
             }
         }
